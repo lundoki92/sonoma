@@ -1,3 +1,4 @@
+-- Active: 1791800790239@@127.0.0.1@5433
 -- Données de test
 
 -- Après le remplacement de "password" par "password_hash"
@@ -7,10 +8,10 @@
 -- Seed users
 INSERT INTO users (username, email, password)
 VALUES
-('jenn', 'jenn@example.com]', 'mon_password'),
+('jenn', 'jenn@example.com', 'mon_password'),
 ('androu', 'andrea@example.com', 'mon_password'),
 ('nas', 'nastassja@example.com', 'mon_password'),
-('jeremy', 'jeremy@example.com=', 'mon_password');
+('jeremy', 'jeremy@example.com', 'mon_password');
 
 -- Seed playlists
 INSERT INTO playlists (name, date_time, host_id, streaming_service)
