@@ -8,7 +8,7 @@ const api = "http://localhost:3000"
 useEffect(() => {
     
 
-    async function chargerPlaylist() {
+    async function loadPlaylist() {
         try {
             const response= await fetch(`${api}/playlist`)
             const data = await response.json()
