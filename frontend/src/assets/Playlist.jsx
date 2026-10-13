@@ -16,7 +16,7 @@ useEffect(() => {
         } catch(err) {
             console.error(err)
         }
-    }chargerPlaylist()
+    }loadPlaylist()
 }, [])
 
 return(
