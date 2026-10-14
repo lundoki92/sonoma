@@ -29,3 +29,22 @@ CREATE TABLE playlists (
 );
 
 CREATE INDEX idx_playlists_host_id ON playlists(host_id);
+
+CREATE TABLE tracks (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    playlist_id INTEGER NOT NULL,
+
+    external_track_id VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    artist VARCHAR(255) NOT NULL,
+    image_url TEXT,
+    duration_ms INTEGER NOT NULL,
+
+    CONSTRAINT tracks_playlist_fk
+        FOREIGN KEY (playlist_id)
+        REFERENCES playlists(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT tracks_unique_external_id
+        UNIQUE (playlist_id, external_track_id)
+);
