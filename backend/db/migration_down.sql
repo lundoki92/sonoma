@@ -1,3 +1,9 @@
--- Active: 1791800790239@@127.0.0.1@5433
+DROP TABLE IF EXISTS playlist_final_songs;
+DROP TABLE IF EXISTS votes;
+DROP TABLE IF EXISTS voting_pool;
+DROP TABLE IF EXISTS voting_sessions;
+DROP TABLE IF EXISTS waiting_list;
+DROP TABLE IF EXISTS playlist_guests;
 DROP TABLE IF EXISTS playlists;
+DROP TABLE IF EXISTS songs;
 DROP TABLE IF EXISTS users;
