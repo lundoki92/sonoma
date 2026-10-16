@@ -32,7 +32,7 @@ INSERT INTO playlists (host_id, title, streaming_provider, streaming_playlist_id
 (2, 'Warmup Rock & Electro', 'youtube_music', 'yt_pl_xyz789', 'INVITE456', 'collecting', NOW() - INTERVAL '5 hours');
 
 -- 4. Insertion des invités (playlist id 1)
-INSERT INTO playlist_guests (playlist_id, guest_token, name, joined_at) VALUES
+INSERT INTO playlist_guests (playlist_id, guest_token, guest_name, joined_at) VALUES
 (1, 'token-guest-alpha-111', 'Lucas', NOW() - INTERVAL '20 hours'),
 (1, 'token-guest-beta-222', 'Sarah', NOW() - INTERVAL '19 hours'),
 (1, 'token-guest-gamma-333', 'Alex', NOW() - INTERVAL '18 hours');
