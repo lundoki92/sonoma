@@ -1,4 +1,4 @@
-# Entity-Relationship Diagram — Collaborative Playlist Application
+# Entity-Relationship Diagram — Sonoma
 
 ## 1. Mermaid Diagram
 
