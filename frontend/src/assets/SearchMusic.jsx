@@ -113,10 +113,8 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
               ? track.artists.map((artist) => artist.name).join(", ")
               : track.artist;
 
-            const trackImage =
-              track.album?.images?.[0]?.url ??
-              track.image_url ??
-              track.image;
+            // Get the album cover from the Spotify API response
+            const trackImage = track.cover;
 
             // Check whether the track is already in the playlist
             const alreadyAdded = tracks.some(
@@ -126,13 +124,13 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
             return (
               <div className="music-result" key={trackId}>
                 {/* Album cover */}
-                {trackImage && (
-                  <img
-                    className="music-cover"
-                    src={trackImage}
-                    alt=""
-                  />
-                )}
+                  {trackImage && (
+                    <img
+                      className="music-cover"
+                      src={trackImage}
+                      alt={track.title}
+                    />
+                  )}
 
                 {/* Track title and artists */}
                 <div className="music-info">
@@ -175,3 +173,4 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 }
 
 export default SearchMusic;
+

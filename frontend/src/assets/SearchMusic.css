@@ -39,14 +39,16 @@
   border-bottom: 1px solid #e8e8e8;
 }
 
+/* Display the album cover */
 .music-cover {
+  display: block;
   width: 56px;
   height: 56px;
-  flex-shrink: 0;
+  min-width: 56px;
+  min-height: 56px;
   object-fit: cover;
   border-radius: 8px;
 }
-
 .music-info {
   display: flex;
   flex-direction: column;

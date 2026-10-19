@@ -92,11 +92,7 @@ function PlaylistPage() {
                 : spotifyTrack.artist,
 
             // Get the album cover
-            image_url:
-                spotifyTrack.album?.images?.[0]?.url ??
-                spotifyTrack.image_url ??
-                spotifyTrack.image ??
-                null,
+            image_url: spotifyTrack.cover ?? null,
 
             // Get the track duration
             duration_ms: spotifyTrack.duration_ms,
