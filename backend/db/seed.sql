@@ -1,4 +1,4 @@
--- Active: 1791800790239@@127.0.0.1@5433
+-- Active: 1791800790239@@localhost@5433@sonoma_db
 -- Données de test
 
 -- Après le remplacement de "password" par "password_hash"
@@ -6,17 +6,10 @@
 -- avant insertion dans la table users.
 
 -- Seed users
-INSERT INTO users (username, email, password)
+INSERT INTO users (username, email, password_hash)
 VALUES
-('jenn', 'jenn@example.com', 'mon_password'),
-('androu', 'andrea@example.com', 'mon_password'),
-('nas', 'nastassja@example.com', 'mon_password'),
-('jeremy', 'jeremy@example.com', 'mon_password');
-
--- Seed playlists
-INSERT INTO playlists (name, date_time, host_id, streaming_service)
-VALUES
-('Stray Kids Everywhere All Around The World', '2026-10-01 21:30:00+02', 1, 'Spotify'),
-('Road Trip Anthems', '2026-10-02 10:00:00+02', 4, 'Deezer'),
-('Indie Discoveries', '2026-10-03 18:45:00+02', 2, 'Spotify'),
-('Chill Sunday', '2026-10-04 14:00:00+02', 3, 'YouTube Music');
+('jenn', 'jenn@example.com', 'dev-only-no-password'),
+('androu', 'andrea@example.com', 'dev-only-no-password'),
+('nas', 'nastassja@example.com', 'dev-only-no-password'),
+('jeremy', 'jeremy@example.com', 'dev-only-no-password')
+RETURNING id, username, email;

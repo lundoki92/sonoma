@@ -1,2 +1,11 @@
 
-GET http://localhost:3000/playlist
+GET http://localhost:3000/api/music/search?q=daft%20punk
+
+###
+POST http://localhost:3000/api/playlists
+Content-Type: application/json
+
+{
+  "name": "Soirée Androu",
+  "date_time": "2026-11-14T20:00:00+01:00"
+}
