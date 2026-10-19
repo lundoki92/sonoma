@@ -1,0 +1,21 @@
+/* --- IMPORTS GOOGLE FONTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300;400;500;600;700&display=swap');
+
+/* --- STYLE GLOBAL & TEXTE COURANT (Geist) --- */
+body {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  background-color: #121214;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- TITRES ET BOUTONS (Bricolage Grotesque) --- */
+h1, h2, h3, h4, h5, h6, 
+button, 
+.btn, 
+.header-title,
+.nav-label {
+  font-family: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+}

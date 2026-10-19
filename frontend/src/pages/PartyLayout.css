@@ -1,0 +1,21 @@
+.party-layout {
+  background-color: #121214;
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  user-select: none;
+}
+
+.party-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 80px;
+  padding-bottom: 96px;
+  padding-left: 16px;
+  padding-right: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
