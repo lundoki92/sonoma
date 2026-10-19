@@ -70,7 +70,6 @@ function PlaylistPage() {
   async function handleAddTrack(spotifyTrack) {
     try {
       setError("");
-
       // Send the selected track to the backend
       const response = await fetch(
         `${API_URL}/api/playlists/${id}/tracks`,
@@ -81,22 +80,18 @@ function PlaylistPage() {
           },
           body: JSON.stringify({
             // Get the Spotify track ID
-            external_track_id: spotifyTrack.id ?? spotifyTrack.external_track_id,
+            external_track_id: spotifyTrack.spotifyId,
 
-            // Get the track title
-            title: spotifyTrack.name ?? spotifyTrack.title,
-
-            // Get the artist name
-            artist: Array.isArray(spotifyTrack.artists)
-                ? spotifyTrack.artists.map((artist) => artist.name).join(", ")
-                : spotifyTrack.artist,
+            // Get the track title and artist
+            title: spotifyTrack.title,
+            artist: spotifyTrack.artist,
 
             // Get the album cover
-            image_url: spotifyTrack.cover ?? null,
+            image_url: spotifyTrack.cover,
 
-            // Get the track duration
-            duration_ms: spotifyTrack.duration_ms,
-            }),
+            // Get the track duration in milliseconds
+            duration_ms: spotifyTrack.durationMs,
+          }),
         }
       );
 
