@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import SearchMusic from "../assets/SearchMusic";
+import SearchMusic from "../components/SearchMusic";
 
 const API_URL = "http://localhost:3000";
 
