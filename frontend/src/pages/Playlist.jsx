@@ -67,48 +67,65 @@ function PlaylistPage() {
   }, [id]);
 
   // Save a Spotify track to the database
-  async function handleAddTrack(spotifyTrack) {
-    try {
-      setError("");
-      // Send the selected track to the backend
-      const response = await fetch(
-        `${API_URL}/api/playlists/${id}/tracks`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            // Get the Spotify track ID
-            external_track_id: spotifyTrack.spotifyId,
+async function handleAddTrack(spotifyTrack) {
+  try {
+    setError("");
+// Send the selected track to the backend
+    const trackData = {
+      external_track_id:
+        spotifyTrack.id ??
+        spotifyTrack.external_track_id ??
+        spotifyTrack.spotifyId,
 
-            // Get the track title and artist
-            title: spotifyTrack.title,
-            artist: spotifyTrack.artist,
+      title:
+        spotifyTrack.name ??
+        spotifyTrack.title,
 
-            // Get the album cover
-            image_url: spotifyTrack.cover,
+      artist:
+        Array.isArray(spotifyTrack.artists)
+          ? spotifyTrack.artists
+              .map((artist) => artist.name)
+              .join(", ")
+          : spotifyTrack.artist,
 
-            // Get the track duration in milliseconds
-            duration_ms: spotifyTrack.durationMs,
-          }),
-        }
-      );
+      image_url:
+        spotifyTrack.album?.images?.[0]?.url ??
+        spotifyTrack.image_url ??
+        spotifyTrack.cover ??
+        null,
 
-      const data = await response.json();
+      duration_ms:
+        spotifyTrack.duration_ms ??
+        spotifyTrack.durationMs,
+    };
 
-      // Display an error if the track could not be saved
-      if (!response.ok) {
-        throw new Error(data.error || "Unable to add the track");
+    console.log("TRACK DATA SENT TO BACKEND:", trackData);
+
+    const response = await fetch(
+      `${API_URL}/api/playlists/${id}/tracks`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(trackData),
       }
+    );
 
-      // Add the saved track to the displayed list
-      setTracks((previousTracks) => [data, ...previousTracks]);
-    } catch (err) {
-      setError(err.message);
-      throw err;
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Unable to add the track"
+      );
     }
+
+    setTracks((previousTracks) => [data, ...previousTracks]);
+  } catch (err) {
+    setError(err.message);
+    throw err;
   }
+}
 
   // Display a loading message while fetching data
   if (loading) {
