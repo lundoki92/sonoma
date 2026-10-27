@@ -13,7 +13,7 @@ app.use(express.json());
 // Allow requests from the frontend running on Vite.
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://127.0.0.1:5173",
   })
 );
 
