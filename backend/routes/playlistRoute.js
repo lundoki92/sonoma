@@ -1,66 +1,16 @@
 import express from "express";
-import { randomUUID } from "node:crypto";
-import pool from "../../server/db.js";
+import pool from ".././server/db.js";
+import createPlaylistController from "../controllers/playlistController.js";
 
 const routePlaylist = express.Router();
 
 // Create a new playlist
-routePlaylist.post("/", async (req, res) => {
+routePlaylist.post("/", async (req, res, next) => {
   try {
-    const { name, date_time } = req.body;
-
-    // Validate the playlist name
-    if (
-      typeof name !== "string" ||
-      !name.trim() ||
-      name.trim().length > 100
-    ) {
-      return res.status(400).json({
-        error: "Invalid playlist name",
-      });
-    }
-
-    // Validate the date
-    if (
-      typeof date_time !== "string" ||
-      !date_time.trim() ||
-      Number.isNaN(Date.parse(date_time))
-    ) {
-      return res.status(400).json({
-        error: "Invalid playlist date",
-      });
-    }
-
-    // Temporary host ID for local testing
-    const hostId = 2;
-
-    // Generate a unique invitation code
-    const inviteCode = randomUUID();
-
-    // Insert the playlist into PostgreSQL
-    const result = await pool.query(
-      `
-      INSERT INTO playlists (
-        name,
-        date_time,
-        host_id,
-        invite_code
-      )
-      VALUES ($1, $2, $3, $4)
-      RETURNING *;
-      `,
-      [name.trim(), date_time, hostId, inviteCode]
-    );
-
-    return res.status(201).json(result.rows[0]);
+    await createPlaylistController(req, res);
   } catch (error) {
-  console.error("Error creating playlist:", error);
-
-  return res.status(500).json({
-    error: error.message,
-    code: error.code,
-  });
-}
+    next(error);
+  }
 });
 
 // Get a playlist by ID
