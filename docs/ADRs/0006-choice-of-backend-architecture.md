@@ -1,5 +1,5 @@
 # ADR 0006 - [Choice of backend architecture]
-**Statut:** ACCPECTED 
+**Statut:** ACCEPTED 
 **Date:** 20/10/2026
 
 ## CONTEXT 
