@@ -9,3 +9,6 @@ Content-Type: application/json
   "name": "Soirée Androu",
   "date_time": "2026-11-14T20:00:00+01:00"
 }
+
+###
+GET http://localhost:3000/api/playlists/4/tracks
