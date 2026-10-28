@@ -1,12 +1,13 @@
+/* --- BOTTOM NAV --- */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 50;
-  background-color: rgba(24, 24, 27, 0.95);
+  background-color: #000000;
   backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #2E2A3D;            /* Contours */
   padding: 12px 32px;
   display: flex;
   justify-content: space-around;
@@ -21,24 +22,49 @@
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: #a1a1aa;
+  color: #A29DB5;                           /* Texte secondaire */
   transition: all 0.2s ease;
 }
 
 .nav-item:hover {
-  color: #e4e4e7;
+  color: #ffffff;
 }
 
-.nav-item.active {
-  color: #a3e635; /* Couleur vert neon / lime */
-  font-weight: bold;
-  transform: scale(1.05);
+.nav-item:hover .nav-icon {
+  color: #ffffff;
+}
+
+/* Conteneur de l'icône (Pastille) */
+.nav-icon-wrapper {
+  width: 48px;
+  height: 28px;
+  border-radius: 9999px;                    /* Forme pilule */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .nav-icon {
   font-size: 18px;
+  color: #A29DB5;
+  transition: color 0.2s ease;
 }
 
 .nav-label {
   font-size: 11px;
+}
+
+/* --- ÉLÉMENT ACTIF --- */
+.nav-item.active .nav-icon-wrapper {
+  background-color: rgba(234, 255, 153, 0.3);
+}
+
+.nav-item.active .nav-icon {
+  color: #EAFF99;                           /* Icône en jaune pâle pour ressortir sur le fond sombre */
+}
+
+.nav-item.active .nav-label {
+  color: #EAFF99;                           /* Label en jaune pâle */
+  font-weight: bold;
 }
