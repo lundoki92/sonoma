@@ -4,8 +4,7 @@ import CreatePlaylist from './pages/CreatePlaylist.jsx'
 import HomeAdmin from './pages/HomeAdmin.jsx'
 import PartyLayout from './pages/PartyLayout.jsx'
 import PlaylistPage from './pages/Playlist.jsx'
-import VoteTab from './pages/VoteTab.jsx'
-import PlaylistTab from './pages/PlaylistTab.jsx'
+import EmptyPage from './pages/EmptyPage.jsx'
 
 export default function App() {
   return (
@@ -19,13 +18,11 @@ export default function App() {
         
         {/* Expérience en soirée : Header + BottomNav permanents */}
         <Route path="/playlist/:id" element={<PartyLayout />}>
-          {/* Par défaut ou sur /propose, on affiche le travail de ta camarade (Playlist.jsx) */}
+          {/* Seul "Proposer" reste fonctionnel */}
           <Route index element={<PlaylistPage />} />
           <Route path="propose" element={<PlaylistPage />} />
-          
-          {/* Les onglets de vote et de playlist active */}
-          <Route path="vote" element={<VoteTab />} />
-          <Route path="playlist" element={<PlaylistTab />} />
+          <Route path="vote" element={<EmptyPage />} />
+          <Route path="playlist" element={<EmptyPage />} />
         </Route>
 
         {/* Redirection par défaut */}

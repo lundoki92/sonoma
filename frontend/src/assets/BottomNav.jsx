@@ -9,7 +9,9 @@ export default function BottomNav({ playlistId }) {
         to={`/playlist/${playlistId}/propose`}
         className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
       >
-        <span className="nav-icon">➕</span>
+        <div className="nav-icon-wrapper">
+          <i className="fa-solid fa-plus nav-icon"></i>
+        </div>
         <span className="nav-label">Proposer</span>
       </NavLink>
 
@@ -17,7 +19,9 @@ export default function BottomNav({ playlistId }) {
         to={`/playlist/${playlistId}/vote`}
         className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
       >
-        <span className="nav-icon">🔥</span>
+        <div className="nav-icon-wrapper">
+          <i className="fa-solid fa-fire nav-icon"></i>
+        </div>
         <span className="nav-label">Voter</span>
       </NavLink>
 
@@ -25,8 +29,10 @@ export default function BottomNav({ playlistId }) {
         to={`/playlist/${playlistId}/playlist`}
         className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
       >
-        <span className="nav-icon">🎵</span>
-        <span className="nav-label">Playlist</span>
+        <div className="nav-icon-wrapper">
+          <i className="fa-solid fa-music nav-icon"></i>
+        </div>
+        <span className="nav-label">En écoute</span>
       </NavLink>
     </nav>
   );
