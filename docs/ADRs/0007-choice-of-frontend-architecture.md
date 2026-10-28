@@ -1,6 +1,6 @@
-# ADR 0006 - [Choice of backend architecture]
-**Statut:** ACCEPTED 
-**Date:** 20/10/2026 
+# ADR 0007 - [Choice of frontend architecture]
+**Statut:** ACCEPTED
+**Date:** 20/10/2026
 
 ## CONTEXT 
 We need to chose a structure for our frontend architecture. 
