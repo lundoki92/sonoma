@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router";
+import "./HomeAdmin.css";
 import Header from "../components/Header";
-import BottomNav from "../components/BottomNav";
+import ExplanationText from "../components/ExplanationText";
+import Button from "../components/Button";
 
 export default function Home() {
-  const [userPseudo, setUserPseudo] = useState("Zoé");
+  const [userPseudo, setUserPseudo] = useState("Prénom Nom");
 
   return (
     <>
       <div className="host-dashboard">
         {/* HEADER FIXE */}
         <Header variant="greeting" userPseudo={userPseudo} />
+
+        <ExplanationText
+          hasAppTitle={true}
+          title="Tes invités choisissent. Toi, tu fais danser."
+          text="Connectez votre service de streaming et invitez vos amis à proposer et voter."
+        />
+
+        <Button
+            text="Créer une nouvelle soirée"
+        />
       </div>
     </>
   );
