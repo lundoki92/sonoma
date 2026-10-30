@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router";
-import Header from "../assets/Header";
-import BottomNav from "../assets/BottomNav";
+import Header from "../components/Header";
+import BottomNav from "../components/BottomNav";
 
 export default function Home() {
   const [userPseudo, setUserPseudo] = useState("Zoé");
