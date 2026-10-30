@@ -5,7 +5,7 @@ export default function Header({
   sessionTitle,
   userPseudo,
   variant = "default",
-  greeting = "Bonsoir,",
+  greeting = "Hello,",
 }) {
   // Gets initials from host's username
   const initials = userPseudo
