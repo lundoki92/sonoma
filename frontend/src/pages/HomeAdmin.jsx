@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./HomeAdmin.css";
-import Header from "../components/Header";
-import ExplanationText from "../components/ExplanationText";
-import Button from "../components/Button";
-import DashboardPlaylistsContainer from "../components/DashboardPlaylistsContainer";
+import Header from "../components/common/Header";
+import ExplanationText from "../components/common/ExplanationText";
+import Button from "../components/common/Button";
+import DashboardPlaylistsContainer from "../components/HomeAdmin/DashboardPlaylistsContainer";
 
 export default function Home() {
   const [userPseudo, setUserPseudo] = useState("Prénom Nom");

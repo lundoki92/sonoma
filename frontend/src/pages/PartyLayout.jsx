@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, useParams } from "react-router";
-import Header from "../components/Header";
-import BottomNav from "../components/BottomNav";
+import Header from "../components/common/Header";
+import BottomNav from "../components/common/BottomNav";
 import "./PartyLayout.css";
 
 export default function PartyLayout() {
