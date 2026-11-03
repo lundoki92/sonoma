@@ -1,0 +1,152 @@
+/* BASE DE LA CARTE */
+
+.dashboard-playlist-card {
+    width: 100%;
+    border-radius: 28px;
+    padding: 16px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* --- STYLE : CARTE EN DIRECT --- */
+
+.dashboard-playlist-card.card-live {
+    background-color: #050505;
+    border: 1.5px solid #d4f542;
+}
+
+.dashboard-playlist-card.card-live .card-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 24px;
+}
+
+.badge-live {
+    background-color: #0b3323;
+    color: #10b981;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+/* --- STYLE : CARTE ARCHIVÉE --- */
+
+.dashboard-playlist-card.card-archived {
+    background-color: #121019;
+    border: 1px solid #1f1b2d;
+}
+
+/* Badge placé à côté du nom */
+
+.card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 80px;
+}
+
+.badge-archived {
+    background-color: #1e1b2e;
+    color: #8b88a1;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 16px;
+    white-space: nowrap;
+}
+
+/* --- STYLE : CARTE EN PRÉPARATION --- */
+
+.dashboard-playlist-card.card-preparing {
+    background-color: #121019;
+    border: 1px solid #3b3424;
+}
+
+.badge-preparing {
+    background-color: #3b3424;
+    color: #f4d58d;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 16px;
+    white-space: nowrap;
+}
+
+/* --- CONTENU DE LA CARTE --- */
+
+.card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+/* TITRE */
+
+.card-title {
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* SOUS-TITRE */
+
+.card-subtitle {
+    color: #8e8d9a;
+    font-size: 0.875rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dot {
+    color: #555366;
+}
+
+/* --- FLÈCHE POUR LIVE --- */
+
+.arrow-btn {
+    background-color: #16151d;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8e8d9a;
+}
+
+.dashboard-playlist-card.card-live:hover .arrow-btn {
+    background-color: #22202c;
+    color: #ffffff;
+}
+
+/* STATUT INCONNU */
+
+.badge-unknown {
+    background-color: #302c3a;
+    color: #a6a1b4;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 16px;
+}
