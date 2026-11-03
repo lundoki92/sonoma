@@ -5,6 +5,19 @@ import * as voteController from "../controllers/voteController.js";
 
 const routeVote = Router();
 
-routeVote.post("/sessions/:sessionId/vote", voteController.vote);
+// Pool de vote : morceaux votables + statut "voted" du host
+routeVote.get("/:playlistId/voting-tracks", voteController.getVotingTracks);
+
+// Toggle du vote d'un host
+routeVote.post(
+  "/:playlistId/tracks/:trackId/vote",
+  voteController.toggleHostVote,
+);
+
+// Toggle du vote d'un invité
+routeVote.post(
+  "/:playlistId/tracks/:trackId/guest-vote",
+  voteController.toggleGuestVote,
+);
 
 export default routeVote;

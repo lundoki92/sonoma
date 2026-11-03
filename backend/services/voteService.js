@@ -3,31 +3,69 @@
 
 import * as voteModel from "../models/voteModel.js";
 
-export async function vote({ sessionId, votingPoolId, guestId }) {
-  // Règle 1 : Vérifier que la session existe et qu'elle est bien "active"
-  const session = await voteModel.findSessionById(sessionId);
-  if (!session || session.status !== "active") {
-    throw new Error("SESSION_INACTIVE");
+export async function getVotingTracks({ playlistId, hostId }) {
+  return voteModel.getVotingTracksByPlaylist({ playlistId, hostId });
+}
+
+export async function toggleVote({
+  playlistId,
+  trackId,
+  hostId = null,
+  guestId = null,
+}) {
+  // Règle 1 : il faut exactement un votant (host OU invité)
+  const isHost = hostId !== null && hostId !== undefined;
+  const isGuest = guestId !== null && guestId !== undefined;
+  if (isHost === isGuest) {
+    throw new Error("INVALID_VOTER");
   }
 
-  // Règle 2 : Vérifier que cet invité n'a pas déjà voté pour CETTE session
-  const existingVote = await voteModel.findVoteBySessionAndVote({
-    sessionId,
+  // Règle 2 : la playlist doit exister et être active
+  const playlist = await voteModel.findPlaylistById(playlistId);
+  if (!playlist) {
+    throw new Error("PLAYLIST_NOT_FOUND");
+  }
+  if (playlist.status !== "active") {
+    throw new Error("PLAYLIST_INACTIVE");
+  }
+
+  // Règle 3 : le morceau doit exister, appartenir à cette playlist
+  // et être dans la phase de vote
+  const track = await voteModel.findTrackById(trackId);
+  if (!track || Number(track.playlist_id) !== Number(playlistId)) {
+    throw new Error("TRACK_NOT_FOUND");
+  }
+  if (track.status !== "voting") {
+    throw new Error("TRACK_NOT_VOTABLE");
+  }
+
+  // Règle 4 : vérifier l'identité du votant
+  if (isHost) {
+    if (Number(playlist.host_id) !== Number(hostId)) {
+      throw new Error("NOT_PLAYLIST_HOST");
+    }
+  } else {
+    const guest = await voteModel.findGuestInPlaylist({
+      guestId,
+      playlistId,
+    });
+    if (!guest) {
+      throw new Error("GUEST_NOT_IN_PLAYLIST");
+    }
+  }
+
+  // Règle 5 : toggle (ajouter / retirer le vote)
+  const existingVote = await voteModel.findVoteByVoterAndTrack({
+    trackId,
+    hostId,
     guestId,
   });
+
   if (existingVote) {
-    throw new Error("ALREADY_VOTED");
+    await voteModel.deleteVote({ trackId, hostId, guestId });
+    return { voted: false };
   }
 
-  // Règle 3 : Vérifier que le morceau fait bien partie du voting_pool de CETTE session
-  const inPool = await voteModel.isTrackInVotingPool({
-    sessionId,
-    votingPoolId,
-  });
-  if (!inPool) {
-    throw new Error("NOT_IN_POOL");
-  }
-
-  // Si toutes les règles sont validées
-  await voteModel.createVote({ sessionId, votingPoolId, guestId });
+  await voteModel.createVote({ trackId, hostId, guestId });
+  return { voted: true };
 }

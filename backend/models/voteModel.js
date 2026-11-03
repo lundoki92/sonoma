@@ -2,42 +2,88 @@
 
 import pool from "../server/db.js";
 
-// Récupère une session de vote par son ID
-export async function findSessionById(sessionId) {
+// Morceaux votables d'une playlist + statut "voted" pour un host
+export async function getVotingTracksByPlaylist({ playlistId, hostId }) {
   const result = await pool.query(
-    "SELECT * FROM voting_sessions WHERE id = $1",
-    [sessionId],
+    `SELECT
+       t.id,
+       t.title,
+       t.artist,
+       t.image_url,
+       t.status,
+       EXISTS (
+         SELECT 1 FROM votes v
+         WHERE v.track_id = t.id AND v.host_id = $2
+       ) AS voted
+     FROM tracks t
+     WHERE t.playlist_id = $1
+       AND t.status = 'voting'`,
+    [playlistId, hostId],
   );
-  // On retourne la session trouvée, ou null si elle n'existe pas
+  return result.rows;
+}
+
+// Récupère un morceau par son ID
+export async function findTrackById(trackId) {
+  const result = await pool.query(
+    "SELECT id, playlist_id, status FROM tracks WHERE id = $1",
+    [trackId],
+  );
   return result.rows[0] ?? null;
 }
 
-// Vérifie si un invité a déjà voté dans cette session de vote
-export async function findVoteBySessionAndVote({ sessionId, guestId }) {
+// Récupère une playlist par son ID (host + statut)
+export async function findPlaylistById(playlistId) {
   const result = await pool.query(
-    "SELECT * FROM votes WHERE voting_session_id = $1 AND guest_id = $2",
-    [sessionId, guestId],
+    "SELECT id, host_id, status FROM playlists WHERE id = $1",
+    [playlistId],
   );
-  // On retourne le vote existant, ou null s'il n'y en a pas encore
   return result.rows[0] ?? null;
 }
 
-// Vérifie si le morceau choisi fait bien partie du voting_pool pour cette session
-export async function isTrackInVotingPool({ sessionId, votingPoolId }) {
+// Vérifie qu'un invité appartient bien à cette playlist
+export async function findGuestInPlaylist({ guestId, playlistId }) {
   const result = await pool.query(
-    "SELECT 1 FROM voting_pool WHERE id = $1 AND voting_session_id = $2",
-    [sessionId, votingPoolId],
+    "SELECT id FROM playlist_guests WHERE id = $1 AND playlist_id = $2",
+    [guestId, playlistId],
   );
-  // On se fiche du contenu, on veut juste savoir s'il existe au moins une ligne
-  return result.rows.length > 0;
+  return result.rows[0] ?? null;
 }
 
-// Crée un vote pour un invité dans cette session
-export async function createVote({ sessionId, votingPoolId, guestId }) {
+// Récupère le vote d'un host OU d'un invité pour un morceau
+export async function findVoteByVoterAndTrack({
+  trackId,
+  hostId = null,
+  guestId = null,
+}) {
   const result = await pool.query(
-    "INSERT INTO votes (voting_session_id, voting_pool_id, guest_id) VALUES ($1, $2, $3) RETURNING *",
-    [sessionId, votingPoolId, guestId],
+    `SELECT * FROM votes
+     WHERE track_id = $1
+       AND (($2::int IS NOT NULL AND host_id = $2)
+         OR ($3::int IS NOT NULL AND guest_id = $3))`,
+    [trackId, hostId, guestId],
   );
-  // RETURNING * permet de récupérer directement la ligne insérée en base
+  return result.rows[0] ?? null;
+}
+
+// Supprime le vote d'un host OU d'un invité pour un morceau
+export async function deleteVote({ trackId, hostId = null, guestId = null }) {
+  await pool.query(
+    `DELETE FROM votes
+     WHERE track_id = $1
+       AND (($2::int IS NOT NULL AND host_id = $2)
+         OR ($3::int IS NOT NULL AND guest_id = $3))`,
+    [trackId, hostId, guestId],
+  );
+}
+
+// Crée un vote pour un host OU un invité
+export async function createVote({ trackId, hostId = null, guestId = null }) {
+  const result = await pool.query(
+    `INSERT INTO votes (track_id, host_id, guest_id)
+     VALUES ($1, $2, $3)
+     RETURNING *`,
+    [trackId, hostId, guestId],
+  );
   return result.rows[0];
 }

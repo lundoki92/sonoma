@@ -4,6 +4,7 @@ import cors from "cors";
 import musicRoute from "../routes/musicRoute.js";
 import playlistRoute from "../routes/playlistRoute.js";
 import trackRoute from "../routes/trackRoute.js";
+import voteRoute from "../routes/voteRoute.js";
 
 const app = express();
 
@@ -14,7 +15,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://127.0.0.1:5173",
-  })
+  }),
 );
 
 // Register playlist endpoints.
@@ -30,6 +31,12 @@ app.use("/api/playlists", trackRoute);
 // Register music-related endpoints.
 // Example: /api/music/...
 app.use("/api/music", musicRoute);
+
+// Register vote endpoints under the playlist base URL.
+// GET  /api/playlists/12/voting-tracks
+// POST /api/playlists/12/tracks/34/vote
+// POST /api/playlists/12/tracks/34/guest-vote
+app.use("/api/playlists", voteRoute);
 
 // Start the Express server on the configured port.
 app.listen(process.env.PORT);
