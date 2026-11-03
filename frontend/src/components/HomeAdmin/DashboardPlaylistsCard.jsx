@@ -17,8 +17,10 @@ export default function DashboardPlaylistsCard({ playlist }) {
     date,
   } = playlist;
 
+  // Determine the current playlist status
   const currentStatus = is_active ? "active" : status;
 
+  // Define labels and CSS classes for each status
   const statusConfig = {
     preparing: {
       label: "EN PRÉPARATION",
@@ -39,10 +41,12 @@ export default function DashboardPlaylistsCard({ playlist }) {
     className: "unknown",
   };
 
+  // Get playlist information with fallback values
   const playlistName = name || title || "Soirée sans nom";
   const guests = guestsCount ?? guests_count ?? 0;
   const tracks = tracksCount ?? tracks_count ?? 0;
 
+  // Format the playlist date
   const playlistDate = date_time
     ? new Date(date_time).toLocaleDateString("fr-FR", {
         day: "numeric",
@@ -51,33 +55,35 @@ export default function DashboardPlaylistsCard({ playlist }) {
       })
     : date || "Date inconnue";
 
+  // Identify the playlist status
   const isLive = currentStatus === "active";
   const isArchived = currentStatus === "finished";
+  const isPreparing = currentStatus === "preparing";
 
   return (
     <article className={`dashboard-playlist-card card-${config.className}`}>
-      {/* BADGE EN DIRECT */}
+      {/* Live status badge */}
       {isLive && (
         <div className="card-header">
           <span className="badge badge-live">{config.label}</span>
         </div>
       )}
 
-      {/* CONTENU PRINCIPAL */}
+      {/* Main card content */}
       <div className="card-body">
         <div className="card-info">
-          {/* NOM ET BADGE ARCHIVÉE */}
+          {/* Playlist title and status badge */}
           <div className="card-title-row">
             <h3 className="card-title">{playlistName}</h3>
 
-            {(isArchived || currentStatus === "preparing") && (
+            {(isArchived || isPreparing) && (
               <span className={`badge badge-${config.className}`}>
                 {config.label}
               </span>
             )}
           </div>
 
-          {/* INFORMATIONS */}
+          {/* Playlist information */}
           <p className="card-subtitle">
             {isLive ? (
               <>
@@ -95,7 +101,7 @@ export default function DashboardPlaylistsCard({ playlist }) {
           </p>
         </div>
 
-        {/* FLÈCHE POUR LES SOIRÉES EN DIRECT */}
+        {/* Navigation arrow for live playlists */}
         {isLive && (
           <div className="card-action">
             <span className="arrow-btn" aria-hidden="true">

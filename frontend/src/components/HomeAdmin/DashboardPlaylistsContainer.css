@@ -1,6 +1,4 @@
-
-/* CONTAINER PRINCIPAL */
-
+/* MAIN CONTAINER */
 .dashboard-playlists-container {
   width: 100%;
   max-width: 480px;
@@ -13,8 +11,7 @@
   gap: 20px;
 }
 
-/* HEADER DE SECTION */
-
+/* SECTION HEADER */
 .dashboard-playlists-header {
   display: flex;
   justify-content: space-between;
@@ -36,8 +33,7 @@
   white-space: nowrap;
 }
 
-/* LISTE DES CARTES */
-
+/* PLAYLIST CARD LIST */
 .dashboard-playlists-list {
   display: flex;
   flex-direction: column;
@@ -45,8 +41,7 @@
   width: 100%;
 }
 
-/* AUCUNE PLAYLIST */
-
+/* EMPTY STATE */
 .dashboard-playlists-empty {
   margin: 0;
   padding: 24px 16px;
@@ -59,8 +54,7 @@
   text-align: center;
 }
 
-/* RESPONSIVE */
-
+/* RESPONSIVE DESIGN */
 @media (max-width: 360px) {
   .dashboard-playlists-container {
     padding-left: 20px;
