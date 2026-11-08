@@ -51,6 +51,7 @@ export async function addTrackToPlaylistController(req, res) {
     // Extract the track information sent by the client.
     const {
       external_track_id,
+      spotify_uri,
       title,
       artist,
       image_url,
@@ -88,6 +89,7 @@ export async function addTrackToPlaylistController(req, res) {
     // Normalize the data before passing it to the service.
     const track = await addTrackToPlaylistService(playlistId, {
       external_track_id: external_track_id.trim(),
+      spotify_uri: spotify_uri,
       title: title.trim(),
       artist: artist.trim(),
       image_url: image_url || null,
