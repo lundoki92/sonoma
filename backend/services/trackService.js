@@ -43,7 +43,7 @@ export async function addTrackToPlaylistService(playlistId, data) {
   // Tracks added during preparation are selected automatically.
   // Tracks added in other non-finished states are proposed.
   const trackStatus =
-    playlist.status === "preparing" ? "selected" : "proposed";
+  playlist.status === "preparing" ? "proposed" : "voting";
 
   // Delegate the database insertion to the model layer.
   return addTrackToPlaylistModel(

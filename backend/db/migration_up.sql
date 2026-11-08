@@ -79,7 +79,7 @@ CREATE TABLE tracks (
 
     CHECK (duration_ms > 0),
 
-    CHECK (status IN ('voting', 'playing', 'played'))
+    CHECK (status IN ('proposed', 'voting', 'selected', 'played'))
 );
 
 
