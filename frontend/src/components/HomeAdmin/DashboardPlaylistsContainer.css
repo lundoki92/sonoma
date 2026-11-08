@@ -1,0 +1,67 @@
+/* MAIN CONTAINER */
+.dashboard-playlists-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 28px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* SECTION HEADER */
+.dashboard-playlists-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-playlists-heading {
+  margin: 0;
+  color: #f4f0fa;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.dashboard-playlists-count {
+  color: #a6a1b4;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* PLAYLIST CARD LIST */
+.dashboard-playlists-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* EMPTY STATE */
+.dashboard-playlists-empty {
+  margin: 0;
+  padding: 24px 16px;
+  border: 1px dashed #403b4c;
+  border-radius: 16px;
+
+  color: #a6a1b4;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 360px) {
+  .dashboard-playlists-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .dashboard-playlists-heading {
+    font-size: 18px;
+  }
+}

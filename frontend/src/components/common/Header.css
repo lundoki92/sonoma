@@ -59,3 +59,63 @@
   font-weight: 500;
   color: #e4e4e7;
 }
+
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: rgba(18, 18, 20, 0.9);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Dashboard variant */
+
+.app-header--greeting {
+  justify-content: flex-start;
+  gap: 14px;
+  padding: 30px 36px;
+  min-height: 108px;
+  box-sizing: border-box;
+  background-color: #0c0b12;
+}
+
+.header-avatar {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 50%;
+  background-color: #b9a5ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.header-greeting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header-greeting {
+  font-size: 14px;
+  color: #a1a1aa;
+  font-weight: 400;
+}
+
+.app-header--greeting .header-title {
+  font-size: 18px;
+  font-weight: 700;
+}

@@ -1,0 +1,154 @@
+/* BASE CARD */
+.dashboard-playlist-card {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #2E2A3D;
+  border-radius: 48px;
+  padding: 26px;
+  transition: border-color 0.25s ease;
+}
+
+/* LIVE PLAYLIST */
+.card-live {
+  min-height: 202px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #000000;
+  border-color: #2E2A3D;
+  cursor: pointer;
+}
+
+.card-live:hover,
+.card-live:active {
+  border-color: #EAFF99;
+}
+
+/* Live Badge */
+.card-header {
+  display: flex;
+  align-items: center;
+}
+
+.badge-live {
+  padding: 7px 21px;
+  border-radius: 30px;
+  background: #10483B;
+  color: #00E6A0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* CARD CONTENT */
+.card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.card-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 80px;
+}
+
+.card-title {
+  margin: 0;
+  color: #F4F1FA;
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.card-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: #A49DB5;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.dot {
+  color: #A49DB5;
+}
+
+/* ARROW BUTTON */
+.card-action {
+  flex-shrink: 0;
+}
+
+.arrow-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #17141F;
+  color: #837C96;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.card-live:hover .arrow-btn {
+  background: #EAFF99;
+  color: #17141F;
+}
+
+/* ARCHIVED AND PREPARING PLAYLISTS */
+.card-archived,
+.card-preparing,
+.card-unknown {
+  min-height: 122px;
+  display: flex;
+  align-items: center;
+  background: #17141F;
+}
+
+/* Status Badges */
+.badge-archived,
+.badge-preparing,
+.badge-unknown {
+  flex-shrink: 0;
+  padding: 7px 16px;
+  margin-left: auto;
+  border-radius: 30px;
+  background: #252130;
+  color: #A49DB5;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 480px) {
+  .dashboard-playlist-card {
+    padding: 22px;
+    border-radius: 40px;
+  }
+
+  .card-title {
+    font-size: 19px;
+  }
+
+  .card-subtitle {
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .badge-archived,
+  .badge-preparing {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

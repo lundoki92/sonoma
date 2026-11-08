@@ -1,0 +1,31 @@
+
+/* PAGE HOME ADMIN */
+
+.host-dashboard {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #0c0b12;
+  color: #f4f0fa;
+  overflow-x: hidden;
+}
+
+/* CONTENU PRINCIPAL */
+
+.host-dashboard .explanation-text {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  /* 108px de Header + 32px d'espacement */
+  padding-top: 140px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 480px) {
+  .host-dashboard .explanation-text {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+}
