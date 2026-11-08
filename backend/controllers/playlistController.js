@@ -6,7 +6,7 @@ import {
 // Handle the creation of a new playlist.
 export async function createPlaylistController(req, res) {
   try {
-    const { name, date_time } = req.body;
+    const { name, date_time, host_id } = req.body;
 
     // Validate the playlist name.
     // The name must be a non-empty string with a maximum of 100 characters.
@@ -32,8 +32,12 @@ export async function createPlaylistController(req, res) {
       });
     }
 
+    if (!Number.isInteger(host_id) || host_id <= 0) {
+      return res.status(400).json({ error: "Invalid host ID" });
+    }
+
     // Delegate the business logic to the service layer.
-    const playlist = await createPlaylistService(name, date_time);
+    const playlist = await createPlaylistService(name, date_time, host_id);
 
     // Return the newly created playlist.
     return res.status(201).json(playlist);
