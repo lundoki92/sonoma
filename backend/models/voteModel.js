@@ -53,37 +53,60 @@ export async function findGuestInPlaylist({ guestId, playlistId }) {
 // Récupère le vote d'un host OU d'un invité pour un morceau
 export async function findVoteByVoterAndTrack({
   trackId,
+  playlistId,
   hostId = null,
   guestId = null,
 }) {
   const result = await pool.query(
-    `SELECT * FROM votes
+    `SELECT *
+     FROM votes
      WHERE track_id = $1
-       AND (($2::int IS NOT NULL AND host_id = $2)
-         OR ($3::int IS NOT NULL AND guest_id = $3))`,
-    [trackId, hostId, guestId],
+       AND playlist_id = $2
+       AND (
+         ($3::int IS NOT NULL AND host_id = $3)
+         OR
+         ($4::int IS NOT NULL AND guest_id = $4)
+       )`,
+    [trackId, playlistId, hostId, guestId],
   );
   return result.rows[0] ?? null;
 }
 
 // Supprime le vote d'un host OU d'un invité pour un morceau
-export async function deleteVote({ trackId, hostId = null, guestId = null }) {
-  await pool.query(
+export async function deleteVote({ 
+  trackId,
+  playlistId,
+  hostId = null, 
+  guestId = null }) {
+ await pool.query(
     `DELETE FROM votes
      WHERE track_id = $1
-       AND (($2::int IS NOT NULL AND host_id = $2)
-         OR ($3::int IS NOT NULL AND guest_id = $3))`,
-    [trackId, hostId, guestId],
+       AND playlist_id = $2
+       AND (
+         ($3::int IS NOT NULL AND host_id = $3)
+         OR
+         ($4::int IS NOT NULL AND guest_id = $4)
+       )`,
+    [trackId, playlistId, hostId, guestId],
   );
 }
 
 // Crée un vote pour un host OU un invité
-export async function createVote({ trackId, hostId = null, guestId = null }) {
-  const result = await pool.query(
-    `INSERT INTO votes (track_id, host_id, guest_id)
-     VALUES ($1, $2, $3)
+export async function createVote({ 
+  trackId,
+  playlistId,
+  hostId = null, 
+  guestId = null }) {
+const result = await pool.query(
+    `INSERT INTO votes (
+       track_id,
+       playlist_id,
+       host_id,
+       guest_id
+     )
+     VALUES ($1, $2, $3, $4)
      RETURNING *`,
-    [trackId, hostId, guestId],
+    [trackId, playlistId, hostId, guestId],
   );
   return result.rows[0];
 }
