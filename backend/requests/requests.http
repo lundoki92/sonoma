@@ -13,3 +13,27 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/playlists/5/tracks
+
+###
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{ "username": "Inès", "email": "ines@ada.fr", "password": "motdepasse123" }
+
+### 2. Inscription invalide : 422
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{ "username": "", "email": "pas-un-email", "password": "court" }
+
+### 3. Connexion : 200 + cookie
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{ "email": "ines@ada.fr", "password": "motdepasse123" }
+
+### 4. Qui suis-je ? 200 si le cookie de la requête 3 est envoyé, 401 sinon
+GET http://localhost:3000/api/auth/myprofile
+
+### 5. Déconnexion : 204
+POST http://localhost:3000/api/auth/logout
