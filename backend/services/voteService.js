@@ -4,7 +4,20 @@
 import * as voteModel from "../models/voteModel.js";
 
 export async function getVotingTracks({ playlistId, hostId }) {
-  return voteModel.getVotingTracksByPlaylist({ playlistId, hostId });
+  const playlist = await voteModel.findPlaylistById(playlistId);
+
+  if (!playlist) {
+    throw new Error("PLAYLIST_NOT_FOUND");
+  }
+
+  if (Number(playlist.host_id) !== Number(hostId)) {
+    throw new Error("NOT_PLAYLIST_HOST");
+  }
+
+  return voteModel.getVotingTracksByPlaylist({
+    playlistId,
+    hostId,
+  });
 }
 
 export async function toggleVote({
@@ -57,15 +70,16 @@ export async function toggleVote({
   // Règle 5 : toggle (ajouter / retirer le vote)
   const existingVote = await voteModel.findVoteByVoterAndTrack({
     trackId,
+    playlistId,
     hostId,
     guestId,
   });
 
   if (existingVote) {
-    await voteModel.deleteVote({ trackId, hostId, guestId });
+    await voteModel.deleteVote({ trackId,playlistId, hostId, guestId });
     return { voted: false };
   }
 
-  await voteModel.createVote({ trackId, hostId, guestId });
+  await voteModel.createVote({ trackId,playlistId, hostId, guestId });
   return { voted: true };
 }
