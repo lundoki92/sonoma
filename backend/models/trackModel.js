@@ -37,6 +37,7 @@ export async function addTrackToPlaylistModel(
   // Extract the validated track data provided by the service.
   const {
     external_track_id,
+    spotify_uri,
     title,
     artist,
     image_url,
@@ -48,19 +49,20 @@ export async function addTrackToPlaylistModel(
       INSERT INTO tracks (
         playlist_id,
         external_track_id,
+        spotify_uri,
         title,
         artist,
         image_url,
         duration_ms,
-        added_by,
         status
       )
-      VALUES ($1, $2, $3, $4, $5, $6, 'host', $7)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *;
     `,
     [
       playlistId,
       external_track_id,
+      spotify_uri,
       title,
       artist,
       image_url,

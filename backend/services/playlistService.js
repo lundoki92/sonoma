@@ -5,10 +5,10 @@ import {
 } from "../models/playlistModel.js";
 
 // Create a playlist using the data prepared by the controller.
-export async function createPlaylistService(name, date_time) {
+export async function createPlaylistService(name, date_time,host_id) {
   // Temporary host ID used for testing.
   // Replace this value with the authenticated user's ID in the future.
-  const hostId = 2;
+  // const hostId = 2;
 
   // Generate a unique invitation code for the playlist.
   const inviteCode = randomUUID();
@@ -17,7 +17,7 @@ export async function createPlaylistService(name, date_time) {
   return createPlaylistModel(
     name.trim(),
     date_time,
-    hostId,
+    host_id,
     inviteCode
   );
 }
