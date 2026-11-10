@@ -1,5 +1,6 @@
 import "./HomeAdmin.css";
-import { useState } from 'react';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import Header from "../components/common/Header";
 import ExplanationText from "../components/common/ExplanationText";
 import Button from "../components/common/Button";
@@ -7,48 +8,60 @@ import DashboardPlaylistsContainer from "../components/HomeAdmin/DashboardPlayli
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Home() {
-  // Le pseudo vient de la session, pas d'une valeur en dur
+  const navigate = useNavigate();
   const { user } = useAuth();
-  
-  const [userPseudo, setUserPseudo] = useState("Prénom Nom");
-    const playlists = [
-    {
-      id: 1,
-      name: "Anniversaire de Zoé",
-      date_time: "2026-11-15T20:00:00",
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Soirée entre amis",
-      date_time: "2026-10-30T21:00:00",
-      status: "finished",
-    },
-    {
-      id: 3,
-      name: "Soirée de rentrée",
-      date_time: "2026-09-12T19:30:00",
-      status: "finished",
-    },
-  ];
+
+  const [playlists, setPlaylists] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadPlaylists() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch("/api/playlists");
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to load playlists");
+        }
+
+        setPlaylists(data);
+      } catch (err) {
+        console.error("Error loading playlists:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadPlaylists();
+  }, []);
 
   return (
-    <>
-      <div className="host-dashboard">
-        {/* HEADER FIXE */}
-        <Header variant="greeting" userPseudo={user?.username} />
+    <div className="host-dashboard">
+      <Header variant="greeting" userPseudo={user?.username} />
 
-        <ExplanationText
-          hasAppTitle={true}
-          title="Tes invités choisissent. Toi, tu fais danser."
-          text="Connectez votre service de streaming et invitez vos amis à proposer et voter."
-        />
+      <ExplanationText
+        hasAppTitle={true}
+        title="Tes invités choisissent. Toi, tu fais danser."
+        text="Connectez votre service de streaming et invitez vos amis à proposer et voter."
+      />
 
-        <Button
-            text="Créer une nouvelle soirée"
-        />
-        <DashboardPlaylistsContainer playlists={playlists}/>
-      </div>
-    </>
+      <Button
+        text="Créer une nouvelle soirée"
+        onClick={() => navigate("/createplaylist")}
+      />
+
+      {loading && <p>Chargement...</p>}
+
+      {error && <p role="alert">{error}</p>}
+
+      {!loading && !error && (
+        <DashboardPlaylistsContainer playlists={playlists} />
+      )}
+    </div>
   );
 }
