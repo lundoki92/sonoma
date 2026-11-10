@@ -6,9 +6,9 @@ import * as voteService from "../services/voteService.js";
 export async function getVotingTracks(req, res) {
   try {
     const { playlistId } = req.params;
-    const hostId = 4; // TODO: remplacer par l'utilisateur authentifié
+    const host_id = req.user.id;
 
-    const tracks = await voteService.getVotingTracks({ playlistId, hostId });
+    const tracks = await voteService.getVotingTracks({ playlistId, host_id });
     return res.status(200).json(tracks);
   } catch (error) {
     return handleVoteError(error, res);
@@ -18,12 +18,12 @@ export async function getVotingTracks(req, res) {
 export async function toggleHostVote(req, res) {
   try {
     const { playlistId, trackId } = req.params;
-    const hostId = 4; // TODO: remplacer par l'utilisateur authentifié
+    const host_id = req.user.id;
 
     const result = await voteService.toggleVote({
       playlistId,
       trackId,
-      hostId,
+      host_id,
     });
     return res.status(result.voted ? 201 : 200).json(result);
   } catch (error) {

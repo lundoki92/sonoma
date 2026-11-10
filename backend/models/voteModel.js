@@ -3,7 +3,7 @@
 import pool from "../server/db.js";
 
 // Morceaux votables d'une playlist + statut "voted" pour un host
-export async function getVotingTracksByPlaylist({ playlistId, hostId }) {
+export async function getVotingTracksByPlaylist({ playlistId, host_id }) {
   const result = await pool.query(
     `SELECT
        t.id,
@@ -18,7 +18,7 @@ export async function getVotingTracksByPlaylist({ playlistId, hostId }) {
      FROM tracks t
      WHERE t.playlist_id = $1
        AND t.status = 'voting'`,
-    [playlistId, hostId],
+    [playlistId, host_id],
   );
   return result.rows;
 }
@@ -54,7 +54,7 @@ export async function findGuestInPlaylist({ guestId, playlistId }) {
 export async function findVoteByVoterAndTrack({
   trackId,
   playlistId,
-  hostId = null,
+  host_id = null,
   guestId = null,
 }) {
   const result = await pool.query(
@@ -67,7 +67,7 @@ export async function findVoteByVoterAndTrack({
          OR
          ($4::int IS NOT NULL AND guest_id = $4)
        )`,
-    [trackId, playlistId, hostId, guestId],
+    [trackId, playlistId, host_id, guestId],
   );
   return result.rows[0] ?? null;
 }
@@ -76,7 +76,7 @@ export async function findVoteByVoterAndTrack({
 export async function deleteVote({ 
   trackId,
   playlistId,
-  hostId = null, 
+  host_id = null, 
   guestId = null }) {
  await pool.query(
     `DELETE FROM votes
@@ -87,7 +87,7 @@ export async function deleteVote({
          OR
          ($4::int IS NOT NULL AND guest_id = $4)
        )`,
-    [trackId, playlistId, hostId, guestId],
+    [trackId, playlistId, host_id, guestId],
   );
 }
 
@@ -95,7 +95,7 @@ export async function deleteVote({
 export async function createVote({ 
   trackId,
   playlistId,
-  hostId = null, 
+  host_id = null, 
   guestId = null }) {
 const result = await pool.query(
     `INSERT INTO votes (
@@ -106,7 +106,7 @@ const result = await pool.query(
      )
      VALUES ($1, $2, $3, $4)
      RETURNING *`,
-    [trackId, playlistId, hostId, guestId],
+    [trackId, playlistId, host_id, guestId],
   );
   return result.rows[0];
 }

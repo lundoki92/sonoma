@@ -3,8 +3,8 @@
 
 import * as voteModel from "../models/voteModel.js";
 
-export async function getVotingTracks({ playlistId, hostId }) {
-  const playlist = await voteModel.findPlaylistById(playlistId);
+export async function getVotingTracks({ playlistId, host_id }) {
+  const playlist = await voteModel.findPlaylistById(playlistId, host_id);
 
   if (!playlist) {
     throw new Error("PLAYLIST_NOT_FOUND");
@@ -16,18 +16,18 @@ export async function getVotingTracks({ playlistId, hostId }) {
 
   return voteModel.getVotingTracksByPlaylist({
     playlistId,
-    hostId,
+    host_id,
   });
 }
 
 export async function toggleVote({
   playlistId,
   trackId,
-  hostId = null,
+  host_id = null,
   guestId = null,
 }) {
   // Règle 1 : il faut exactement un votant (host OU invité)
-  const isHost = hostId !== null && hostId !== undefined;
+  const isHost = host_id !== null && host_id !== undefined;
   const isGuest = guestId !== null && guestId !== undefined;
   if (isHost === isGuest) {
     throw new Error("INVALID_VOTER");
@@ -54,7 +54,7 @@ export async function toggleVote({
 
   // Règle 4 : vérifier l'identité du votant
   if (isHost) {
-    if (Number(playlist.host_id) !== Number(hostId)) {
+    if (Number(playlist.host_id) !== Number(host_id)) {
       throw new Error("NOT_PLAYLIST_HOST");
     }
   } else {
@@ -71,15 +71,15 @@ export async function toggleVote({
   const existingVote = await voteModel.findVoteByVoterAndTrack({
     trackId,
     playlistId,
-    hostId,
+    host_id,
     guestId,
   });
 
   if (existingVote) {
-    await voteModel.deleteVote({ trackId,playlistId, hostId, guestId });
+    await voteModel.deleteVote({ trackId,playlistId, host_id, guestId });
     return { voted: false };
   }
 
-  await voteModel.createVote({ trackId,playlistId, hostId, guestId });
+  await voteModel.createVote({ trackId,playlistId, host_id, guestId });
   return { voted: true };
 }
