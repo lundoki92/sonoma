@@ -8,8 +8,9 @@ import { useAuth } from "../context/AuthContext.jsx";
 export default function Home() {
   // Le pseudo vient de la session, pas d'une valeur en dur
   const { user } = useAuth();
-
-  const playlists = [
+  
+  const [userPseudo, setUserPseudo] = useState("Prénom Nom");
+    const playlists = [
     {
       id: 1,
       name: "Anniversaire de Zoé",

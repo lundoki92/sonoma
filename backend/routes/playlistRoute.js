@@ -2,14 +2,24 @@ import express from "express";
 import {
   createPlaylistController,
   getPlaylistByIdController,
+  getMyPlaylistsController,
 } from "../controllers/playlistController.js";
+import { auth } from '../middlewares/auth.js'
 
 const routePlaylist = express.Router();
 
-// Create a new playlist.
-routePlaylist.post("/", createPlaylistController);
 
+// HOST 
+// Create a new playlist.
+routePlaylist.post("/", auth, createPlaylistController);
+// Retrieve all playlist 
+routePlaylist.get("/", auth, getMyPlaylistsController);
 // Retrieve a playlist by its ID.
-routePlaylist.get("/:id", getPlaylistByIdController);
+routePlaylist.get("/:id", auth, getPlaylistByIdController);
+
+// Invité (pas d'auth, accès via le code)
+// routePlaylist.get("/invite/:code", getPlaylistByInviteController);
+// routePlaylist.get("/invite/:code/tracks", getInviteTracksController);
+// routePlaylist.post("/invite/:code/tracks", addInviteTrackController);
 
 export default routePlaylist;

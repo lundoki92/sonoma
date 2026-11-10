@@ -1,7 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import * as api from '../api/Frontauth.js';
 
+ 
 const AuthContext = createContext(null);
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -32,6 +37,3 @@ export function AuthProvider({ children }) {
   );
 }
 
-export function useAuth() {
-  return useContext(AuthContext);
-}

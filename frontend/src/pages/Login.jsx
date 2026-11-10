@@ -33,7 +33,7 @@ export function Login() {
 
     try {
       await login(form);
-      navigate(location.state?.depuis ?? '/', { replace: true });
+      navigate(location.state?.depuis ?? '/h', { replace: true });
     } catch (error) {
       // 422 : une erreur par champ. Les autres cas : un message global.
       setErrors(error.errors ?? {});
