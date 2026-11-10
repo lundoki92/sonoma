@@ -62,7 +62,7 @@ export async function addInviteTrackController(req, res) {
       return res.status(400).json({ error: "Invalid track data" });
     }
 
-    const track = await addInviteTrackService(code, {
+    const track = await addInviteTrackService(code, req.guest.id, {
       external_track_id: external_track_id.trim(),
       spotify_uri: spotify_uri || null,
       title: title.trim(),

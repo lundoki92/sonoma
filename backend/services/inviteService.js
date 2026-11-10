@@ -23,7 +23,7 @@ export async function getInviteTracksService(code) {
   return getTracksByPlaylistModel(playlist.id);
 }
 
-export async function addInviteTrackService(code, data) {
+export async function addInviteTrackService(code, guestId, data) {
   const playlist = await findPlaylistOrThrow(code);
 
   if (playlist.status === "finished") {
@@ -36,7 +36,7 @@ export async function addInviteTrackService(code, data) {
   const trackStatus = playlist.status === "preparing" ? "proposed" : "voting";
 
   // The playlist id comes from the server, never from the client
-  return addTrackToPlaylistModel(playlist.id, data, trackStatus);
+  return addTrackToPlaylistModel(playlist.id, data, trackStatus, guestId);
 }
 
 export async function joinPlaylistService(code, guestName) {
