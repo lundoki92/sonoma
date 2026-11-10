@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
 
-const API_URL = "http://localhost:3000";
 
 function PlaylistPage() {
   // Get the playlist ID from the URL
@@ -28,8 +27,8 @@ function PlaylistPage() {
       try {
         // Fetch playlist details and tracks simultaneously
         const [playlistResponse, tracksResponse] = await Promise.all([
-          fetch(`${API_URL}/api/playlists/${id}`),
-          fetch(`${API_URL}/api/playlists/${id}/tracks`),
+          fetch(`/api/playlists/${id}`),
+          fetch(`/api/playlists/${id}/tracks`),
         ]);
 
         // Check whether both requests were successful
@@ -72,7 +71,7 @@ function PlaylistPage() {
       setError("");
       // Send the selected track to the backend
       const response = await fetch(
-        `${API_URL}/api/playlists/${id}/tracks`,
+        `/api/playlists/${id}/tracks`,
         {
           method: "POST",
           headers: {
@@ -81,6 +80,7 @@ function PlaylistPage() {
           body: JSON.stringify({
             // Get the Spotify track ID
             external_track_id: spotifyTrack.spotifyId,
+            spotify_uri: `spotify:track:${spotifyTrack.spotifyId}`,
 
             // Get the track title and artist
             title: spotifyTrack.title,

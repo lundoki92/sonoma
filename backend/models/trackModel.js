@@ -1,6 +1,6 @@
 import pool from "../server/db.js";
 
-// Retrieve the status of a playlist.
+// Retrieve the status of a playlist. INVITE
 // Returning null indicates that the playlist does not exist.
 export async function getPlaylistStatusModel(playlistId) {
   const result = await pool.query(
@@ -8,6 +8,16 @@ export async function getPlaylistStatusModel(playlistId) {
     [playlistId]
   );
 
+  return result.rows[0] ?? null;
+}
+
+// Retrieve the status of a playlist, only if it belongs to the given host.
+// Returning null means: the playlist does not exist OR is not owned by this host.
+export async function getPlaylistStatusForHostModel(playlistId, hostId) {
+  const result = await pool.query(
+    "SELECT status FROM playlists WHERE id = $1 AND host_id = $2",
+    [playlistId, hostId]
+  );
   return result.rows[0] ?? null;
 }
 

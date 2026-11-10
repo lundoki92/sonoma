@@ -1,7 +1,12 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import * as api from '../api/Frontauth.js';
 
+ 
 const AuthContext = createContext(null);
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -10,7 +15,7 @@ export function AuthProvider({ children }) {
   // Au chargement de l'app : le cookie est-il encore valide ?
   useEffect(() => {
     api.myProfile()
-      .then((data) => setUser(data.utilisateur))
+      .then((data) => setUser(data.user))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
@@ -32,6 +37,3 @@ export function AuthProvider({ children }) {
   );
 }
 
-export function useAuth() {
-  return useContext(AuthContext);
-}

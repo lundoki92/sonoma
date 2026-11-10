@@ -1,13 +1,13 @@
 import {
-  getPlaylistStatusModel,
+  getPlaylistStatusForHostModel,
   getTracksByPlaylistModel,
   addTrackToPlaylistModel,
 } from "../models/trackModel.js";
 
 // Retrieve all tracks from a playlist after checking that it exists.
-export async function getTracksByPlaylistService(playlistId) {
+export async function getTracksByPlaylistService(playlistId, hostId) {
   // Retrieve the playlist status to verify that the playlist exists.
-  const playlist = await getPlaylistStatusModel(playlistId);
+  const playlist = await getPlaylistStatusForHostModel(playlistId, hostId);
 
   // Stop the operation if the playlist does not exist.
   if (!playlist) {
@@ -21,9 +21,9 @@ export async function getTracksByPlaylistService(playlistId) {
 }
 
 // Add a track to a playlist while applying the playlist's business rules.
-export async function addTrackToPlaylistService(playlistId, data) {
+export async function addTrackToPlaylistService(playlistId, hostId, data) {
   // Retrieve the playlist status before attempting to add the track.
-  const playlist = await getPlaylistStatusModel(playlistId);
+  const playlist = await getPlaylistStatusForHostModel(playlistId, hostId);
 
   // A track cannot be added to a playlist that does not exist.
   if (!playlist) {

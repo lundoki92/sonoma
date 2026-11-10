@@ -1,12 +1,7 @@
 import pool from "../server/db.js";
 
 // Insert a new playlist into the database.
-export async function createPlaylistModel(
-  name,
-  date_time,
-  hostId,
-  inviteCode
-) {
+export async function createPlaylistModel(name, date_time, hostId, inviteCode) {
   const result = await pool.query(
     `
       INSERT INTO playlists (
@@ -18,20 +13,36 @@ export async function createPlaylistModel(
       VALUES ($1, $2, $3, $4)
       RETURNING *;
     `,
-    [name, date_time, hostId, inviteCode]
+    [name, date_time, hostId, inviteCode],
   );
 
   // Return the newly created playlist.
   return result.rows[0];
 }
 
-// Retrieve a playlist using its database ID.
-export async function getPlaylistByIdModel(id) {
+// Retrieve all playlists that belong to a given host.
+export async function getPlaylistsByHostIdModel(hostId) {
   const result = await pool.query(
-    "SELECT * FROM playlists WHERE id = $1",
-    [id]
+    "SELECT * FROM playlists WHERE host_id = $1 ORDER BY date_time DESC",
+    [hostId],
   );
+  return result.rows;
+}
 
-  // Return null when no playlist matches the provided ID.
+// Retrieve a playlist only if it belongs to the given host.
+export async function getPlaylistByIdAndHostModel(id, hostId) {
+  const result = await pool.query(
+    "SELECT * FROM playlists WHERE id = $1 AND host_id = $2",
+    [id, hostId],
+  );
   return result.rows[0] ?? null;
 }
+
+// export async function getPlaylistByIdModel(id) {
+//   const result = await pool.query(
+//     "SELECT * FROM playlists WHERE id = $1",
+//     [id]
+//   );
+
+//   return result.rows[0] ?? null;
+// }
