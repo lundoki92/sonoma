@@ -17,23 +17,26 @@ export default function App() {
         <Route path="/register" element={<Register />} /> 
         <Route path="/login" element={<Login />} />
 
-        {/* Page d'accueil / Admin */}
-        <Route path="/" element={<ProtectedRoutes><HomeAdmin /> </ProtectedRoutes>} />
+
+        <Route element={<ProtectedRoutes />}>
+
+           
+            <Route path="/" element={<HomeAdmin />} />
+
         
-        {/* Page de création de soirée */}
-        <Route path="/createplaylist" element={<CreatePlaylist />} />
+            <Route path="/createplaylist" element={<CreatePlaylist />} />
+
         
-        {/* Expérience en soirée : Header + BottomNav permanents */}
-        <Route path="/playlist/:id" element={<PartyLayout />}>
-          {/* Seul "Proposer" reste fonctionnel */}
-          <Route index element={<PlaylistPage />} />
-          <Route path="propose" element={<PlaylistPage />} />
-          <Route path="vote" element={<EmptyPage />} />
-          <Route path="playlist" element={<EmptyPage />} />
+            <Route path="/playlist/:id" element={<PartyLayout />}>
+              <Route index element={<PlaylistPage />} />
+              <Route path="propose" element={<PlaylistPage />} />
+              <Route path="vote" element={<EmptyPage />} />
+              <Route path="playlist" element={<EmptyPage />} />
+            </Route>
+
         </Route>
 
-        {/* Redirection par défaut */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        
       </Routes>
     
   )
