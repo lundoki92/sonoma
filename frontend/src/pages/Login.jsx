@@ -38,7 +38,7 @@ export function Login() {
       // 422 : une erreur par champ. Les autres cas : un message global.
       setErrors(error.errors ?? {});
       setMessage(
-        error.status === 422 ? 'Corrige les champs signalés.' : error.message,
+        error.status === 422 ? 'Email ou mot de passe non valide.' : error.message,
       );
     } finally {
       setSend(false);
