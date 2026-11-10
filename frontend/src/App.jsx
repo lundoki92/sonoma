@@ -13,30 +13,15 @@ export default function App() {
   return (
     
       <Routes>
-        
-        <Route path="/register" element={<Register />} /> 
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-
-        
-
-           <Route path="/createplaylist" element={<ProtectedRoutes><CreatePlaylist /></ProtectedRoutes>} />
-            <Route path="/" element={<HomeAdmin />} />
-
-      
-            
-
-        
-            <Route path="/playlist/:id" element={<PartyLayout />}>
-              <Route index element={<PlaylistPage />} />
-              <Route path="propose" element={<PlaylistPage />} />
-              <Route path="vote" element={<EmptyPage />} />
-              <Route path="playlist" element={<EmptyPage />} />
-            </Route>
-
-       
-
-        
+        <Route path="/createplaylist" element={<ProtectedRoutes><CreatePlaylist /></ProtectedRoutes>} />
+        <Route path="/" element={<ProtectedRoutes><HomeAdmin /></ProtectedRoutes>} />
+        <Route path="/playlist/:id" element={<ProtectedRoutes><PlaylistPage /></ProtectedRoutes>} />
+        {/* <Route path="propose" element={<PlaylistPage />} />
+        <Route path="vote" element={<EmptyPage />} />
+        <Route path="playlist" element={<EmptyPage />} /> */}
       </Routes>
     
   )
