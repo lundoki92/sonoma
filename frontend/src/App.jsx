@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route, Navigate } from 'react-router'
+import { Routes, Route } from 'react-router'
 import CreatePlaylist from './pages/CreatePlaylist.jsx'
 import HomeAdmin from './pages/HomeAdmin.jsx'
 import PartyLayout from './pages/PartyLayout.jsx'
@@ -8,6 +8,7 @@ import EmptyPage from './pages/EmptyPage.jsx'
 import { Login } from './pages/Login.jsx'
 import { Register } from './pages/Register.jsx'
 import { ProtectedRoutes } from './components/ProtectedRoutes.jsx'
+import GuestPlaylistPage from './pages/GuestPlaylist.jsx'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/join/:code" element={<GuestPlaylistPage />} />
 
         <Route path="/createplaylist" element={<ProtectedRoutes><CreatePlaylist /></ProtectedRoutes>} />
         <Route path="/" element={<ProtectedRoutes><HomeAdmin /></ProtectedRoutes>} />

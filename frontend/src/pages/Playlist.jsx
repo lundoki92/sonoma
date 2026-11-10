@@ -19,6 +19,9 @@ function PlaylistPage() {
   // Manage the loading state
   const [loading, setLoading] = useState(true);
 
+  //link
+  const inviteLink = `http://127.0.0.1:5173/join/${playlist.invite_code}`;
+
   // Load the playlist and its tracks when the page opens
   useEffect(() => {
     let cancelled = false;
@@ -186,6 +189,11 @@ function PlaylistPage() {
           Le vote sera disponible une fois la soirée démarrée.
         </p>
       )}
+
+      <p>Lien à partager : {inviteLink}</p>
+        <button type="button" onClick={() => navigator.clipboard.writeText(inviteLink)}>
+          Copier le lien
+        </button>
     </main>
   );
 }
