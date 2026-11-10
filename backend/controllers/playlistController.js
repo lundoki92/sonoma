@@ -1,11 +1,11 @@
 import {
   createPlaylistService,
   getPlaylistByIdService,
+  getPlaylistsByHostService,
 } from "../services/playlistService.js";
 
 // Handle the creation of a new playlist.
 export async function createPlaylistController(req, res) {
-  console.log("USER CONNECTÉ :", req.user);
   try {
     const { name, date_time } = req.body;
     const host_id = req.user.id;
@@ -62,7 +62,7 @@ export async function getPlaylistByIdController(req, res) {
     }
 
     // Ask the service layer to retrieve the playlist.
-    const playlist = await getPlaylistByIdService(id);
+    const playlist = await getPlaylistByIdService(id, req.user.id);
 
     // Return 404 if the playlist does not exist.
     if (!playlist) {
@@ -79,5 +79,15 @@ export async function getPlaylistByIdController(req, res) {
     return res.status(500).json({
       error: "Failed to fetch playlist",
     });
+  }
+}
+
+export async function getMyPlaylistsController(req, res) {
+  try {
+    const playlists = await getPlaylistsByHostService(req.user.id);
+    return res.status(200).json(playlists);
+  } catch (error) {
+    console.error("Error fetching playlists:", error);
+    return res.status(500).json({ error: "Failed to fetch playlists" });
   }
 }
