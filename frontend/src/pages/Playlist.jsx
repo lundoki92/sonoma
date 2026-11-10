@@ -19,8 +19,6 @@ function PlaylistPage() {
   // Manage the loading state
   const [loading, setLoading] = useState(true);
 
-  //link
-  const inviteLink = `http://127.0.0.1:5173/join/${playlist.invite_code}`;
 
   // Load the playlist and its tracks when the page opens
   useEffect(() => {
@@ -122,6 +120,8 @@ function PlaylistPage() {
   if (!playlist) {
     return <p>{error || "Soirée introuvable"}</p>;
   }
+
+  const inviteLink = `http://127.0.0.1:5173/join/${playlist.invite_code}`;
 
   return (
     <main>

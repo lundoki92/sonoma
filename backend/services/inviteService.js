@@ -1,8 +1,7 @@
 import { getPlaylistByInviteCodeModel } from "../models/playlistModel.js";
-import {
-  getTracksByPlaylistModel,
-  addTrackToPlaylistModel,
-} from "../models/trackModel.js";
+import { randomUUID } from "node:crypto";
+import { createGuestModel } from "../models/inviteModel.js";
+import { getTracksByPlaylistModel, addTrackToPlaylistModel,} from "../models/trackModel.js";
 
 // Find the playlist behind an invite code, or throw a 404.
 async function findPlaylistOrThrow(code) {
@@ -38,4 +37,18 @@ export async function addInviteTrackService(code, data) {
 
   // The playlist id comes from the server, never from the client
   return addTrackToPlaylistModel(playlist.id, data, trackStatus);
+}
+
+export async function joinPlaylistService(code, guestName) {
+  const playlist = await findPlaylistOrThrow(code);
+
+  if (playlist.status === "finished") {
+    const error = new Error("This playlist is finished");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const guestToken = randomUUID();
+  const guest = await createGuestModel(playlist.id, guestName.trim(), guestToken);
+  return { guest, guestToken };
 }

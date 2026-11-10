@@ -1,15 +1,15 @@
 import express from "express";
-import {
-  getInvitePlaylistController,
-  getInviteTracksController,
-  addInviteTrackController,
-} from "../controllers/inviteController.js";
+import { guestAuth } from "../middlewares/guestAuth.js";
+import { getInvitePlaylistController, getInviteTracksController, addInviteTrackController, joinPlaylistController} from "../controllers/inviteController.js";
 
 const inviteRoute = express.Router();
 
-// No auth here: access is granted by the invite code
+// Public: the guest only needs the code to see the name and join
 inviteRoute.get("/:code", getInvitePlaylistController);
-inviteRoute.get("/:code/tracks", getInviteTracksController);
-inviteRoute.post("/:code/tracks", addInviteTrackController);
+inviteRoute.post("/:code/join", joinPlaylistController);
+
+// Reserved to guests who have joined
+inviteRoute.get("/:code/tracks", guestAuth, getInviteTracksController);
+inviteRoute.post("/:code/tracks", guestAuth, addInviteTrackController);
 
 export default inviteRoute;

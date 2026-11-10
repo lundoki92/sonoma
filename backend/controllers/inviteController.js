@@ -1,7 +1,5 @@
 import {
-  getInvitePlaylistService,
-  getInviteTracksService,
-  addInviteTrackService,
+  getInvitePlaylistService, getInviteTracksService, addInviteTrackService, joinPlaylistService,
 } from "../services/inviteService.js";
 
 const UUID_REGEX =
@@ -76,5 +74,32 @@ export async function addInviteTrackController(req, res) {
     return res.status(201).json(track);
   } catch (error) {
     return handleError(error, res, "Failed to add track");
+  }
+}
+
+export async function joinPlaylistController(req, res) {
+  try {
+    const { code } = req.params;
+    if (!UUID_REGEX.test(code)) {
+      return res.status(404).json({ error: "Playlist not found" });
+    }
+
+    const { guest_name } = req.body;
+    if (typeof guest_name !== "string" || !guest_name.trim() || guest_name.trim().length > 50) {
+      return res.status(400).json({ error: "Invalid name" });
+    }
+
+    const { guest, guestToken } = await joinPlaylistService(code, guest_name);
+
+    // The cookie name contains the code: a browser can join several playlists
+    res.cookie(`guest_${code}`, guestToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+    });
+
+    return res.status(201).json(guest);
+  } catch (error) {
+    return handleError(error, res, "Failed to join playlist");
   }
 }

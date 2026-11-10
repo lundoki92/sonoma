@@ -42,7 +42,8 @@ export async function getTracksByPlaylistModel(playlistId) {
 export async function addTrackToPlaylistModel(
   playlistId,
   data,
-  trackStatus
+  trackStatus,
+  guestId = null,
 ) {
   // Extract the validated track data provided by the service.
   const {
@@ -58,6 +59,7 @@ export async function addTrackToPlaylistModel(
     `
       INSERT INTO tracks (
         playlist_id,
+        guest_id,
         external_track_id,
         spotify_uri,
         title,
@@ -66,11 +68,12 @@ export async function addTrackToPlaylistModel(
         duration_ms,
         status
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `,
     [
       playlistId,
+      guestId,
       external_track_id,
       spotify_uri,
       title,
