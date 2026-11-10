@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+
 
 function CreatePlaylist() {
+
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [playlist, setPlaylist] = useState(null);
@@ -35,6 +39,7 @@ function CreatePlaylist() {
       setPlaylist(data);
       setName("");
       setDateTime("");
+      navigate(`/playlist/${data.id}`);
     } catch (err) {
       console.error("Error creating playlist:", err);
       setError(err.message);
