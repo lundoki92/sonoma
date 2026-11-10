@@ -1,15 +1,19 @@
 import express from "express";
 import cors from "cors";
-
+import cookieParser from 'cookie-parser';
 import musicRoute from "../routes/musicRoute.js";
 import playlistRoute from "../routes/playlistRoute.js";
 import trackRoute from "../routes/trackRoute.js";
 import voteRoute from "../routes/voteRoute.js";
-
-const app = express();
+import db from './db.js';
+import { authRouter } from '../routes/authRoute.js';
+import { errorsManagement } from '../middlewares/errors.js';
+export const app = express();
 
 // Parse incoming JSON request bodies.
 app.use(express.json());
+app.use(cookieParser());        // lit les cookies → req.cookies
+
 
 // Allow requests from the frontend running on Vite.
 app.use(
@@ -40,3 +44,7 @@ app.use("/api/playlists", voteRoute);
 
 // Start the Express server on the configured port.
 app.listen(process.env.PORT);
+
+app.use('/api/auth', authRouter);
+
+app.use(errorsManagement);        

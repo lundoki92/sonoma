@@ -22,3 +22,4 @@ pool.on('error', (err) => {
 });
 
 export default pool;
+//export const db = new pg.Pool({ connectionString: process.env.DATABASE_URL });
