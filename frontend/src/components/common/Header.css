@@ -115,7 +115,29 @@
   font-weight: 400;
 }
 
-.app-header--greeting .header-title {
-  font-size: 18px;
-  font-weight: 700;
+.header-logout {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a1a1aa;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.header-logout:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.header-logout:focus-visible {
+  outline: 2px solid #b9a8ff;
+  outline-offset: 2px;
 }

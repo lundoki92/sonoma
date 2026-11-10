@@ -76,6 +76,6 @@ export async function logout(req, res) {
 }
 
 export async function myprofile(req, res) {
-	const user = await authService.myprofile(req.user.id);
+	const user = await authService.profile(req.user.id);
 	res.json({ user });
 }

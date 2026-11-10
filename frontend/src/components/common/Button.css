@@ -9,10 +9,16 @@
     font-size: large;
     font-weight: bold;
     border-radius: 40px;
-    transition: box-shadow 0.3s ease;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, background-color 0.2s ease;
 }
 
-.button:hover {
+.button:hover:not(:disabled) {
     box-shadow: 0 0 16px rgba(234, 255, 153, 0.7);
 }
 
+.button:disabled {
+    background-color: rgba(234, 255, 153, 0.3);
+    box-shadow: none;
+    cursor: not-allowed;
+}

@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
 import "./HomeAdmin.css";
 import Header from "../components/common/Header";
 import ExplanationText from "../components/common/ExplanationText";
 import Button from "../components/common/Button";
 import DashboardPlaylistsContainer from "../components/HomeAdmin/DashboardPlaylistsContainer";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Home() {
-  const [userPseudo, setUserPseudo] = useState("Prénom Nom");
-    const playlists = [
+  // Le pseudo vient de la session, pas d'une valeur en dur
+  const { user } = useAuth();
+
+  const playlists = [
     {
       id: 1,
       name: "Anniversaire de Zoé",
@@ -32,7 +34,7 @@ export default function Home() {
     <>
       <div className="host-dashboard">
         {/* HEADER FIXE */}
-        <Header variant="greeting" userPseudo={userPseudo} />
+        <Header variant="greeting" userPseudo={user?.username} />
 
         <ExplanationText
           hasAppTitle={true}

@@ -1,11 +1,13 @@
-import React from "react";
 import "./Button.css";
 
 export default function Button({
-  text
+  text,
+  type = "button",
+  disabled = false,
+  ...props
 }) {
   return (
-    <button className="button">
+    <button className="button" type={type} disabled={disabled} {...props}>
       {text}
     </button>
   );

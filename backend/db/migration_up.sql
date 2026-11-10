@@ -1,3 +1,4 @@
+-- Active: 1791880314981@@127.0.0.1@5433@sonoma_db
 -- ============================================
 -- 1. USERS
 -- Stores registered host accounts.

@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   // Au chargement de l'app : le cookie est-il encore valide ?
   useEffect(() => {
     api.myProfile()
-      .then((data) => setUser(data.utilisateur))
+      .then((data) => setUser(data.user))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);

@@ -1,5 +1,6 @@
-import React from "react";
 import "./Header.css";
+import { useAuth } from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router";
 
 export default function Header({
   sessionTitle,
@@ -7,7 +8,9 @@ export default function Header({
   variant = "default",
   greeting = "Hello,",
 }) {
-  // Gets initials from host's username
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
   const initials = userPseudo
     ? userPseudo
         .trim()
@@ -17,6 +20,14 @@ export default function Header({
         .slice(0, 2)
         .toUpperCase()
     : "G";
+
+  async function handleLogout() {
+    try {
+      await logout();
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  }
 
   // Variant for dashboard
   if (variant === "greeting") {
@@ -29,6 +40,15 @@ export default function Header({
 
           <h1 className="header-title">{userPseudo || "Invité"}</h1>
         </div>
+
+        <button
+          type="button"
+          className="header-logout"
+          onClick={handleLogout}
+          aria-label="Se déconnecter"
+        >
+          Déconnexion
+        </button>
       </header>
     );
   }
@@ -47,6 +67,15 @@ export default function Header({
 
         <span className="pseudo">{userPseudo || "Invité"}</span>
       </div>
+
+      <button
+        type="button"
+        className="header-logout"
+        onClick={handleLogout}
+        aria-label="Se déconnecter"
+      >
+        Déconnexion
+      </button>
     </header>
   );
 }
