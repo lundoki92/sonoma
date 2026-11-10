@@ -1,7 +1,7 @@
 import { getPlaylistByInviteCodeModel } from "../models/playlistModel.js";
 import { randomUUID } from "node:crypto";
 import { createGuestModel } from "../models/inviteModel.js";
-import { getTracksByPlaylistModel, addTrackToPlaylistModel,} from "../models/trackModel.js";
+import { getGuestTracksByPlaylistModel, addTrackToPlaylistModel,} from "../models/trackModel.js";
 
 // Find the playlist behind an invite code, or throw a 404.
 async function findPlaylistOrThrow(code) {
@@ -20,7 +20,7 @@ export async function getInvitePlaylistService(code) {
 
 export async function getInviteTracksService(code) {
   const playlist = await findPlaylistOrThrow(code);
-  return getTracksByPlaylistModel(playlist.id);
+  return getGuestTracksByPlaylistModel(playlist.id);
 }
 
 export async function addInviteTrackService(code, guestId, data) {

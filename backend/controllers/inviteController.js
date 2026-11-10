@@ -7,7 +7,7 @@ const UUID_REGEX =
 
 function handleError(error, res, fallbackMessage) {
   if (error.code === "23505") {
-    return res.status(409).json({ error: "This track is already in the playlist" });
+    return res.status(409).json({ error: "Ce morceau a déjà été proposé" });
   }
   if (error.statusCode) {
     return res.status(error.statusCode).json({ error: error.message });
@@ -35,7 +35,7 @@ export async function getInviteTracksController(req, res) {
     if (!UUID_REGEX.test(code)) {
       return res.status(404).json({ error: "Playlist not found" });
     }
-    const tracks = await getInviteTracksService(code);
+    const tracks = await getInviteTracksService(code, req.guest.id);
     return res.status(200).json(tracks);
   } catch (error) {
     return handleError(error, res, "Failed to fetch tracks");

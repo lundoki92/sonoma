@@ -1,15 +1,5 @@
 import pool from "../server/db.js";
 
-// Retrieve the status of a playlist. INVITE
-// Returning null indicates that the playlist does not exist.
-export async function getPlaylistStatusModel(playlistId) {
-  const result = await pool.query(
-    "SELECT status FROM playlists WHERE id = $1",
-    [playlistId]
-  );
-
-  return result.rows[0] ?? null;
-}
 
 // Retrieve the status of a playlist, only if it belongs to the given host.
 // Returning null means: the playlist does not exist OR is not owned by this host.
@@ -35,6 +25,30 @@ export async function getTracksByPlaylistModel(playlistId) {
   );
 
   // Return the array of tracks rather than the full PostgreSQL result.
+  return result.rows;
+}
+
+// Tracks added by the host (no guest attached)
+export async function getHostTracksByPlaylistModel(playlistId) {
+  const result = await pool.query(
+    `SELECT *
+     FROM tracks
+     WHERE playlist_id = $1 AND guest_id IS NULL
+     ORDER BY created_at DESC`,
+    [playlistId],
+  );
+  return result.rows;
+}
+
+// Tracks added by one specific guest
+export async function getGuestTracksByPlaylistModel(playlistId, guestId) {
+  const result = await pool.query(
+    `SELECT *
+     FROM tracks
+     WHERE playlist_id = $1 AND guest_id = $2
+     ORDER BY created_at DESC`,
+    [playlistId, guestId],
+  );
   return result.rows;
 }
 

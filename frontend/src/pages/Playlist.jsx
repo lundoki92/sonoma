@@ -190,7 +190,7 @@ function PlaylistPage() {
         </p>
       )}
 
-      <p>Lien à partager : {inviteLink}</p>
+      <p>Lien à partager :</p>
         <button type="button" onClick={() => navigator.clipboard.writeText(inviteLink)}>
           Copier le lien
         </button>
