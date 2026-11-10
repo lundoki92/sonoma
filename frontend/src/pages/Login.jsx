@@ -21,7 +21,7 @@ export function Login() {
     setSend(true);
     try {
       await login(form);
-      navigate(location.state?.depuis ?? '/', { replace: true });
+      navigate(location.state?.depuis ?? '/h', { replace: true });
     } catch (error) {
       setErrors(error.errors);
       setMessage(error.status === 422 ? 'Corrige les champs signalés.' : error.message);
@@ -40,7 +40,7 @@ export function Login() {
       <form onSubmit={submit} noValidate>
         <Champ id="email" label="Email" type="email" value={form.email} onChange={modify}
           erreur={errors.email} autoComplete="email" required />
-        <Champ id="password" label="password" type="password" value={form.password}
+        <Champ id="password" label="Mot de passe" type="password" value={form.password}
           onChange={modify} erreur={errors.password} autoComplete="current-password" required />
         <button type="submit" disabled={send}>{send ? 'Connexion…' : 'Se connecter'}</button>
       </form>

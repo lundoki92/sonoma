@@ -3,11 +3,12 @@ import {
   createPlaylistController,
   getPlaylistByIdController,
 } from "../controllers/playlistController.js";
+import { auth } from '../middlewares/auth.js'
 
 const routePlaylist = express.Router();
 
 // Create a new playlist.
-routePlaylist.post("/", createPlaylistController);
+routePlaylist.post("/", auth, createPlaylistController);
 
 // Retrieve a playlist by its ID.
 routePlaylist.get("/:id", getPlaylistByIdController);

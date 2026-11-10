@@ -5,16 +5,14 @@ import {
 
 // Handle the creation of a new playlist.
 export async function createPlaylistController(req, res) {
+  console.log("USER CONNECTÉ :", req.user);
   try {
-    const { name, date_time, host_id } = req.body;
+    const { name, date_time } = req.body;
+    const host_id = req.user.id;
 
     // Validate the playlist name.
     // The name must be a non-empty string with a maximum of 100 characters.
-    if (
-      typeof name !== "string" ||
-      !name.trim() ||
-      name.trim().length > 100
-    ) {
+    if (typeof name !== "string" || !name.trim() || name.trim().length > 100) {
       return res.status(400).json({
         error: "Invalid playlist name",
       });

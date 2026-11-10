@@ -3,19 +3,14 @@ import {
   getTracksByPlaylistController,
   addTrackToPlaylistController,
 } from "../controllers/trackController.js";
+import { auth } from "../middlewares/auth.js";
 
 const trackRoute = express.Router();
 
 // Retrieve all tracks belonging to a playlist.
-trackRoute.get(
-  "/:playlistId/tracks",
-  getTracksByPlaylistController
-);
+trackRoute.get("/:playlistId/tracks", getTracksByPlaylistController);
 
 // Add a new track to a playlist.
-trackRoute.post(
-  "/:playlistId/tracks",
-  addTrackToPlaylistController
-);
+trackRoute.post("/:playlistId/tracks", addTrackToPlaylistController);
 
 export default trackRoute;

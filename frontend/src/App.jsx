@@ -18,13 +18,13 @@ export default function App() {
         <Route path="/login" element={<Login />} />
 
 
-        <Route element={<ProtectedRoutes />}>
+        
 
-           
+           <Route path="/createplaylist" element={<ProtectedRoutes><CreatePlaylist /></ProtectedRoutes>} />
             <Route path="/" element={<HomeAdmin />} />
 
-        
-            <Route path="/createplaylist" element={<CreatePlaylist />} />
+      
+            
 
         
             <Route path="/playlist/:id" element={<PartyLayout />}>
@@ -34,7 +34,7 @@ export default function App() {
               <Route path="playlist" element={<EmptyPage />} />
             </Route>
 
-        </Route>
+       
 
         
       </Routes>

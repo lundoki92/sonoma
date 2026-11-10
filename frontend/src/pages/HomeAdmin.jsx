@@ -6,6 +6,7 @@ import Button from "../components/common/Button";
 import DashboardPlaylistsContainer from "../components/HomeAdmin/DashboardPlaylistsContainer";
 
 export default function Home() {
+  console.log("dndud")
   const [userPseudo, setUserPseudo] = useState("Prénom Nom");
     const playlists = [
     {
