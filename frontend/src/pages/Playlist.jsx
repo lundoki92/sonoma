@@ -80,6 +80,7 @@ function PlaylistPage() {
           body: JSON.stringify({
             // Get the Spotify track ID
             external_track_id: spotifyTrack.spotifyId,
+            spotify_uri: `spotify:track:${spotifyTrack.spotifyId}`,
 
             // Get the track title and artist
             title: spotifyTrack.title,

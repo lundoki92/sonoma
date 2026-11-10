@@ -16,7 +16,7 @@ export async function getTracksByPlaylistController(req, res) {
     }
 
     // Retrieve the tracks through the service layer.
-    const tracks = await getTracksByPlaylistService(playlistId);
+    const tracks = await getTracksByPlaylistService(playlistId, req.user.id);
 
     // Return the list of tracks.
     return res.status(200).json(tracks);
@@ -87,7 +87,7 @@ export async function addTrackToPlaylistController(req, res) {
     }
 
     // Normalize the data before passing it to the service.
-    const track = await addTrackToPlaylistService(playlistId, {
+    const track = await addTrackToPlaylistService(playlistId, req.user.id, {
       external_track_id: external_track_id.trim(),
       spotify_uri: spotify_uri || null,
       title: title.trim(),
