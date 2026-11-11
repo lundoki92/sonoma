@@ -38,11 +38,11 @@ export async function getPlaylistByIdAndHostModel(id, hostId) {
   return result.rows[0] ?? null;
 }
 
-// export async function getPlaylistByIdModel(id) {
-//   const result = await pool.query(
-//     "SELECT * FROM playlists WHERE id = $1",
-//     [id]
-//   );
-
-//   return result.rows[0] ?? null;
-// }
+// Retrieve a playlist using its invite code.
+export async function getPlaylistByInviteCodeModel(code) {
+  const result = await pool.query(
+    "SELECT id, name, date_time, status FROM playlists WHERE invite_code = $1",
+    [code],
+  );
+  return result.rows[0] ?? null;
+}

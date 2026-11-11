@@ -8,6 +8,7 @@ import voteRoute from "../routes/voteRoute.js";
 import db from './db.js';
 import { authRouter } from '../routes/authRoute.js';
 import { errorsManagement } from '../middlewares/errors.js';
+import inviteRoute from "../routes/inviteRoute.js";
 export const app = express();
 
 // Parse incoming JSON request bodies.
@@ -35,6 +36,8 @@ app.use("/api/playlists", trackRoute);
 // Register music-related endpoints.
 // Example: /api/music/...
 app.use("/api/music", musicRoute);
+
+app.use("/api/invite", inviteRoute);
 
 // Register vote endpoints under the playlist base URL.
 // GET  /api/playlists/12/voting-tracks

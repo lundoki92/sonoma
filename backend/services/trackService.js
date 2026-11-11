@@ -1,6 +1,6 @@
 import {
   getPlaylistStatusForHostModel,
-  getTracksByPlaylistModel,
+  getHostTracksByPlaylistModel,
   addTrackToPlaylistModel,
 } from "../models/trackModel.js";
 
@@ -17,7 +17,7 @@ export async function getTracksByPlaylistService(playlistId, hostId) {
   }
 
   // Fetch the tracks belonging to the playlist.
-  return getTracksByPlaylistModel(playlistId);
+  return getHostTracksByPlaylistModel(playlistId);
 }
 
 // Add a track to a playlist while applying the playlist's business rules.

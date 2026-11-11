@@ -103,8 +103,7 @@ export async function addTrackToPlaylistController(req, res) {
     // In this case, the track is already present in the playlist.
     if (error.code === "23505") {
       return res.status(409).json({
-        error: "This track is already in the playlist",
-      });
+        error: "Ce morceau a déjà été proposé"});
     }
 
     // Handle expected business errors, such as a missing or finished playlist.
