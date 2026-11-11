@@ -1,9 +1,12 @@
 import './App.css'
 import { Routes, Route, Navigate } from 'react-router'
-import CreatePlaylist from './pages/CreatePlaylist.jsx'
+import CreatePlaylistLayout from './pages/creation/CreatePlaylistLayout.jsx'
+import CreatePlaylistStep1 from './pages/creation/CreatePlaylistStep1.jsx'
+import PlaylistSetup from './pages/creation/PlaylistSetup.jsx'
+import PlaylistShare from './pages/creation/PlaylistShare.jsx'
 import HomeAdmin from './pages/HomeAdmin.jsx'
 import PartyLayout from './pages/PartyLayout.jsx'
-import PlaylistPage from './pages/Playlist.jsx'
+import PlaylistEntry from './pages/PlaylistEntry.jsx'
 import ProposeTab from './pages/party/ProposeTab.jsx'
 import VoteTab from './pages/party/VoteTab.jsx'
 import ListenTab from './pages/party/ListenTab.jsx'
@@ -22,11 +25,41 @@ export default function App() {
 
       {/* Host account */}
       <Route path="/" element={<ProtectedRoutes><HomeAdmin /></ProtectedRoutes>} />
-      <Route path="/createplaylist" element={<ProtectedRoutes><CreatePlaylist /></ProtectedRoutes>} />
 
-      {/* Host party: /playlist/:id keeps the preparation screen for now */}
+      {/* Playlist creation, step 1: no playlist exists yet */}
+      <Route
+        path="/createplaylist"
+        element={<ProtectedRoutes><CreatePlaylistLayout step={1} backTo="/" /></ProtectedRoutes>}
+      >
+        <Route index element={<CreatePlaylistStep1 />} />
+      </Route>
+
       <Route path="/playlist/:id">
-        <Route index element={<ProtectedRoutes><PlaylistPage /></ProtectedRoutes>} />
+        {/* Send the host to the right place depending on the status */}
+        <Route index element={<ProtectedRoutes><PlaylistEntry /></ProtectedRoutes>} />
+
+        {/* Step 1, edit mode: same screen, prefilled */}
+        <Route
+          element={<ProtectedRoutes><CreatePlaylistLayout step={1} backTo="setup" /></ProtectedRoutes>}
+        >
+          <Route path="edit" element={<CreatePlaylistStep1 />} />
+        </Route>
+
+        {/* Step 2: add the first tracks */}
+        <Route
+          element={<ProtectedRoutes><CreatePlaylistLayout step={2} backTo="edit" /></ProtectedRoutes>}
+        >
+          <Route path="setup" element={<PlaylistSetup />} />
+        </Route>
+
+        {/* Step 3: share the invitation */}
+        <Route
+          element={<ProtectedRoutes><CreatePlaylistLayout step={3} backTo="setup" /></ProtectedRoutes>}
+        >
+          <Route path="share" element={<PlaylistShare />} />
+        </Route>
+
+        {/* Host party app, outside the creation flow */}
         <Route element={<ProtectedRoutes><PartyLayout role="host" /></ProtectedRoutes>}>
           <Route path="propose" element={<ProposeTab />} />
           <Route path="vote" element={<VoteTab />} />
