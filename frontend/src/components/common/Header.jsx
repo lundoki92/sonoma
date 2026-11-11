@@ -5,8 +5,9 @@ import { useNavigate } from "react-router";
 export default function Header({
   sessionTitle,
   userPseudo,
-  variant = "default",
+  variant = "host",
   greeting = "Hello,",
+  onLeave,
 }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function Header({
     }
   }
 
-  // Variant for dashboard
+  // Variant for the host dashboard
   if (variant === "greeting") {
     return (
       <header className="app-header app-header--greeting">
@@ -53,7 +54,35 @@ export default function Header({
     );
   }
 
-  // Variant for playlist
+  // Variant for a guest inside a party: no account, so no logout
+  if (variant === "guest") {
+    return (
+      <header className="app-header">
+        <div className="header-info">
+          <span className="header-subtitle">Invité</span>
+
+          <h1 className="header-title">{sessionTitle}</h1>
+        </div>
+
+        <div className="header-badge">
+          <div className="avatar">{initials}</div>
+
+          <span className="pseudo">{userPseudo || "Invité"}</span>
+        </div>
+
+        <button
+          type="button"
+          className="header-logout"
+          onClick={onLeave}
+          aria-label="Quitter la soirée"
+        >
+          Quitter
+        </button>
+      </header>
+    );
+  }
+
+  // Variant for the host inside a party
   return (
     <header className="app-header">
       <div className="header-info">

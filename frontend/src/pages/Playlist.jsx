@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
 
 
@@ -194,6 +194,10 @@ function PlaylistPage() {
         <button type="button" onClick={() => navigator.clipboard.writeText(inviteLink)}>
           Copier le lien
         </button>
+
+      <p>
+        <Link to={`/playlist/${id}/propose`}>Ouvrir l'app de la soirée</Link>
+      </p>
     </main>
   );
 }
