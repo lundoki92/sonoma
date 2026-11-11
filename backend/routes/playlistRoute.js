@@ -3,6 +3,7 @@ import {
   createPlaylistController,
   getPlaylistByIdController,
   getMyPlaylistsController,
+  updatePlaylistController,
 } from "../controllers/playlistController.js";
 import { auth } from '../middlewares/auth.js'
 
@@ -16,6 +17,8 @@ routePlaylist.post("/", auth, createPlaylistController);
 routePlaylist.get("/", auth, getMyPlaylistsController);
 // Retrieve a playlist by its ID.
 routePlaylist.get("/:id", auth, getPlaylistByIdController);
+// Update the editable fields of a playlist.
+routePlaylist.patch("/:id", auth, updatePlaylistController);
 
 // Invité (pas d'auth, accès via le code)
 // routePlaylist.get("/invite/:code", getPlaylistByInviteController);
