@@ -141,9 +141,27 @@ export async function updatePlaylistByIdAndHostModel(
 }
 
 // Retrieve all playlists that belong to a given host.
+// Récupère toutes les soirées d'un hôte, avec deux compteurs calculés à la
+// volée : le nombre de morceaux proposés et le nombre d'invités rejoints.
+// Aucune colonne ajoutée en base, ce sont des agrégats sur les tables déjà là.
 export async function getPlaylistsByHostIdModel(hostId) {
   const result = await pool.query(
-    "SELECT * FROM playlists WHERE host_id = $1 ORDER BY date_time DESC",
+    `
+      SELECT playlists.*,
+             (
+               SELECT COUNT(*)::int
+               FROM tracks
+               WHERE tracks.playlist_id = playlists.id
+             ) AS track_count,
+             (
+               SELECT COUNT(*)::int
+               FROM playlist_guests
+               WHERE playlist_guests.playlist_id = playlists.id
+             ) AS guest_count
+      FROM playlists
+      WHERE host_id = $1
+      ORDER BY date_time DESC
+    `,
     [hostId],
   );
   return result.rows;
@@ -152,7 +170,21 @@ export async function getPlaylistsByHostIdModel(hostId) {
 // Retrieve a playlist only if it belongs to the given host.
 export async function getPlaylistByIdAndHostModel(id, hostId) {
   const result = await pool.query(
-    "SELECT * FROM playlists WHERE id = $1 AND host_id = $2",
+    `
+      SELECT playlists.*,
+             (
+               SELECT COUNT(*)::int
+               FROM tracks
+               WHERE tracks.playlist_id = playlists.id
+             ) AS track_count,
+             (
+               SELECT COUNT(*)::int
+               FROM playlist_guests
+               WHERE playlist_guests.playlist_id = playlists.id
+             ) AS guest_count
+      FROM playlists
+      WHERE playlists.id = $1 AND playlists.host_id = $2
+    `,
     [id, hostId],
   );
   return result.rows[0] ?? null;

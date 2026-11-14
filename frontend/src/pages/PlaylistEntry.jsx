@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router";
+import { getPlaylist } from "../api/playlists.js";
 
 // /playlist/:id has no screen of its own: it sends the host to the right
 // place depending on the playlist status.
@@ -15,12 +16,7 @@ export default function PlaylistEntry() {
 
     async function loadPlaylist() {
       try {
-        const response = await fetch(`/api/playlists/${id}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Impossible de charger la soirée");
-        }
+        const data = await getPlaylist(id);
 
         if (!cancelled) setPlaylist(data);
       } catch (err) {
@@ -38,21 +34,27 @@ export default function PlaylistEntry() {
   }, [id]);
 
   if (loading) {
-    return <p>Chargement de la soirée…</p>;
+    return <p className="app-status">Chargement de la soirée…</p>;
   }
 
   if (!playlist) {
-    return <p role="alert">{error || "Soirée introuvable"}</p>;
-  }
-
-  if (playlist.status === "active") {
-    return <Navigate to={`/playlist/${id}/propose`} replace />;
+    return (
+      <p className="app-error" role="alert">
+        {error || "Soirée introuvable"}
+      </p>
+    );
   }
 
   if (playlist.status === "finished") {
     return <Navigate to={`/playlist/${id}/listen`} replace />;
   }
 
-  // Preparing playlists resume at the last creation step: the invitation.
-  return <Navigate to={`/playlist/${id}/share`} replace />;
+  // Une soirée ouverte s'ouvre dans l'application, que son heure soit passée
+  // ou dans trois jours : c'est l'hôte qui a décidé de l'ouvrir.
+  if (playlist.status === "active") {
+    return <Navigate to={`/playlist/${id}/propose`} replace />;
+  }
+
+  // Un reste de l'ancien système de brouillon reprend à l'étape 1.
+  return <Navigate to={`/playlist/${id}/edit`} replace />;
 }

@@ -1,67 +1,110 @@
-/* MAIN CONTAINER */
+/* Une seule liste de soirées, avec son en-tête. */
+
 .dashboard-playlists-container {
   width: 100%;
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 24px 28px;
-  box-sizing: border-box;
 
+  /* Le bouton « Créer une nouvelle soirée » appartient au bloc d'accueil :
+     cette section commence après, avec un vrai blanc entre les deux. */
+  padding: var(--space-10) var(--screen-padding-x) var(--space-12);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-4);
 }
 
 /* SECTION HEADER */
+
+/* Titre, compteur et note forment un seul bloc : la note commente le titre,
+   elle ne doit pas s'écarter de lui. */
+.dashboard-playlists-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
 .dashboard-playlists-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .dashboard-playlists-heading {
-  margin: 0;
-  color: #f4f0fa;
-  font-size: 20px;
+  font-size: var(--text-title);
   font-weight: 700;
+  line-height: var(--leading-tight);
+  color: #f4f0fa;
 }
 
 .dashboard-playlists-count {
   color: #a6a1b4;
-  font-size: 13px;
+  font-size: var(--text-secondary);
   font-weight: 500;
+  line-height: var(--leading-tight);
   white-space: nowrap;
 }
 
+.dashboard-playlists-hint {
+  color: #7b758c;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
+}
+
 /* PLAYLIST CARD LIST */
+
 .dashboard-playlists-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
   width: 100%;
 }
 
-/* EMPTY STATE */
-.dashboard-playlists-empty {
-  margin: 0;
-  padding: 24px 16px;
-  border: 1px dashed #403b4c;
-  border-radius: 16px;
-
-  color: #a6a1b4;
-  font-size: 14px;
-  line-height: 1.5;
-  text-align: center;
+/* The card is wrapped in a router link: remove the browser's blue underline
+   and let the card colours speak for themselves. */
+.dashboard-playlist-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 360px) {
-  .dashboard-playlists-container {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+.dashboard-playlist-link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 48px;
+}
 
-  .dashboard-playlists-heading {
-    font-size: 18px;
-  }
+/* Une carte ouverte sur quelque chose à faire : le survol et le focus le
+   disent, sans attendre que l'utilisateur essaie au hasard. */
+.dashboard-playlist-link:hover .dashboard-playlist-card,
+.dashboard-playlist-link:focus-visible .dashboard-playlist-card {
+  border-color: #eaff99;
+}
+
+.dashboard-playlist-link:hover .arrow-btn,
+.dashboard-playlist-link:focus-visible .arrow-btn {
+  background: #eaff99;
+  color: #17141f;
+}
+
+/* Archived parties are history: the card is displayed but not interactive. */
+.dashboard-playlist-locked {
+  display: block;
+  cursor: default;
+}
+
+.dashboard-playlist-locked .dashboard-playlist-card {
+  opacity: 0.72;
+}
+
+/* EMPTY STATE */
+
+.dashboard-playlists-empty {
+  padding: var(--space-6) var(--space-4);
+  border: 1px dashed #403b4c;
+  border-radius: 16px;
+  color: #a6a1b4;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-body);
+  text-align: center;
 }
