@@ -1,54 +1,64 @@
+import { ErrorHttp } from "../errors.js";
 import {
   getPlaylistStatusForHostModel,
   getHostTracksByPlaylistModel,
   addTrackToPlaylistModel,
+  deleteHostTrackModel,
 } from "../models/trackModel.js";
 
 // Retrieve all tracks from a playlist after checking that it exists.
 export async function getTracksByPlaylistService(playlistId, hostId) {
-  // Retrieve the playlist status to verify that the playlist exists.
   const playlist = await getPlaylistStatusForHostModel(playlistId, hostId);
 
-  // Stop the operation if the playlist does not exist.
-  if (!playlist) {
-    const error = new Error("Playlist not found");
-    error.statusCode = 404;
-    throw error;
-  }
+  if (!playlist) throw new ErrorHttp(404, "Soirée introuvable.");
 
-  // Fetch the tracks belonging to the playlist.
+  // The host sees their own tracks here; guest proposals live in the vote.
   return getHostTracksByPlaylistModel(playlistId);
 }
 
-// Add a track to a playlist while applying the playlist's business rules.
+// Add a track proposed by the host.
+// Une soirée n'existe qu'une fois ouverte : le morceau entre directement en
+// phase de vote, il n'y a plus de statut intermédiaire « proposed ».
 export async function addTrackToPlaylistService(playlistId, hostId, data) {
-  // Retrieve the playlist status before attempting to add the track.
   const playlist = await getPlaylistStatusForHostModel(playlistId, hostId);
 
-  // A track cannot be added to a playlist that does not exist.
-  if (!playlist) {
-    const error = new Error("Playlist not found");
-    error.statusCode = 404;
-    throw error;
-  }
+  if (!playlist) throw new ErrorHttp(404, "Soirée introuvable.");
 
-  // Prevent modifications to a finished playlist.
   if (playlist.status === "finished") {
-    const error = new Error("This playlist is finished");
-    error.statusCode = 400;
-    throw error;
+    throw new ErrorHttp(409, "Cette soirée est terminée.");
   }
 
-  // Determine the track status according to the playlist status.
-  // Tracks added during preparation are selected automatically.
-  // Tracks added in other non-finished states are proposed.
-  const trackStatus =
-  playlist.status === "preparing" ? "proposed" : "voting";
+  try {
+    return await addTrackToPlaylistModel(playlistId, data, "voting");
+  } catch (error) {
+    // 23505: the track is already in this party.
+    if (error.code === "23505") {
+      throw new ErrorHttp(409, "Ce morceau a déjà été proposé.");
+    }
 
-  // Delegate the database insertion to the model layer.
-  return addTrackToPlaylistModel(
-    playlistId,
-    data,
-    trackStatus
-  );
+    throw error;
+  }
+}
+
+// Remove a track added by the host.
+export async function deleteTrackFromPlaylistService(
+  playlistId,
+  hostId,
+  trackId,
+) {
+  const playlist = await getPlaylistStatusForHostModel(playlistId, hostId);
+
+  if (!playlist) throw new ErrorHttp(404, "Soirée introuvable.");
+
+  // Tracks can be removed while the party runs; a finished party is read-only.
+  if (playlist.status === "finished") {
+    throw new ErrorHttp(409, "Cette soirée est terminée.");
+  }
+
+  // Only host tracks (not guest proposals) can be removed from this screen.
+  const track = await deleteHostTrackModel(playlistId, trackId);
+
+  if (!track) throw new ErrorHttp(404, "Morceau introuvable.");
+
+  return track;
 }

@@ -1,0 +1,121 @@
+.setup-step {
+  display: flex;
+  flex-direction: column;
+}
+
+.setup-playlist-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.setup-section {
+  margin-top: 28px;
+}
+
+.setup-section h2 {
+  margin: 0 0 12px;
+  font-size: 17px;
+}
+
+.setup-empty {
+  margin: 0;
+  color: #a1a1aa;
+  font-size: 14px;
+}
+
+.setup-track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Cartes de morceaux arrondies au maximum, comme la recherche */
+.setup-track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 10px 10px;
+  border: 1px solid #2e2a3d;
+  border-radius: 999px;
+  background-color: #15131d;
+  transition: border-color 0.2s ease;
+}
+
+.setup-track:hover {
+  border-color: #3f3f46;
+}
+
+.setup-track img {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.setup-track-info {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.setup-track-title {
+  overflow: hidden;
+  color: #f4f0fa;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.setup-track-artist {
+  overflow: hidden;
+  font-size: 12px;
+  color: #a6a1b4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Croix pour annuler le choix d'un morceau */
+.setup-track-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  border-radius: 50%;
+  background-color: rgba(255, 107, 107, 0.08);
+  color: #ff9b93;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.setup-track-remove:hover:not(:disabled) {
+  border-color: rgba(255, 107, 107, 0.65);
+  background-color: rgba(255, 107, 107, 0.16);
+  color: #ffb3b3;
+}
+
+.setup-track-remove:focus-visible {
+  outline: 2px solid #ff9b93;
+  outline-offset: 2px;
+}
+
+.setup-track-remove:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}

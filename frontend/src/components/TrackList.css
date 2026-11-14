@@ -1,0 +1,114 @@
+/* Liste de morceaux partagée par la création (étape 2) et l'app de soirée. */
+
+.track-list-section {
+  margin-top: var(--section-gap);
+}
+
+.track-list-section h2 {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-title);
+  line-height: var(--leading-tight);
+  font-weight: 600;
+  color: #f4f0fa;
+}
+
+.track-list-empty {
+  color: #a1a1aa;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
+}
+
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--list-gap);
+  list-style: none;
+}
+
+/* Rounded track cards, same shape as the search results. */
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3) 10px 10px;
+  border: var(--card-border);
+  border-radius: 999px;
+  background-color: var(--card-background);
+  transition: border-color 0.2s ease;
+}
+
+.track-item:hover {
+  border-color: #3f3f46;
+}
+
+.track-item img {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.track-item-info {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.track-item-title {
+  overflow: hidden;
+  color: #f4f0fa;
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track-item-artist {
+  overflow: hidden;
+  font-size: var(--text-caption);
+  line-height: var(--leading-tight);
+  color: #a6a1b4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cross used to remove a track: the standard round icon button. */
+.track-item-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  padding: 0;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  border-radius: 50%;
+  background-color: rgba(255, 107, 107, 0.08);
+  color: #ff9b93;
+  font-size: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.track-item-remove:hover:not(:disabled) {
+  border-color: rgba(255, 107, 107, 0.65);
+  background-color: rgba(255, 107, 107, 0.16);
+  color: #ffb3b3;
+}
+
+.track-item-remove:focus-visible {
+  outline: 2px solid #ff9b93;
+  outline-offset: 2px;
+}
+
+.track-item-remove:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}

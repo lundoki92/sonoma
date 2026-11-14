@@ -1,10 +1,8 @@
 /* ============================================================
    AUTH — Connexion / Création de compte
-   Reprend les tokens des autres pages :
-   - fond dashboard : #0c0b12
-   - cartes playlist : #17141F + bordure #2E2A3D + radius 48/40
-   - accent : #EAFF99
-   - bouton : hauteur 56, radius 40, glow au survol
+   Tokens locaux pour la couleur, dimensions reprises des tokens
+   globaux : la carte, les champs et le bouton doivent ressembler
+   exactement aux autres écrans de l'application.
    ============================================================ */
 
 .carte-form {
@@ -26,12 +24,11 @@
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 32px 16px;
+  padding: var(--space-8) var(--screen-padding-x);
   background-color: var(--auth-bg);
   color: var(--auth-text);
 }
@@ -40,12 +37,11 @@
 
 .auth-card {
   width: 100%;
-  max-width: 480px;
-  box-sizing: border-box;
+  max-width: var(--content-max-width);
   background-color: var(--auth-card);
   border: 1px solid var(--auth-border);
   border-radius: 48px;
-  padding: 32px 28px 26px;
+  padding: var(--space-8) var(--space-7) var(--space-6);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
@@ -53,24 +49,7 @@
    son padding interne pour que la carte gère les marges. */
 .auth-card .explanation-text {
   padding: 0;
-  margin-bottom: 24px;
-}
-
-.auth-card .explanation-text-app-title {
-  font-size: 13px;
-  letter-spacing: 0.28em;
-  margin-bottom: 14px;
-}
-
-.auth-card .explanation-text-title {
-  font-size: clamp(26px, 7vw, 32px);
-  margin-bottom: 8px;
-}
-
-.auth-card .explanation-text-text {
-  font-size: 17px;
-  line-height: 1.4;
-  color: var(--auth-muted);
+  margin-bottom: var(--section-gap);
 }
 
 /* ---------- FORMULAIRE ---------- */
@@ -78,104 +57,22 @@
 .auth-card form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--field-gap);
 }
 
 /* ---------- CHAMPS ---------- */
-
-.champ {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.champ label {
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--auth-text);
-  transition: color 0.2s ease;
-}
-
-/* Le label suit l'état du champ : petit détail qui rend le focus lisible */
-.champ:focus-within label {
-  color: var(--auth-focus);
-}
-
-.champ input {
-  width: 100%;
-  height: 52px;
-  box-sizing: border-box;
-  padding: 0 16px;
-  background-color: var(--auth-bg);
-  border: 1px solid var(--auth-border);
-  border-radius: 30px;
-  color: var(--auth-text);
-  font-family: inherit;
-  font-size: 15px;
-  caret-color: var(--auth-accent);
-}
-
-.champ input::placeholder {
-  color: var(--auth-placeholder);
-  opacity: 1;
-}
-
-/* Survole : on éclaircit juste la bordure (sauf au focus, qui garde le violet) */
-.champ input:hover:not(:disabled):not([aria-invalid="true"]):not(:focus) {
-  border-color: var(--auth-border-hover);
-  background-color: #121118;
-}
-
-/* Focus : bordure violette + halo, sans outline par défaut */
-.champ input:focus {
-  outline: none;
-  border-color: var(--auth-focus);
-  background-color: #121118;
-  box-shadow: 0 0 0 3px var(--auth-focus-soft);
-}
-
-/* Erreur : la bordure passe en rouge et le halo aussi (jamais les deux) */
-.champ input[aria-invalid="true"] {
-  border-color: var(--auth-danger);
-  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.14);
-}
-
-.champ input[aria-invalid="true"]:focus {
-  border-color: var(--auth-danger);
-  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.24);
-}
-
-.champ input:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-/* Autofill Chrome/Safari : sans ça, le fond redevient blanc */
-.champ input:-webkit-autofill,
-.champ input:-webkit-autofill:hover,
-.champ input:-webkit-autofill:focus {
-  -webkit-text-fill-color: var(--auth-text);
-  -webkit-box-shadow: 0 0 0 1000px var(--auth-bg) inset;
-  caret-color: var(--auth-accent);
-}
-
-.champ .erreur {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: var(--auth-danger-text);
-}
+/* Les styles des champs vivent dans components/Champ.css pour être partagés
+   avec la création de soirée. */
 
 /* ---------- MESSAGES GLOBAUX ---------- */
 
 .alerte,
 .succes {
-  margin: 0 0 18px;
-  padding: 11px 14px;
+  margin-bottom: var(--field-gap);
+  padding: var(--space-3) var(--space-4);
   border-radius: 12px;
-  font-size: 14px;
-  line-height: 1.45;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
 }
 
 .alerte {
@@ -190,59 +87,17 @@
   color: #d9ff72;
 }
 
-/* ---------- BOUTON (mêmes paramètres que .button) ---------- */
-
-.auth-card form button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 56px;
-  margin-top: 6px;
-  border: 0;
-  border-radius: 40px;
-  background-color: var(--auth-accent);
-  color: #121214;
-  font-family:
-    "Bricolage Grotesque",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    box-shadow 0.3s ease,
-    transform 0.15s ease,
-    opacity 0.2s ease;
-}
-
-.auth-card form button:hover:not(:disabled) {
-  box-shadow: 0 0 16px rgba(234, 255, 153, 0.7);
-}
-
-.auth-card form button:active:not(:disabled) {
-  transform: translateY(1px) scale(0.995);
-  box-shadow: 0 0 10px rgba(234, 255, 153, 0.5);
-}
-
-.auth-card form button:focus-visible {
-  outline: 2px solid var(--auth-accent);
-  outline-offset: 3px;
-}
-
-.auth-card form button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  box-shadow: none;
-}
+/* ---------- BOUTON ---------- */
+/* Le bouton principal est le composant commun Button (.button) : hauteur,
+   radius, taille de texte et marge du haut sont les mêmes partout. */
 
 /* ---------- LIEN DE BASCULE ---------- */
 
 .auth-card form + p {
-  margin: 20px 0 0;
+  margin-top: var(--space-5);
   text-align: center;
-  font-size: 14px;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
   color: var(--auth-muted);
 }
 
@@ -270,20 +125,18 @@
 @media (max-width: 480px) {
   .carte-form {
     justify-content: flex-start;
-    padding: 24px 16px 32px;
+    padding: var(--space-6) var(--space-4) var(--space-8);
   }
 
   .auth-card {
     border-radius: 40px;
-    padding: 26px 22px 22px;
+    padding: var(--space-7) var(--space-5) var(--space-5);
   }
 }
 
 /* Accessibilité : on coupe les animations si l'utilisateur le demande */
 @media (prefers-reduced-motion: reduce) {
-  .champ input,
-  .champ label,
-  .auth-card form button,
+  .auth-card .button,
   .auth-card a {
     transition: none;
   }

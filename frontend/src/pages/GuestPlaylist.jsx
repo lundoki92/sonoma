@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
+import TrackList from "../components/TrackList";
+import { normalizeTrack } from "../utils/tracks.js";
+import {
+  addInvitationTrack,
+  getInvitation,
+  listInvitationTracks,
+} from "../api/invites.js";
+import "./guest.css";
 
 function GuestPlaylistPage() {
   const { code } = useParams();
@@ -15,17 +23,10 @@ function GuestPlaylistPage() {
 
     async function load() {
       try {
-        const [playlistResponse, tracksResponse] = await Promise.all([
-          fetch(`/api/invite/${code}`),
-          fetch(`/api/invite/${code}/tracks`),
+        const [playlistData, tracksData] = await Promise.all([
+          getInvitation(code),
+          listInvitationTracks(code),
         ]);
-
-        if (!playlistResponse.ok || !tracksResponse.ok) {
-          throw new Error("Cette soirée est introuvable");
-        }
-
-        const playlistData = await playlistResponse.json();
-        const tracksData = await tracksResponse.json();
 
         if (!cancelled) {
           setPlaylist(playlistData);
@@ -44,68 +45,85 @@ function GuestPlaylistPage() {
     };
   }, [code]);
 
+  // SearchMusic réaffiche l'erreur sur le bouton : on la laisse remonter.
   async function handleAddTrack(spotifyTrack) {
+    setError("");
+
     try {
-      setError("");
+      const track = await addInvitationTrack(code, normalizeTrack(spotifyTrack));
 
-      const response = await fetch(`/api/invite/${code}/tracks`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          external_track_id: spotifyTrack.spotifyId,
-          spotify_uri: `spotify:track:${spotifyTrack.spotifyId}`,
-          title: spotifyTrack.title,
-          artist: spotifyTrack.artist,
-          image_url: spotifyTrack.cover,
-          duration_ms: spotifyTrack.durationMs,
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Impossible d'ajouter le morceau");
-      }
-
-      setTracks((previous) => [data, ...previous]);
+      setTracks((previous) => [track, ...previous]);
     } catch (err) {
       setError(err.message);
       throw err;
     }
   }
 
-  if (loading) return <p>Chargement de la soirée...</p>;
-  if (!playlist) return <p>{error || "Soirée introuvable"}</p>;
+  if (loading) {
+    return (
+      <div className="guest-screen">
+        <main className="guest-screen-inner">
+          <p className="app-status">Chargement de la soirée…</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (!playlist) {
+    return (
+      <div className="guest-screen">
+        <main className="guest-screen-inner">
+          <p className="app-error" role="alert">
+            {error || "Soirée introuvable"}
+          </p>
+        </main>
+      </div>
+    );
+  }
 
   return (
-    <main>
-      <h1>{playlist.name}</h1>
-      <p>Date : {new Date(playlist.date_time).toLocaleString("fr-FR")}</p>
+    <div className="guest-screen">
+      <main className="guest-screen-inner">
+        <h1>{playlist.name}</h1>
 
-      {playlist.status === "finished" ? (
-        <p>Cette soirée est terminée.</p>
-      ) : (
-        <>
-          <h2>Propose un morceau</h2>
-          <SearchMusic onAddTrack={handleAddTrack} tracks={tracks} />
-        </>
-      )}
+        <div className="guest-meta">
+          <span className="app-chip">
+            <i className="fa-solid fa-calendar" aria-hidden="true"></i>
+            {new Date(playlist.date_time).toLocaleString("fr-FR", {
+              dateStyle: "long",
+              timeStyle: "short",
+            })}
+          </span>
+        </div>
 
-      {error && <p role="alert">{error}</p>}
+        {playlist.status === "finished" ? (
+          <p className="app-error">Cette soirée est terminée.</p>
+        ) : (
+          <>
+            <h2>Propose un morceau</h2>
+            <SearchMusic onAddTrack={handleAddTrack} tracks={tracks} />
+          </>
+        )}
 
-      <h2>Morceaux de la soirée ({tracks.length})</h2>
-      {tracks.length === 0 ? (
-        <p>Aucun morceau pour le moment.</p>
-      ) : (
-        <ul>
-          {tracks.map((track) => (
-            <li key={track.id}>
-              {track.image_url && <img src={track.image_url} alt="" width="50" />}
-              <span>{track.title} — {track.artist}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </main>
+        {error && (
+          <p className="app-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <TrackList
+          heading={`Morceaux de la soirée (${tracks.length})`}
+          tracks={tracks}
+          emptyText="Aucun morceau pour le moment."
+        />
+
+        <p>
+          <Link className="guest-link" to={`/join/${code}/party/propose`}>
+            Ouvrir l'app de la soirée
+          </Link>
+        </p>
+      </main>
+    </div>
   );
 }
 
