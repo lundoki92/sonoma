@@ -1,6 +1,12 @@
 import express from "express";
 import { guestAuth } from "../middlewares/guestAuth.js";
-import { getInvitePlaylistController, getInviteTracksController, addInviteTrackController, joinPlaylistController} from "../controllers/inviteController.js";
+import {
+  getInvitePlaylistController,
+  getInviteTracksController,
+  addInviteTrackController,
+  deleteInviteTrackController,
+  joinPlaylistController,
+} from "../controllers/inviteController.js";
 
 const inviteRoute = express.Router();
 
@@ -11,5 +17,10 @@ inviteRoute.post("/:code/join", joinPlaylistController);
 // Reserved to guests who have joined
 inviteRoute.get("/:code/tracks", guestAuth, getInviteTracksController);
 inviteRoute.post("/:code/tracks", guestAuth, addInviteTrackController);
+inviteRoute.delete(
+  "/:code/tracks/:trackId",
+  guestAuth,
+  deleteInviteTrackController,
+);
 
 export default inviteRoute;

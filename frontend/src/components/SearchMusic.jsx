@@ -1,7 +1,6 @@
 import { useState } from "react";
+import { searchTracks } from "../api/music.js";
 import "./SearchMusic.css";
-
-const API_URL = "http://localhost:3000";
 
 function SearchMusic({ onAddTrack, tracks = [] }) {
   // Store the user's search input
@@ -31,24 +30,8 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
     setResults([]);
 
     try {
-      // Send the search query to the backend
-      const response = await fetch(
-        `${API_URL}/api/music/search?q=${encodeURIComponent(search.trim())}`
-      );
-
-      // Check if the request was successful
-      if (!response.ok) {
-        throw new Error("Unable to search for tracks");
-      }
-
-      const data = await response.json();
-
-      // Extract the tracks from the API response
-      const songs = Array.isArray(data)
-        ? data
-        : Array.isArray(data.tracks)
-          ? data.tracks
-          : data.tracks?.items ?? [];
+      // La recherche passe par la couche api : plus d'URL absolue ici.
+      const songs = await searchTracks(search);
 
       // Display the search results
       setResults(songs);
@@ -68,7 +51,6 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
     setAddingId(trackId);
 
     try {
-      console.log("TRACK TO ADD:", track);
       // Call the function provided by PlaylistPage
       await onAddTrack(track);
     } catch (err) {
@@ -85,13 +67,25 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
       <form className="music-search-form" onSubmit={handleSearch}>
         <input
           type="search"
+          aria-label="Rechercher un titre ou un artiste"
           placeholder="Rechercher un titre ou un artiste..."
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Recherche..." : "Rechercher"}
+        <button
+          className="music-search-submit"
+          type="submit"
+          disabled={loading}
+          aria-label="Rechercher"
+          title="Rechercher"
+        >
+          <i
+            className={`fa-solid ${
+              loading ? "fa-spinner fa-spin" : "fa-magnifying-glass"
+            }`}
+            aria-hidden="true"
+          ></i>
         </button>
       </form>
 
@@ -104,17 +98,22 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
           <h3>Résultats Spotify</h3>
 
           {results.map((track) => {
-            // Get the track information from the API response
-            const trackId = track.id ?? track.external_track_id;
+            // Get the track information from the API response.
+            // The Spotify service returns spotifyId, while playlist tracks
+            // use external_track_id.
+            const trackId =
+              track.spotifyId ?? track.id ?? track.external_track_id;
 
-            const trackTitle = track.name ?? track.title;
+            const trackTitle = track.title ?? track.name;
 
-            const trackArtist = Array.isArray(track.artists)
-              ? track.artists.map((artist) => artist.name).join(", ")
-              : track.artist;
+            const trackArtist = track.artist
+              ? track.artist
+              : Array.isArray(track.artists)
+                ? track.artists.map((artist) => artist.name).join(", ")
+                : "";
 
             // Get the album cover from the Spotify API response
-            const trackImage = track.cover;
+            const trackImage = track.cover ?? track.image_url;
 
             // Check whether the track is already in the playlist
             const alreadyAdded = tracks.some(
@@ -140,21 +139,33 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
                 {/* Add track button */}
                 <button
-                  className="music-add-button"
+                  className={`music-add-button${
+                    alreadyAdded ? " is-added" : ""
+                  }`}
                   type="button"
                   onClick={() => handleAdd(track)}
                   disabled={alreadyAdded || addingId === trackId}
+                  aria-label={
+                    alreadyAdded
+                      ? `${trackTitle} est déjà dans la soirée`
+                      : `Ajouter ${trackTitle}`
+                  }
                   title={
                     alreadyAdded
-                      ? "Déjà ajouté"
+                      ? "Ajouté à la soirée"
                       : "Ajouter le morceau"
                   }
                 >
-                  {alreadyAdded
-                    ? "✓"
-                    : addingId === trackId
-                      ? "…"
-                      : "+"}
+                  {alreadyAdded ? (
+                    <i className="fa-solid fa-check" aria-hidden="true"></i>
+                  ) : addingId === trackId ? (
+                    <i
+                      className="fa-solid fa-spinner fa-spin"
+                      aria-hidden="true"
+                    ></i>
+                  ) : (
+                    <i className="fa-solid fa-plus" aria-hidden="true"></i>
+                  )}
                 </button>
               </div>
             );

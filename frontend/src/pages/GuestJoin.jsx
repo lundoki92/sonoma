@@ -22,6 +22,10 @@ function GuestJoinPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Failed to join");
 
+      // The header reads the pseudo from here until the guest session
+      // endpoint exists.
+      localStorage.setItem("guest_name", data.guest_name);
+
       navigate(`/join/${code}/playlist`);
     } catch (err) {
       setError(err.message);

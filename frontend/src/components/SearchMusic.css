@@ -1,104 +1,212 @@
+/* Recherche Spotify partagée par la création de soirée et l'invitation.
+   Les champs reprennent les tokens globaux : même hauteur, même radius,
+   même taille de texte que les champs du formulaire d'authentification. */
+
 .music-search {
   width: 100%;
-  max-width: 700px;
+  max-width: var(--content-max-width);
 }
 
 .music-search-form {
   display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--section-gap);
 }
 
 .music-search-form input {
   flex: 1;
   min-width: 0;
-  padding: 12px 16px;
-  border: 1px solid #d9d9d9;
-  border-radius: 10px;
-  font-size: 15px;
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  border: var(--card-border);
+  border-radius: var(--control-radius);
+  background-color: #0c0b12;
+  color: #f4f0fa;
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  caret-color: #eaff99;
+  color-scheme: dark;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.music-search-form > button {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 10px;
-  background: #242424;
-  color: white;
+.music-search-form input::placeholder {
+  color: #71717a;
+  opacity: 1;
+}
+
+.music-search-form input:hover:not(:focus) {
+  border-color: #3f3f46;
+  background-color: #121118;
+}
+
+.music-search-form input:focus {
+  outline: none;
+  border-color: #b9a8ff;
+  background-color: #121118;
+  box-shadow: 0 0 0 3px rgba(185, 168, 255, 0.18);
+}
+
+/* Search button: a round icon button sized like the field it submits. */
+.music-search-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--control-height);
+  height: var(--control-height);
+  padding: 0;
+  border: var(--card-border);
+  border-radius: 50%;
+  background-color: var(--card-background);
+  color: #f4f0fa;
+  font-size: var(--button-font-size);
   cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.music-search-submit:hover:not(:disabled) {
+  border-color: #eaff99;
+  color: #eaff99;
+}
+
+.music-search-submit:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.music-search-submit:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.music-search-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .music-results h3 {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-3);
+  color: #cfc8e0;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
 }
 
+/* Chaque résultat est une carte arrondie au maximum, comme les morceaux
+   déjà choisis (.track-item). */
 .music-result {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid #e8e8e8;
+  gap: var(--space-3);
+  margin-bottom: var(--list-gap);
+  padding: 10px var(--space-3) 10px 10px;
+  border: var(--card-border);
+  border-radius: 999px;
+  background-color: var(--card-background);
+  transition: border-color 0.2s ease;
+}
+
+.music-result:hover {
+  border-color: #3f3f46;
 }
 
 /* Display the album cover */
 .music-cover {
   display: block;
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
-  min-height: 56px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 50%;
 }
+
 .music-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: var(--space-1);
   flex: 1;
   min-width: 0;
 }
 
-.music-info strong,
-.music-info span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.music-info strong {
+  color: #f4f0fa;
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  line-height: var(--leading-tight);
 }
 
 .music-info span {
-  color: #777;
-  font-size: 13px;
+  color: #a6a1b4;
+  font-size: var(--text-caption);
+  line-height: var(--leading-tight);
 }
 
+/* Same size as the track remove button and the header icon actions. */
 .music-add-button {
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 38px;
-  height: 38px;
+  justify-content: center;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
   flex-shrink: 0;
-  border: 1px solid #ddd;
+  padding: 0;
+  border: 1px solid #2e2a3d;
   border-radius: 50%;
-  background: white;
-  color: #222;
-  font-size: 25px;
+  background-color: #0c0b12;
+  color: #eaff99;
+  font-size: var(--text-body);
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .music-add-button:hover:not(:disabled) {
-  background: #e8f5e9;
-  border-color: #4caf50;
-  color: #2e7d32;
+  border-color: #eaff99;
+  background-color: rgba(234, 255, 153, 0.12);
+  color: #eaff99;
+}
+
+.music-add-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Morceau déjà choisi : coche verte discrète */
+.music-add-button.is-added {
+  border-color: rgba(0, 230, 160, 0.45);
+  background-color: rgba(0, 230, 160, 0.12);
+  color: #00e6a0;
 }
 
 .music-add-button:disabled {
   cursor: default;
-  opacity: 0.5;
 }
 
-.music-error {
-  color: #c62828;
+.music-add-button.is-added:disabled {
+  opacity: 1;
+}
+
+.music-error,
+.music-empty {
+  margin-bottom: var(--space-3);
+  color: #ffb3b3;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
 }
 
 .music-empty {
-  color: #777;
+  margin-bottom: 0;
+  color: #7b758c;
 }

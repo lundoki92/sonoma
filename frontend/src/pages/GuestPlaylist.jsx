@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
 
 function GuestPlaylistPage() {
@@ -105,6 +105,12 @@ function GuestPlaylistPage() {
           ))}
         </ul>
       )}
+
+      <p>
+        <Link to={`/join/${code}/party/propose`}>
+          Ouvrir l'app de la soirée
+        </Link>
+      </p>
     </main>
   );
 }
