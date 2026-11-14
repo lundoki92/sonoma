@@ -52,6 +52,8 @@
 
   /* Contours et ombres répétés */
   --card-border: 1px solid #2e2a3d;
+  /* Une seule couleur de survol pour toutes les surfaces cliquables. */
+  --card-border-hover: #3f3f46;
   --card-background: #15131d;
   --focus-ring: 2px solid #eaff99;
 

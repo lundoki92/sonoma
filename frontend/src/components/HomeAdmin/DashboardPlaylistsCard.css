@@ -144,10 +144,8 @@
     color 0.25s ease;
 }
 
-.card-live:hover .arrow-btn {
-  background: #eaff99;
-  color: #17141f;
-}
+/* Le survol de la carte est porté par le lien, dans le conteneur : une seule
+   règle pour toutes les cartes ouvrables, live comme en préparation. */
 
 /* RESPONSIVE DESIGN */
 

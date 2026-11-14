@@ -74,11 +74,12 @@
   border-radius: 48px;
 }
 
-/* Une carte ouverte sur quelque chose à faire : le survol et le focus le
-   disent, sans attendre que l'utilisateur essaie au hasard. */
+/* Une carte ouverte sur quelque chose à faire : la bordure se contente de
+   s'éclaircir, comme les autres surfaces de l'app. C'est la flèche qui prend
+   l'accent : elle dit "clique ici", la bordure dit juste "tu es dessus". */
 .dashboard-playlist-link:hover .dashboard-playlist-card,
 .dashboard-playlist-link:focus-visible .dashboard-playlist-card {
-  border-color: #eaff99;
+  border-color: var(--card-border-hover);
 }
 
 .dashboard-playlist-link:hover .arrow-btn,
