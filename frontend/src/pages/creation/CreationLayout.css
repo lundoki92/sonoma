@@ -1,3 +1,5 @@
+/* Gabarit du parcours de création : header d'étape + contenu. */
+
 .creation-layout {
   min-height: 100vh;
   width: 100%;
@@ -18,9 +20,9 @@
   width: 100%;
   height: var(--header-height, 80px);
   box-sizing: border-box;
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 12px var(--header-padding-x, 20px);
+  padding: var(--space-3) var(--header-padding-x, 20px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,52 +36,63 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 32px;
+  min-height: var(--icon-button-size);
 }
 
-.creation-back {
+/* Round icon actions: same target as the party header actions. */
+.creation-back,
+.creation-home {
   position: absolute;
-  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
   padding: 0;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
   color: #f4f0fa;
-  font-size: 13px;
+  font-size: var(--text-body);
   cursor: pointer;
   transition:
     border-color 0.2s ease,
     background-color 0.2s ease;
 }
 
-.creation-back:hover {
+.creation-back {
+  left: 0;
+}
+
+.creation-home {
+  right: 0;
+}
+
+.creation-back:hover,
+.creation-home:hover {
   border-color: rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.06);
 }
 
-.creation-back:focus-visible {
-  outline: 2px solid #eaff99;
+.creation-back:focus-visible,
+.creation-home:focus-visible {
+  outline: var(--focus-ring);
   outline-offset: 2px;
 }
 
 .creation-step {
-  margin: 0;
-  font-size: 13px;
+  font-size: var(--text-caption);
   font-weight: 600;
   letter-spacing: 0.04em;
+  line-height: var(--leading-tight);
   text-transform: uppercase;
   color: #cfc8e0;
 }
 
 .creation-progress {
   display: flex;
-  gap: 6px;
-  margin-top: 12px;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
 }
 
 .creation-progress span {
@@ -99,53 +112,20 @@
 .creation-content {
   flex: 1;
   width: 100%;
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: calc(var(--header-height, 80px) + 26px) var(--header-padding-x, 20px)
-    48px;
+  padding: var(--screen-top-offset) var(--screen-padding-x) var(--space-12);
   box-sizing: border-box;
 }
 
-.creation-status {
-  margin: 0;
-  padding: 40px 0;
-  text-align: center;
-  color: #a1a1aa;
-}
-
+/* The intro is the shared ExplanationText component: only its placement in
+   the wizard is decided here. */
 .creation-intro {
-  margin-bottom: 24px;
+  margin-bottom: var(--section-gap);
 }
 
 .creation-intro .explanation-text {
   padding: 0;
-}
-
-.creation-intro .explanation-text-title {
-  margin-bottom: 10px;
-  font-size: clamp(26px, 7vw, 30px);
-}
-
-.creation-intro .explanation-text-text {
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-.creation-error {
-  margin: 16px 0 0;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 107, 107, 0.35);
-  background-color: rgba(255, 107, 107, 0.1);
-  color: #ffb3b3;
-  font-size: 13px;
-}
-
-.creation-hint {
-  margin: 12px 0 0;
-  text-align: center;
-  font-size: 12px;
-  color: #7b758c;
 }
 
 /* Shared metadata pill lives in global.css as .app-chip */

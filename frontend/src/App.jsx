@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router'
 import CreatePlaylistLayout from './pages/creation/CreatePlaylistLayout.jsx'
 import CreatePlaylistStep1 from './pages/creation/CreatePlaylistStep1.jsx'
 import PlaylistSetup from './pages/creation/PlaylistSetup.jsx'
-import PlaylistShare from './pages/creation/PlaylistShare.jsx'
+import PlaylistLaunch from './pages/creation/PlaylistLaunch.jsx'
 import HomeAdmin from './pages/HomeAdmin.jsx'
 import PartyLayout from './pages/PartyLayout.jsx'
 import PlaylistEntry from './pages/PlaylistEntry.jsx'
@@ -35,13 +35,20 @@ export default function App() {
         <Route index element={<CreatePlaylistStep1 />} />
       </Route>
 
-      {/* Step 2 of a new playlist: the playlist is created in database when
-          this step is validated, with its first tracks. */}
+      {/* Step 2 of a new party: the tracks stay in memory until the last step. */}
       <Route
         path="/createplaylist/setup"
         element={<ProtectedRoutes><CreatePlaylistLayout step={2} backTo="/createplaylist" /></ProtectedRoutes>}
       >
         <Route index element={<PlaylistSetup />} />
+      </Route>
+
+      {/* Step 3: the party is created and opened in one movement. */}
+      <Route
+        path="/createplaylist/invite"
+        element={<ProtectedRoutes><CreatePlaylistLayout step={3} backTo="/createplaylist/setup" /></ProtectedRoutes>}
+      >
+        <Route index element={<PlaylistLaunch />} />
       </Route>
 
       <Route path="/playlist/:id">
@@ -55,26 +62,25 @@ export default function App() {
           <Route path="edit" element={<CreatePlaylistStep1 />} />
         </Route>
 
-        {/* Step 2, existing playlist: add or remove tracks */}
+        {/* Step 2, existing party: add or remove tracks */}
         <Route
           element={<ProtectedRoutes><CreatePlaylistLayout step={2} backTo="edit" /></ProtectedRoutes>}
         >
           <Route path="setup" element={<PlaylistSetup />} />
         </Route>
 
-        {/* Step 3: share the invitation */}
+        {/* Old address of the last creation step: the party is created and
+            opened elsewhere now, so an existing one goes to the app. */}
         <Route
-          element={<ProtectedRoutes><CreatePlaylistLayout step={3} backTo="setup" /></ProtectedRoutes>}
-        >
-          <Route path="share" element={<PlaylistShare />} />
-        </Route>
+          path="share"
+          element={<ProtectedRoutes><Navigate to=".." replace /></ProtectedRoutes>}
+        />
 
         {/* Host party app, outside the creation flow */}
         <Route element={<ProtectedRoutes><PartyLayout role="host" /></ProtectedRoutes>}>
           <Route path="propose" element={<ProposeTab />} />
           <Route path="vote" element={<VoteTab />} />
           <Route path="listen" element={<ListenTab />} />
-          {/* Permanent home of the invite link, reachable from the header */}
           <Route path="invite" element={<InviteRedirect />} />
         </Route>
       </Route>

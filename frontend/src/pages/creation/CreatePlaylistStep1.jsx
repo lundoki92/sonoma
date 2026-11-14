@@ -4,7 +4,8 @@ import { Champ } from "../../components/Champ.jsx";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { STREAMING_SERVICES } from "./services.js";
-import { readPlaylistDraft, savePlaylistDraft } from "./draft.js";
+import { getPlaylist, updatePlaylist } from "../../api/playlists.js";
+import { readWizardState, saveWizardState } from "./wizardState.js";
 import "./CreatePlaylistStep1.css";
 
 // Convert an ISO date into the local value expected by a datetime-local input.
@@ -30,26 +31,29 @@ export default function CreatePlaylistStep1() {
   // (/playlist/:id/edit).
   const isEdit = Boolean(id);
 
-  // When the user comes back from step 2, the form data and the already
-  // chosen tracks are restored from the router state or, if the header
-  // back button was used, from the temporary session draft.
-  const [storedDraft] = useState(() => (isEdit ? null : readPlaylistDraft()));
-  const routeDraft = location.state?.draft;
-  const draft = routeDraft ?? storedDraft?.draft;
-  const draftTracks = routeDraft
+  // En venue depuis l'étape 2, le nom, la date, le service et les morceaux
+  // déjà choisis reviennent via le state du routeur ou, si on est passé par
+  // le bouton retour du header, via le stockage de session.
+  const [storedState] = useState(() => (isEdit ? null : readWizardState()));
+  const routeWizard = location.state?.wizard;
+  const wizard = routeWizard ?? storedState?.wizard ?? null;
+  const wizardTracks = routeWizard
     ? (location.state?.tracks ?? [])
-    : (storedDraft?.tracks ?? []);
+    : (storedState?.tracks ?? []);
 
-  const [name, setName] = useState(draft?.name ?? "");
+  const [name, setName] = useState(wizard?.name ?? "");
   const [dateTime, setDateTime] = useState(
-    draft?.date_time ? toDateTimeLocal(draft.date_time) : "",
+    wizard?.date_time ? toDateTimeLocal(wizard.date_time) : "",
   );
   const [streamingService, setStreamingService] = useState(
-    draft?.streaming_service ?? "spotify",
+    wizard?.streaming_service ?? "spotify",
   );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingPlaylist, setLoadingPlaylist] = useState(isEdit);
+
+  // The main action only becomes available once both required fields are set.
+  const isIncomplete = !name.trim() || !dateTime;
 
   // In edition mode, prefill the form with the existing playlist.
   useEffect(() => {
@@ -59,12 +63,7 @@ export default function CreatePlaylistStep1() {
 
     async function loadPlaylist() {
       try {
-        const response = await fetch(`/api/playlists/${id}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Impossible de charger la soirée");
-        }
+        const data = await getPlaylist(id);
 
         if (cancelled) return;
 
@@ -98,20 +97,19 @@ export default function CreatePlaylistStep1() {
       return;
     }
 
-    const draftData = {
+    const wizard = {
       name: name.trim(),
       date_time: new Date(dateTime).toISOString(),
       streaming_service: streamingService,
     };
 
-    // Creation: nothing is written to the database yet. The playlist and
-    // its tracks are created when step 2 is validated.
+    // Création : rien n'est écrit en base avant la dernière étape.
     if (!isEdit) {
-      savePlaylistDraft({ draft: draftData, tracks: draftTracks });
+      saveWizardState({ wizard, tracks: wizardTracks });
 
       navigate("/createplaylist/setup", {
         replace: true,
-        state: { draft: draftData, tracks: draftTracks },
+        state: { wizard, tracks: wizardTracks },
       });
       return;
     }
@@ -120,25 +118,10 @@ export default function CreatePlaylistStep1() {
     setError("");
 
     try {
-      const response = await fetch(`/api/playlists/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(draftData),
-      });
+      const playlist = await updatePlaylist(id, wizard);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Impossible d'enregistrer ta soirée",
-        );
-      }
-
-      navigate(`/playlist/${data.id}/setup`);
+      navigate(`/playlist/${playlist.id}/setup`);
     } catch (err) {
-      console.error("Error saving playlist:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -146,7 +129,7 @@ export default function CreatePlaylistStep1() {
   }
 
   if (loadingPlaylist) {
-    return <p className="creation-status">Chargement de la soirée…</p>;
+    return <p className="app-status">Chargement de la soirée…</p>;
   }
 
   return (
@@ -219,14 +202,14 @@ export default function CreatePlaylistStep1() {
       </fieldset>
 
       {error && (
-        <p className="creation-error" role="alert">
+        <p className="app-error" role="alert">
           {error}
         </p>
       )}
 
       <Button
         type="submit"
-        disabled={loading}
+        disabled={loading || isIncomplete}
         text={
           loading
             ? "Enregistrement…"

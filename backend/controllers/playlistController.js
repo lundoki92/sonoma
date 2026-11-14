@@ -1,10 +1,15 @@
+import { ErrorHttp } from "../errors.js";
 import {
   createPlaylistService,
   getPlaylistByIdService,
   getPlaylistsByHostService,
-  startPlaylistService,
   updatePlaylistService,
 } from "../services/playlistService.js";
+
+// Les contrôleurs ne font que traduire HTTP ⇄ services.
+// Les erreurs montent en `ErrorHttp` jusqu'au middleware `errorsManagement`,
+// qui est le seul endroit où un code HTTP est choisi (Express 5 propulse
+// automatiquement les promesses rejetées vers ce middleware).
 
 // Services accepted by the API. Only Spotify is wired in the UI for now,
 // the other two are exposed so the data model can already store them.
@@ -20,7 +25,7 @@ function validatePlaylistFields(
   if (required || name !== undefined) {
     // The name must be a non-empty string with a maximum of 100 characters.
     if (typeof name !== "string" || !name.trim() || name.trim().length > 100) {
-      return "Invalid playlist name";
+      throw new ErrorHttp(422, "Le nom de la soirée est invalide.");
     }
   }
 
@@ -31,7 +36,7 @@ function validatePlaylistFields(
       !date_time.trim() ||
       Number.isNaN(Date.parse(date_time))
     ) {
-      return "Invalid playlist date";
+      throw new ErrorHttp(422, "La date de la soirée est invalide.");
     }
   }
 
@@ -39,24 +44,25 @@ function validatePlaylistFields(
     streaming_service !== undefined &&
     !STREAMING_SERVICES.includes(streaming_service)
   ) {
-    return "Invalid streaming service";
+    throw new ErrorHttp(422, "Service de streaming inconnu.");
   }
-
-  return null;
 }
 
-// Validate and normalize the optional first tracks sent with a new playlist.
-// Returns null when one track is invalid.
+// Validate and normalize the first tracks sent with a new playlist.
 function normalizeTracks(tracks) {
   if (tracks === undefined) return [];
 
-  if (!Array.isArray(tracks)) return null;
+  if (!Array.isArray(tracks)) {
+    throw new ErrorHttp(422, "Liste de morceaux invalide.");
+  }
 
   const normalized = [];
   const seen = new Set();
 
   for (const track of tracks) {
-    if (!track || typeof track !== "object") return null;
+    if (!track || typeof track !== "object") {
+      throw new ErrorHttp(422, "Liste de morceaux invalide.");
+    }
 
     const {
       external_track_id,
@@ -88,14 +94,17 @@ function normalizeTracks(tracks) {
         spotify_uri !== null &&
         typeof spotify_uri !== "string")
     ) {
-      return null;
+      throw new ErrorHttp(422, "Données de morceau invalides.");
     }
 
     const externalId = external_track_id.trim();
 
-    // The database rejects duplicates inside a playlist; catch them before
-    // starting the transaction to return a clear 400 instead of a 500.
-    if (seen.has(externalId)) return null;
+    // La base refuse les doublons dans une même soirée : on les voit ici pour
+    // répondre un 422 clair plutôt qu'un 409 en fin de transaction.
+    if (seen.has(externalId)) {
+      throw new ErrorHttp(422, "Un morceau est proposé deux fois.");
+    }
+
     seen.add(externalId);
 
     normalized.push({
@@ -111,175 +120,88 @@ function normalizeTracks(tracks) {
   return normalized;
 }
 
-// Handle the creation of a new playlist.
-export async function createPlaylistController(req, res) {
-  try {
-    const {
-      name,
-      date_time,
-      streaming_service = "spotify",
-      tracks,
-    } = req.body;
-    const host_id = req.user.id;
-
-    const validationError = validatePlaylistFields(
-      { name, date_time, streaming_service },
-      { required: true },
-    );
-
-    if (validationError) {
-      return res.status(400).json({ error: validationError });
-    }
-
-    const normalizedTracks = normalizeTracks(tracks);
-
-    if (normalizedTracks === null) {
-      return res.status(400).json({ error: "Invalid track data" });
-    }
-
-    if (!Number.isInteger(host_id) || host_id <= 0) {
-      return res.status(400).json({ error: "Invalid host ID" });
-    }
-
-    // Delegate the business logic to the service layer.
-    const playlist = await createPlaylistService(
-      name,
-      date_time,
-      host_id,
-      streaming_service,
-      normalizedTracks,
-    );
-
-    // Return the newly created playlist.
-    return res.status(201).json(playlist);
-  } catch (error) {
-    // Log unexpected errors on the server.
-    console.error("Error creating playlist:", error);
-
-    return res.status(500).json({
-      error: "Failed to create playlist",
-    });
+// Read a numeric id, or answer 400.
+function parseId(value) {
+  if (!/^\d+$/.test(value)) {
+    throw new ErrorHttp(400, "Identifiant de soirée invalide.");
   }
+
+  return value;
 }
 
-// Handle the launch of a party: the playlist becomes active.
-export async function startPlaylistController(req, res) {
-  try {
-    const { id } = req.params;
+// Create a party and open it: this is the last step of the wizard.
+export async function createPlaylistController(req, res) {
+  const {
+    name,
+    date_time,
+    streaming_service = "spotify",
+    tracks,
+  } = req.body;
+  const host_id = req.user.id;
 
-    if (!/^\d+$/.test(id)) {
-      return res.status(400).json({ error: "Invalid playlist ID" });
-    }
+  validatePlaylistFields(
+    { name, date_time, streaming_service },
+    { required: true },
+  );
 
-    const playlist = await startPlaylistService(id, req.user.id);
+  const normalizedTracks = normalizeTracks(tracks);
 
-    if (!playlist) {
-      return res.status(404).json({ error: "Playlist not found" });
-    }
-
-    return res.status(200).json(playlist);
-  } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({ error: error.message });
-    }
-
-    console.error("Error starting playlist:", error);
-
-    return res.status(500).json({
-      error: "Failed to start playlist",
-    });
+  if (!Number.isInteger(host_id) || host_id <= 0) {
+    throw new ErrorHttp(401, "Session invalide.");
   }
+
+  // Delegate the business logic to the service layer.
+  const playlist = await createPlaylistService(
+    name,
+    date_time,
+    host_id,
+    streaming_service,
+    normalizedTracks,
+  );
+
+  return res.status(201).json(playlist);
 }
 
 // Handle the edition of an existing playlist.
 export async function updatePlaylistController(req, res) {
-  try {
-    const { id } = req.params;
+  const id = parseId(req.params.id);
+  const { name, date_time, streaming_service } = req.body;
 
-    // Ensure that the playlist ID contains only digits.
-    if (!/^\d+$/.test(id)) {
-      return res.status(400).json({ error: "Invalid playlist ID" });
-    }
+  validatePlaylistFields(
+    { name, date_time, streaming_service },
+    { required: false },
+  );
 
-    const { name, date_time, streaming_service } = req.body;
-
-    const validationError = validatePlaylistFields(
-      { name, date_time, streaming_service },
-      { required: false },
-    );
-
-    if (validationError) {
-      return res.status(400).json({ error: validationError });
-    }
-
-    if (
-      name === undefined &&
-      date_time === undefined &&
-      streaming_service === undefined
-    ) {
-      return res.status(400).json({ error: "No fields to update" });
-    }
-
-    // The service checks that the playlist belongs to the host.
-    const playlist = await updatePlaylistService(id, req.user.id, {
-      name,
-      date_time,
-      streaming_service,
-    });
-
-    if (!playlist) {
-      return res.status(404).json({ error: "Playlist not found" });
-    }
-
-    return res.status(200).json(playlist);
-  } catch (error) {
-    console.error("Error updating playlist:", error);
-
-    return res.status(500).json({
-      error: "Failed to update playlist",
-    });
+  if (
+    name === undefined &&
+    date_time === undefined &&
+    streaming_service === undefined
+  ) {
+    throw new ErrorHttp(400, "Aucun champ à modifier.");
   }
+
+  // The service answers 404 when the party does not belong to this host.
+  const playlist = await updatePlaylistService(id, req.user.id, {
+    name,
+    date_time,
+    streaming_service,
+  });
+
+  return res.status(200).json(playlist);
 }
 
 // Handle the retrieval of a playlist by its ID.
 export async function getPlaylistByIdController(req, res) {
-  try {
-    const { id } = req.params;
+  const id = parseId(req.params.id);
 
-    // Ensure that the playlist ID contains only digits.
-    if (!/^\d+$/.test(id)) {
-      return res.status(400).json({
-        error: "Invalid playlist ID",
-      });
-    }
+  const playlist = await getPlaylistByIdService(id, req.user.id);
 
-    // Ask the service layer to retrieve the playlist.
-    const playlist = await getPlaylistByIdService(id, req.user.id);
-
-    // Return 404 if the playlist does not exist.
-    if (!playlist) {
-      return res.status(404).json({
-        error: "Playlist not found",
-      });
-    }
-
-    // Return the playlist data.
-    return res.status(200).json(playlist);
-  } catch (error) {
-    console.error("Error fetching playlist:", error);
-
-    return res.status(500).json({
-      error: "Failed to fetch playlist",
-    });
-  }
+  return res.status(200).json(playlist);
 }
 
+// Handle the retrieval of every party owned by the host.
 export async function getMyPlaylistsController(req, res) {
-  try {
-    const playlists = await getPlaylistsByHostService(req.user.id);
-    return res.status(200).json(playlists);
-  } catch (error) {
-    console.error("Error fetching playlists:", error);
-    return res.status(500).json({ error: "Failed to fetch playlists" });
-  }
+  const playlists = await getPlaylistsByHostService(req.user.id);
+
+  return res.status(200).json(playlists);
 }

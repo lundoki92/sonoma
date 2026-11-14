@@ -1,9 +1,9 @@
 // État d'une soirée, tel qu'il doit être affiché à l'écran.
 //
-// Deux questions comptent au dashboard : la préparation est-elle terminée,
-// et le jour est-il passé ?
+// Une seule question reste utile au dashboard : est-ce que le jour est passé ?
+// Il n'existe plus d'état intermédiaire : une soirée est créée déjà ouverte,
+// donc `active` = invitée, et le temps qui passe la termine.
 const STATES = {
-  draft: { key: "draft", label: "Brouillon", badge: "preparing" },
   live: { key: "live", label: "En direct", badge: "live" },
   past: { key: "past", label: "Terminée", badge: "past" },
   archived: { key: "archived", label: "Archivée", badge: "archived" },
@@ -11,7 +11,7 @@ const STATES = {
 };
 
 // Ordre d'affichage sur le dashboard : ce qui se joue, puis ce qui est joué.
-export const STATE_ORDER = ["live", "draft", "past", "archived", "unknown"];
+export const STATE_ORDER = ["live", "past", "archived", "unknown"];
 
 // Même jour calendaire, à la date locale près.
 function isSameDay(a, b) {
@@ -45,9 +45,10 @@ export function getPartyState(playlist, now = new Date()) {
   return STATES.live;
 }
 
-// Une soirée archivée est fermée : on la lit sur la carte, on ne l'ouvre plus.
+// Une soirée passée ou archivée est de l'historique : on la lit sur la carte,
+// on ne l'ouvre plus.
 export function isPartyActionable(playlist, now = new Date()) {
   const { key } = getPartyState(playlist, now);
 
-  return key !== "archived";
+  return key === "live";
 }

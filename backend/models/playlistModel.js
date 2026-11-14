@@ -1,35 +1,9 @@
 import pool from "../server/db.js";
 
-// Insert a new playlist into the database.
-export async function createPlaylistModel(
-  name,
-  date_time,
-  hostId,
-  inviteCode,
-  streamingService = "spotify",
-) {
-  const result = await pool.query(
-    `
-      INSERT INTO playlists (
-        name,
-        date_time,
-        host_id,
-        invite_code,
-        streaming_service
-      )
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;
-    `,
-    [name, date_time, hostId, inviteCode, streamingService],
-  );
-
-  // Return the newly created playlist.
-  return result.rows[0];
-}
-
-// Create a playlist and its first tracks in a single transaction.
-// If one track cannot be inserted, nothing is written to the database.
-export async function createPlaylistWithTracksModel(
+// Crée la soirée et ses premiers morceaux dans une seule transaction, et la
+// crée déjà ouverte : il n'existe plus d'état intermédiaire entre la fin du
+// wizard et l'invitation active. Si un morceau échoue, rien n'est écrit.
+export async function createActivePlaylistWithTracksModel(
   name,
   dateTime,
   hostId,
@@ -49,9 +23,10 @@ export async function createPlaylistWithTracksModel(
           date_time,
           host_id,
           invite_code,
-          streaming_service
+          streaming_service,
+          status
         )
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1, $2, $3, $4, $5, 'active')
         RETURNING *;
       `,
       [name, dateTime, hostId, inviteCode, streamingService],
@@ -73,7 +48,7 @@ export async function createPlaylistWithTracksModel(
             duration_ms,
             status
           )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, 'proposed')
+          VALUES ($1, $2, $3, $4, $5, $6, $7, 'voting')
           RETURNING *;
         `,
         [
@@ -101,22 +76,6 @@ export async function createPlaylistWithTracksModel(
   }
 }
 
-// Mark a playlist as active. Only a playlist owned by the host and still
-// being prepared can be started.
-export async function startPlaylistByIdAndHostModel(id, hostId) {
-  const result = await pool.query(
-    `
-      UPDATE playlists
-      SET status = 'active'
-      WHERE id = $1 AND host_id = $2 AND status = 'preparing'
-      RETURNING *;
-    `,
-    [id, hostId],
-  );
-
-  return result.rows[0] ?? null;
-}
-
 // Update the editable fields of a playlist owned by a host.
 // A null value leaves the existing column unchanged.
 export async function updatePlaylistByIdAndHostModel(
@@ -141,6 +100,36 @@ export async function updatePlaylistByIdAndHostModel(
 }
 
 // Retrieve all playlists that belong to a given host.
+// Normalisation paresseuse des données héritées de l'ancien système de
+// brouillon. Une soirée en `preparing` ne peut plus être créée depuis que la
+// création ouvre la soirée, et un morceau en `proposed` n'entre dans aucun
+// vote : sans ce passage, ces lignes resteraient bloquées chez les personnes
+// qui les ont produites avant la bascule. Idempotent et sans migration SQL à
+// faire tourner.
+export async function normalizeLegacyPartyModel(hostId) {
+  const result = await pool.query(
+    `
+      WITH reopened AS (
+        UPDATE playlists
+        SET status = 'active'
+        WHERE host_id = $1 AND status = 'preparing'
+        RETURNING id
+      )
+      UPDATE tracks
+      SET status = 'voting'
+      WHERE status = 'proposed'
+        AND playlist_id IN (
+          SELECT id FROM playlists WHERE host_id = $1
+          UNION
+          SELECT id FROM reopened
+        )
+    `,
+    [hostId],
+  );
+
+  return result.rowCount;
+}
+
 // Récupère toutes les soirées d'un hôte, avec deux compteurs calculés à la
 // volée : le nombre de morceaux proposés et le nombre d'invités rejoints.
 // Aucune colonne ajoutée en base, ce sont des agrégats sur les tables déjà là.
@@ -168,6 +157,7 @@ export async function getPlaylistsByHostIdModel(hostId) {
 }
 
 // Retrieve a playlist only if it belongs to the given host.
+// Same counters as the list, so one screen can show them without a second call.
 export async function getPlaylistByIdAndHostModel(id, hostId) {
   const result = await pool.query(
     `

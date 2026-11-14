@@ -1,30 +1,30 @@
+/* Étape 1 : nom, date et service de streaming. */
+
 .creation-form {
   display: flex;
   flex-direction: column;
 }
 
-/* Same rhythm as the auth form. */
+/* Un seul rythme vertical pour tous les formulaires de l'application,
+   identique à celui de la carte d'authentification. */
 .creation-form .champ {
-  margin-bottom: 18px;
-}
-
-.creation-form .button {
-  margin-top: 8px;
+  margin-bottom: var(--field-gap);
 }
 
 .creation-field {
   min-width: 0;
-  margin: 0 0 20px;
+  margin-bottom: var(--field-gap);
   padding: 0;
   border: none;
 }
 
 .creation-field > legend {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   padding: 0;
-  font-size: 17px;
+  font-size: var(--text-label);
   font-weight: 600;
+  line-height: var(--leading-tight);
   letter-spacing: 0.01em;
   color: #f4f0fa;
 }
@@ -43,13 +43,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   min-height: 104px;
-  padding: 14px 8px;
-  box-sizing: border-box;
-  border: 1px solid #2e2a3d;
+  padding: var(--space-3) var(--space-2);
+  border: var(--card-border);
   border-radius: 18px;
-  background-color: #15131d;
+  background-color: var(--card-background);
   color: #cfc8e0;
   cursor: pointer;
   transition:
@@ -59,7 +58,7 @@
 }
 
 .service-card i {
-  font-size: 26px;
+  font-size: var(--text-hero);
 }
 
 .service-card:hover {
@@ -80,7 +79,7 @@
 }
 
 .service-card:has(input:focus-visible) {
-  outline: 2px solid #eaff99;
+  outline: var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -95,20 +94,22 @@
 
 .service-badge {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: var(--space-2);
+  right: var(--space-2);
   padding: 2px 7px;
   border-radius: 999px;
   background-color: #2a2735;
   color: #a1a1aa;
-  font-size: 9px;
+  font-size: var(--text-micro);
   font-weight: 700;
   letter-spacing: 0.04em;
+  line-height: var(--leading-tight);
   text-transform: uppercase;
 }
 
 .service-name {
-  line-height: 1.2;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-tight);
   text-align: center;
 }
 
@@ -120,7 +121,7 @@
   .service-card {
     flex-direction: row;
     justify-content: flex-start;
-    min-height: 64px;
-    padding: 12px 16px;
+    min-height: var(--control-height);
+    padding: var(--space-3) var(--space-4);
   }
 }

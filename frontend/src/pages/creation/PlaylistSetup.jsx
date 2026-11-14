@@ -6,97 +6,64 @@ import {
   useParams,
 } from "react-router";
 import SearchMusic from "../../components/SearchMusic";
+import TrackList from "../../components/TrackList.jsx";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { getServiceIcon, getServiceLabel } from "./services.js";
+import { normalizeTrack } from "../../utils/tracks.js";
 import {
-  clearPlaylistDraft,
-  readPlaylistDraft,
-  savePlaylistDraft,
-} from "./draft.js";
+  addHostTrack,
+  getPlaylist,
+  listHostTracks,
+  removeHostTrack,
+} from "../../api/playlists.js";
+import { readWizardState, saveWizardState } from "./wizardState.js";
 import "./PlaylistSetup.css";
-
-// Turn a Spotify search result into the payload expected by the API.
-function normalizeTrack(track) {
-  const externalId = track.spotifyId ?? track.external_track_id;
-
-  const artist = track.artist
-    ? track.artist
-    : Array.isArray(track.artists)
-      ? track.artists.map((item) => item.name).join(", ")
-      : "";
-
-  return {
-    external_track_id: externalId,
-    spotify_uri:
-      track.uri ??
-      track.spotify_uri ??
-      (externalId ? `spotify:track:${externalId}` : null),
-    title: track.title ?? track.name,
-    artist,
-    image_url: track.cover ?? track.image_url ?? null,
-    duration_ms: track.durationMs ?? track.duration_ms,
-  };
-}
 
 export default function PlaylistSetup() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Without an ID, the playlist is still a client-side draft. With an ID,
-  // this screen edits an existing playlist stored in the database.
-  const isDraft = !id;
+  // Sans id, on est dans le parcours de création : rien n'est encore écrit
+  // en base, les morceaux restent en mémoire jusqu'à la dernière étape.
+  // Avec un id, cette écran ajoute des morceaux à une soirée déjà ouverte.
+  const isCreating = !id;
 
-  const [storedDraft] = useState(() =>
-    isDraft ? readPlaylistDraft() : null,
+  const [storedState] = useState(() =>
+    isCreating ? readWizardState() : null,
   );
-  const draft = location.state?.draft ?? storedDraft?.draft;
-  const initialTracks =
-    location.state?.tracks ?? storedDraft?.tracks ?? [];
+  const wizard = location.state?.wizard ?? storedState?.wizard ?? null;
+  const initialTracks = location.state?.tracks ?? storedState?.tracks ?? [];
 
-  const [playlist, setPlaylist] = useState(() => {
-    if (!isDraft || !draft) return null;
-
-    return {
-      name: draft.name,
-      date_time: draft.date_time,
-      streaming_service: draft.streaming_service,
-    };
-  });
-  const [tracks, setTracks] = useState(isDraft ? initialTracks : []);
+  const [playlist, setPlaylist] = useState(() =>
+    isCreating ? wizard : null,
+  );
+  const [tracks, setTracks] = useState(isCreating ? initialTracks : []);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(!isDraft);
+  const [loading, setLoading] = useState(!isCreating);
   const [removingKey, setRemovingKey] = useState(null);
-  const [creating, setCreating] = useState(false);
 
-  // Keep the temporary draft in sync so the header back button can restore
-  // both the form and the chosen tracks.
+  // Le state du wizard est recopié en session storage pour que le bouton
+  // retour du header, ou un refresh, ramène exactement au même endroit.
   useEffect(() => {
-    if (!isDraft || !draft) return;
+    if (!isCreating || !wizard) return;
 
-    savePlaylistDraft({ draft, tracks });
-  }, [isDraft, draft, tracks]);
+    saveWizardState({ wizard, tracks });
+  }, [isCreating, wizard, tracks]);
 
-  // Existing playlist: load its data and host tracks from the API.
+  // Soirée déjà ouverte : on charge ses morceaux depuis l'API.
   useEffect(() => {
-    if (isDraft) return undefined;
+    if (isCreating) return undefined;
 
     let cancelled = false;
 
     async function fetchPlaylist() {
       try {
-        const [playlistResponse, tracksResponse] = await Promise.all([
-          fetch(`/api/playlists/${id}`),
-          fetch(`/api/playlists/${id}/tracks`),
+        const [playlistData, tracksData] = await Promise.all([
+          getPlaylist(id),
+          listHostTracks(id),
         ]);
-
-        if (!playlistResponse.ok || !tracksResponse.ok) {
-          throw new Error("Impossible de charger la soirée");
-        }
-
-        const playlistData = await playlistResponse.json();
-        const tracksData = await tracksResponse.json();
 
         if (!cancelled) {
           setPlaylist(playlistData);
@@ -114,14 +81,14 @@ export default function PlaylistSetup() {
     return () => {
       cancelled = true;
     };
-  }, [id, isDraft]);
+  }, [id, isCreating]);
 
-  // Save a Spotify track: locally while the playlist is a draft, directly
-  // in the database once the playlist exists.
+  // En création, un morceau s'ajoute localement. Sur une soirée ouverte, il
+  // rejoint directement le vote.
   async function handleAddTrack(spotifyTrack) {
     const normalized = normalizeTrack(spotifyTrack);
 
-    if (isDraft) {
+    if (isCreating) {
       setTracks((previousTracks) => {
         const alreadyAdded = previousTracks.some(
           (track) =>
@@ -134,39 +101,26 @@ export default function PlaylistSetup() {
       return;
     }
 
+    setError("");
+
     try {
-      setError("");
+      const track = await addHostTrack(id, normalized);
 
-      const response = await fetch(`/api/playlists/${id}/tracks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(normalized),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Impossible d'ajouter le morceau");
-      }
-
-      setTracks((previousTracks) => [data, ...previousTracks]);
+      setTracks((previousTracks) => [track, ...previousTracks]);
     } catch (err) {
       setError(err.message);
+      // SearchMusic affiche l'\u00e9chec sur le bouton : on le laisse remonter.
       throw err;
     }
   }
 
-  // Remove a track: locally for a draft, through the API for a saved playlist.
   async function handleRemoveTrack(track) {
     const trackKey = track.id ?? track.external_track_id;
 
-    if (isDraft) {
+    if (isCreating) {
       setTracks((previousTracks) =>
         previousTracks.filter(
-          (item) =>
-            (item.id ?? item.external_track_id) !== trackKey,
+          (item) => (item.id ?? item.external_track_id) !== trackKey,
         ),
       );
 
@@ -177,16 +131,7 @@ export default function PlaylistSetup() {
     setError("");
 
     try {
-      const response = await fetch(
-        `/api/playlists/${id}/tracks/${track.id}`,
-        { method: "DELETE" },
-      );
-
-      const data = await response.json().catch(() => null);
-
-      if (!response.ok) {
-        throw new Error(data?.error || "Impossible de retirer le morceau");
-      }
+      await removeHostTrack(id, track.id);
 
       setTracks((previousTracks) =>
         previousTracks.filter((item) => item.id !== track.id),
@@ -198,57 +143,33 @@ export default function PlaylistSetup() {
     }
   }
 
-  // Validate step 2: this is where the playlist and its tracks are actually
-  // created in the database.
-  async function handleNext() {
-    if (!isDraft) {
-      navigate(`/playlist/${id}/share`);
+  // Dernière étape de la création : on passe le nom, la date, le service et
+  // les morceaux choisis. La soirée n'existera en base qu'au clic final.
+  function handleNext() {
+    if (isCreating) {
+      if (!wizard) return;
+
+      navigate("/createplaylist/invite", {
+        replace: true,
+        state: { wizard, tracks },
+      });
       return;
     }
 
-    if (!draft) return;
-
-    setCreating(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/playlists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...draft,
-          tracks: tracks.map(normalizeTrack),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Impossible de créer la soirée");
-      }
-
-      clearPlaylistDraft();
-      navigate(`/playlist/${data.id}/share`, { replace: true });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setCreating(false);
-    }
+    navigate(`/playlist/${id}/propose`);
   }
 
-  if (isDraft && !draft) {
+  if (isCreating && !wizard) {
     return <Navigate to="/createplaylist" replace />;
   }
 
   if (loading) {
-    return <p className="creation-status">Chargement de la soirée…</p>;
+    return <p className="app-status">Chargement de la soirée…</p>;
   }
 
   if (!playlist) {
     return (
-      <p className="creation-status">{error || "Soirée introuvable"}</p>
+      <p className="app-status">{error || "Soirée introuvable"}</p>
     );
   }
 
@@ -258,11 +179,11 @@ export default function PlaylistSetup() {
         <ExplanationText
           hasAppTitle={false}
           title="Ajoute les premiers morceaux"
-          text="Recherche dans le catalogue Spotify et prépare l'ambiance de ta soirée."
+          text="Recherche dans le catalogue Spotify et prépare l'ambiance de ta soirée. Tu peux passer cette étape : une soirée peut démarrer sans morceau."
         />
       </div>
 
-      <div className="setup-playlist-meta">
+      <div className="app-meta-row">
         <span className="app-chip">
           <i className="fa-solid fa-compact-disc" aria-hidden="true"></i>
           {playlist.name}
@@ -288,75 +209,24 @@ export default function PlaylistSetup() {
       <SearchMusic onAddTrack={handleAddTrack} tracks={tracks} />
 
       {error && (
-        <p className="creation-error" role="alert">
+        <p className="app-error" role="alert">
           {error}
         </p>
       )}
 
-      <section className="setup-section">
-        <h2>Morceaux de la soirée ({tracks.length})</h2>
-
-        {tracks.length === 0 ? (
-          <p className="setup-empty">
-            Aucun morceau pour le moment. Tu pourras en ajouter plus tard,
-            depuis l'app de la soirée.
-          </p>
-        ) : (
-          <ul className="setup-track-list">
-            {tracks.map((track) => {
-              const trackKey = track.id ?? track.external_track_id;
-
-              return (
-                <li className="setup-track" key={trackKey}>
-                  {track.image_url && (
-                    <img src={track.image_url} alt="" width="44" height="44" />
-                  )}
-
-                  <div className="setup-track-info">
-                    <span className="setup-track-title">{track.title}</span>
-                    <span className="setup-track-artist">{track.artist}</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    className="setup-track-remove"
-                    onClick={() => handleRemoveTrack(track)}
-                    disabled={removingKey === trackKey}
-                    aria-label={`Retirer ${track.title} de la soirée`}
-                    title="Retirer le morceau"
-                  >
-                    <i
-                      className={`fa-solid ${
-                        removingKey === trackKey
-                          ? "fa-spinner fa-spin"
-                          : "fa-xmark"
-                      }`}
-                      aria-hidden="true"
-                    ></i>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+      <TrackList
+        heading={`Morceaux de la soirée (${tracks.length})`}
+        tracks={tracks}
+        emptyText="Aucun morceau pour le moment. Tu pourras en ajouter plus tard, depuis l'app de la soirée."
+        onRemove={handleRemoveTrack}
+        removingKey={removingKey}
+      />
 
       <Button
         type="button"
         onClick={handleNext}
-        disabled={creating}
-        text={
-          creating
-            ? "Création…"
-            : isDraft
-              ? "Créer ma soirée"
-              : "Suivant"
-        }
+        text={isCreating ? "Continuer" : "Entrer dans la soirée"}
       />
-
-      <p className="creation-hint">
-        Tu peux passer cette étape : une soirée peut démarrer sans morceau.
-      </p>
     </div>
   );
 }

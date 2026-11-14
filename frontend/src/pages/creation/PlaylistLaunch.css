@@ -1,0 +1,29 @@
+/* Étape 3 : récapitulatif, puis une seule action qui crée et ouvre la soirée. */
+
+.launch-step {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Le lien d'invitation n'existe pas encore : on dit où il sera. */
+.launch-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: var(--card-border);
+  border-radius: 14px;
+  background-color: var(--card-background);
+  color: #a6a1b4;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
+}
+
+.launch-note i {
+  color: #eaff99;
+  font-size: var(--text-body);
+}
+
+.launch-step .button {
+  margin-top: var(--space-6);
+}

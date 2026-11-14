@@ -18,11 +18,7 @@ export default function CreatePlaylistLayout({
 
   return (
     <div className="creation-layout">
-      <CreationHeader
-        step={step}
-        totalSteps={totalSteps}
-        backTo={backTarget}
-      />
+      <CreationHeader step={step} totalSteps={totalSteps} backTo={backTarget} />
 
       <main className="creation-content">
         <Outlet />
