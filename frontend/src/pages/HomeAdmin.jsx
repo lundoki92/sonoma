@@ -25,12 +25,13 @@ export default function Home() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Failed to load playlists");
+          throw new Error(
+            data.message || data.error || "Impossible de charger les soirées",
+          );
         }
 
         setPlaylists(data);
       } catch (err) {
-        console.error("Error loading playlists:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -51,13 +52,14 @@ export default function Home() {
       />
 
       <Button
+        className="dashboard-create-button"
         text="Créer une nouvelle soirée"
         onClick={() => navigate("/createplaylist")}
       />
 
-      {loading && <p>Chargement...</p>}
+      {loading && <p className="app-status">Chargement…</p>}
 
-      {error && <p role="alert">{error}</p>}
+      {error && <p className="app-status" role="alert">{error}</p>}
 
       {!loading && !error && (
         <DashboardPlaylistsContainer playlists={playlists} />
