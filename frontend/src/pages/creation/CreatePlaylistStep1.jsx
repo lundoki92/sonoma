@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Champ } from "../../components/Champ.jsx";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { STREAMING_SERVICES } from "./services.js";
+import { readPlaylistDraft, savePlaylistDraft } from "./draft.js";
 import "./CreatePlaylistStep1.css";
 
 // Convert an ISO date into the local value expected by a datetime-local input.
@@ -22,15 +23,30 @@ function toDateTimeLocal(value) {
 
 export default function CreatePlaylistStep1() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
 
   // The same screen handles creation (/createplaylist) and edition
   // (/playlist/:id/edit).
   const isEdit = Boolean(id);
 
-  const [name, setName] = useState("");
-  const [dateTime, setDateTime] = useState("");
-  const [streamingService, setStreamingService] = useState("spotify");
+  // When the user comes back from step 2, the form data and the already
+  // chosen tracks are restored from the router state or, if the header
+  // back button was used, from the temporary session draft.
+  const [storedDraft] = useState(() => (isEdit ? null : readPlaylistDraft()));
+  const routeDraft = location.state?.draft;
+  const draft = routeDraft ?? storedDraft?.draft;
+  const draftTracks = routeDraft
+    ? (location.state?.tracks ?? [])
+    : (storedDraft?.tracks ?? []);
+
+  const [name, setName] = useState(draft?.name ?? "");
+  const [dateTime, setDateTime] = useState(
+    draft?.date_time ? toDateTimeLocal(draft.date_time) : "",
+  );
+  const [streamingService, setStreamingService] = useState(
+    draft?.streaming_service ?? "spotify",
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingPlaylist, setLoadingPlaylist] = useState(isEdit);
@@ -82,24 +98,35 @@ export default function CreatePlaylistStep1() {
       return;
     }
 
+    const draftData = {
+      name: name.trim(),
+      date_time: new Date(dateTime).toISOString(),
+      streaming_service: streamingService,
+    };
+
+    // Creation: nothing is written to the database yet. The playlist and
+    // its tracks are created when step 2 is validated.
+    if (!isEdit) {
+      savePlaylistDraft({ draft: draftData, tracks: draftTracks });
+
+      navigate("/createplaylist/setup", {
+        replace: true,
+        state: { draft: draftData, tracks: draftTracks },
+      });
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch(
-        isEdit ? `/api/playlists/${id}` : "/api/playlists",
-        {
-          method: isEdit ? "PATCH" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: name.trim(),
-            date_time: new Date(dateTime).toISOString(),
-            streaming_service: streamingService,
-          }),
+      const response = await fetch(`/api/playlists/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(draftData),
+      });
 
       const data = await response.json();
 
@@ -205,7 +232,7 @@ export default function CreatePlaylistStep1() {
             ? "Enregistrement…"
             : isEdit
               ? "Enregistrer et continuer"
-              : "Créer ma soirée"
+              : "Continuer"
         }
       />
     </form>

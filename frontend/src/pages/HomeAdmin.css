@@ -17,8 +17,8 @@
   margin: 0 auto;
   box-sizing: border-box;
 
-  /* 108px de Header + 32px d'espacement */
-  padding-top: 140px;
+  /* Espace sous le header commun (80px) */
+  padding-top: calc(var(--header-height, 80px) + 32px);
 }
 
 /* RESPONSIVE */

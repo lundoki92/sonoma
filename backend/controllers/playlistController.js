@@ -2,6 +2,7 @@ import {
   createPlaylistService,
   getPlaylistByIdService,
   getPlaylistsByHostService,
+  startPlaylistService,
   updatePlaylistService,
 } from "../services/playlistService.js";
 
@@ -44,10 +45,81 @@ function validatePlaylistFields(
   return null;
 }
 
+// Validate and normalize the optional first tracks sent with a new playlist.
+// Returns null when one track is invalid.
+function normalizeTracks(tracks) {
+  if (tracks === undefined) return [];
+
+  if (!Array.isArray(tracks)) return null;
+
+  const normalized = [];
+  const seen = new Set();
+
+  for (const track of tracks) {
+    if (!track || typeof track !== "object") return null;
+
+    const {
+      external_track_id,
+      spotify_uri,
+      title,
+      artist,
+      image_url,
+      duration_ms,
+    } = track;
+
+    const duration = Number(duration_ms);
+
+    if (
+      typeof external_track_id !== "string" ||
+      !external_track_id.trim() ||
+      typeof title !== "string" ||
+      !title.trim() ||
+      typeof artist !== "string" ||
+      !artist.trim() ||
+      duration_ms === null ||
+      duration_ms === undefined ||
+      (typeof duration_ms === "string" && !duration_ms.trim()) ||
+      !Number.isSafeInteger(duration) ||
+      duration <= 0 ||
+      (image_url !== undefined &&
+        image_url !== null &&
+        typeof image_url !== "string") ||
+      (spotify_uri !== undefined &&
+        spotify_uri !== null &&
+        typeof spotify_uri !== "string")
+    ) {
+      return null;
+    }
+
+    const externalId = external_track_id.trim();
+
+    // The database rejects duplicates inside a playlist; catch them before
+    // starting the transaction to return a clear 400 instead of a 500.
+    if (seen.has(externalId)) return null;
+    seen.add(externalId);
+
+    normalized.push({
+      external_track_id: externalId,
+      spotify_uri: spotify_uri?.trim() || null,
+      title: title.trim(),
+      artist: artist.trim(),
+      image_url: image_url?.trim() || null,
+      duration_ms: duration,
+    });
+  }
+
+  return normalized;
+}
+
 // Handle the creation of a new playlist.
 export async function createPlaylistController(req, res) {
   try {
-    const { name, date_time, streaming_service = "spotify" } = req.body;
+    const {
+      name,
+      date_time,
+      streaming_service = "spotify",
+      tracks,
+    } = req.body;
     const host_id = req.user.id;
 
     const validationError = validatePlaylistFields(
@@ -57,6 +129,12 @@ export async function createPlaylistController(req, res) {
 
     if (validationError) {
       return res.status(400).json({ error: validationError });
+    }
+
+    const normalizedTracks = normalizeTracks(tracks);
+
+    if (normalizedTracks === null) {
+      return res.status(400).json({ error: "Invalid track data" });
     }
 
     if (!Number.isInteger(host_id) || host_id <= 0) {
@@ -69,6 +147,7 @@ export async function createPlaylistController(req, res) {
       date_time,
       host_id,
       streaming_service,
+      normalizedTracks,
     );
 
     // Return the newly created playlist.
@@ -79,6 +158,35 @@ export async function createPlaylistController(req, res) {
 
     return res.status(500).json({
       error: "Failed to create playlist",
+    });
+  }
+}
+
+// Handle the launch of a party: the playlist becomes active.
+export async function startPlaylistController(req, res) {
+  try {
+    const { id } = req.params;
+
+    if (!/^\d+$/.test(id)) {
+      return res.status(400).json({ error: "Invalid playlist ID" });
+    }
+
+    const playlist = await startPlaylistService(id, req.user.id);
+
+    if (!playlist) {
+      return res.status(404).json({ error: "Playlist not found" });
+    }
+
+    return res.status(200).json(playlist);
+  } catch (error) {
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+
+    console.error("Error starting playlist:", error);
+
+    return res.status(500).json({
+      error: "Failed to start playlist",
     });
   }
 }

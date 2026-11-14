@@ -27,6 +27,96 @@ export async function createPlaylistModel(
   return result.rows[0];
 }
 
+// Create a playlist and its first tracks in a single transaction.
+// If one track cannot be inserted, nothing is written to the database.
+export async function createPlaylistWithTracksModel(
+  name,
+  dateTime,
+  hostId,
+  inviteCode,
+  streamingService = "spotify",
+  tracks = [],
+) {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const playlistResult = await client.query(
+      `
+        INSERT INTO playlists (
+          name,
+          date_time,
+          host_id,
+          invite_code,
+          streaming_service
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *;
+      `,
+      [name, dateTime, hostId, inviteCode, streamingService],
+    );
+
+    const playlist = playlistResult.rows[0];
+    const insertedTracks = [];
+
+    for (const track of tracks) {
+      const trackResult = await client.query(
+        `
+          INSERT INTO tracks (
+            playlist_id,
+            external_track_id,
+            spotify_uri,
+            title,
+            artist,
+            image_url,
+            duration_ms,
+            status
+          )
+          VALUES ($1, $2, $3, $4, $5, $6, $7, 'proposed')
+          RETURNING *;
+        `,
+        [
+          playlist.id,
+          track.external_track_id,
+          track.spotify_uri,
+          track.title,
+          track.artist,
+          track.image_url,
+          track.duration_ms,
+        ],
+      );
+
+      insertedTracks.push(trackResult.rows[0]);
+    }
+
+    await client.query("COMMIT");
+
+    return { ...playlist, tracks: insertedTracks };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// Mark a playlist as active. Only a playlist owned by the host and still
+// being prepared can be started.
+export async function startPlaylistByIdAndHostModel(id, hostId) {
+  const result = await pool.query(
+    `
+      UPDATE playlists
+      SET status = 'active'
+      WHERE id = $1 AND host_id = $2 AND status = 'preparing'
+      RETURNING *;
+    `,
+    [id, hostId],
+  );
+
+  return result.rows[0] ?? null;
+}
+
 // Update the editable fields of a playlist owned by a host.
 // A null value leaves the existing column unchanged.
 export async function updatePlaylistByIdAndHostModel(

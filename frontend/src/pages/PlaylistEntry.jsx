@@ -53,6 +53,6 @@ export default function PlaylistEntry() {
     return <Navigate to={`/playlist/${id}/listen`} replace />;
   }
 
-  // Preparing playlists resume at the first-tracks step.
-  return <Navigate to={`/playlist/${id}/setup`} replace />;
+  // Preparing playlists resume at the last creation step: the invitation.
+  return <Navigate to={`/playlist/${id}/share`} replace />;
 }

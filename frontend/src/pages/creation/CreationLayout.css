@@ -10,17 +10,23 @@
 /* STEP HEADER */
 
 .creation-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
   width: 100%;
+  height: var(--header-height, 80px);
+  box-sizing: border-box;
   max-width: 480px;
   margin: 0 auto;
-  padding: 18px 20px 14px;
-  box-sizing: border-box;
-  background-color: rgba(12, 11, 18, 0.92);
+  padding: 12px var(--header-padding-x, 20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--header-background, rgba(12, 11, 18, 0.92));
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: var(--header-border, 1px solid rgba(255, 255, 255, 0.1));
 }
 
 .creation-header-row {
@@ -95,7 +101,8 @@
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  padding: 26px 20px 48px;
+  padding: calc(var(--header-height, 80px) + 26px) var(--header-padding-x, 20px)
+    48px;
   box-sizing: border-box;
 }
 

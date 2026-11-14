@@ -85,16 +85,15 @@ export default function Header({
   // Variant for the host inside a party
   return (
     <header className="app-header">
-      <div className="header-info">
-        <span className="header-subtitle">Soirée en cours</span>
-
-        <h1 className="header-title">{sessionTitle}</h1>
-      </div>
-
       <div className="header-badge">
         <div className="avatar">{initials}</div>
 
         <span className="pseudo">{userPseudo || "Invité"}</span>
+      </div>
+      <div className="header-info">
+        <span className="header-subtitle">Soirée en cours</span>
+
+        <h1 className="header-title">{sessionTitle}</h1>
       </div>
 
       <button

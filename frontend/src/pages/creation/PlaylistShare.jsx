@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { getServiceIcon, getServiceLabel } from "./services.js";
@@ -7,11 +7,13 @@ import "./PlaylistShare.css";
 
 export default function PlaylistShare() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [playlist, setPlaylist] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [starting, setStarting] = useState(false);
 
   const copyTimer = useRef(null);
 
@@ -64,6 +66,34 @@ export default function PlaylistShare() {
       copyTimer.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       setError("Impossible de copier le lien.");
+    }
+  }
+
+  // Start the party: the playlist becomes active and the host enters the
+  // party application. A playlist that is already started only needs the
+  // navigation, so the button always leads to the app.
+  async function handleStart() {
+    setStarting(true);
+    setError("");
+
+    try {
+      if (playlist.status === "preparing") {
+        const response = await fetch(`/api/playlists/${id}/start`, {
+          method: "PATCH",
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          throw new Error(data?.error || "Impossible de démarrer la soirée");
+        }
+      }
+
+      navigate(`/playlist/${id}/propose`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setStarting(false);
     }
   }
 
@@ -128,18 +158,14 @@ export default function PlaylistShare() {
 
       <Button
         type="button"
-        disabled
-        text="Démarrer la soirée"
-        title="Le démarrage de la soirée arrive dans une prochaine version."
+        onClick={handleStart}
+        disabled={starting}
+        text={starting ? "Démarrage…" : "Démarrer la soirée"}
       />
 
       <p className="creation-hint">
-        Le démarrage et le vote seront disponibles dans une prochaine version.
+        Le vote sera disponible dès que la soirée sera lancée.
       </p>
-
-      <Link className="share-open-party" to={`/playlist/${id}/propose`}>
-        Ouvrir l'app de la soirée
-      </Link>
 
       <Link className="share-back-home" to="/">
         Retour au tableau de bord

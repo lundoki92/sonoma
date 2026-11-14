@@ -1,22 +1,87 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router";
 import SearchMusic from "../../components/SearchMusic";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { getServiceIcon, getServiceLabel } from "./services.js";
+import {
+  clearPlaylistDraft,
+  readPlaylistDraft,
+  savePlaylistDraft,
+} from "./draft.js";
 import "./PlaylistSetup.css";
+
+// Turn a Spotify search result into the payload expected by the API.
+function normalizeTrack(track) {
+  const externalId = track.spotifyId ?? track.external_track_id;
+
+  const artist = track.artist
+    ? track.artist
+    : Array.isArray(track.artists)
+      ? track.artists.map((item) => item.name).join(", ")
+      : "";
+
+  return {
+    external_track_id: externalId,
+    spotify_uri:
+      track.uri ??
+      track.spotify_uri ??
+      (externalId ? `spotify:track:${externalId}` : null),
+    title: track.title ?? track.name,
+    artist,
+    image_url: track.cover ?? track.image_url ?? null,
+    duration_ms: track.durationMs ?? track.duration_ms,
+  };
+}
 
 export default function PlaylistSetup() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [playlist, setPlaylist] = useState(null);
-  const [tracks, setTracks] = useState([]);
+  // Without an ID, the playlist is still a client-side draft. With an ID,
+  // this screen edits an existing playlist stored in the database.
+  const isDraft = !id;
+
+  const [storedDraft] = useState(() =>
+    isDraft ? readPlaylistDraft() : null,
+  );
+  const draft = location.state?.draft ?? storedDraft?.draft;
+  const initialTracks =
+    location.state?.tracks ?? storedDraft?.tracks ?? [];
+
+  const [playlist, setPlaylist] = useState(() => {
+    if (!isDraft || !draft) return null;
+
+    return {
+      name: draft.name,
+      date_time: draft.date_time,
+      streaming_service: draft.streaming_service,
+    };
+  });
+  const [tracks, setTracks] = useState(isDraft ? initialTracks : []);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [removingId, setRemovingId] = useState(null);
+  const [loading, setLoading] = useState(!isDraft);
+  const [removingKey, setRemovingKey] = useState(null);
+  const [creating, setCreating] = useState(false);
 
-  // Load the playlist and its tracks when the step opens.
+  // Keep the temporary draft in sync so the header back button can restore
+  // both the form and the chosen tracks.
   useEffect(() => {
+    if (!isDraft || !draft) return;
+
+    savePlaylistDraft({ draft, tracks });
+  }, [isDraft, draft, tracks]);
+
+  // Existing playlist: load its data and host tracks from the API.
+  useEffect(() => {
+    if (isDraft) return undefined;
+
     let cancelled = false;
 
     async function fetchPlaylist() {
@@ -49,10 +114,26 @@ export default function PlaylistSetup() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, isDraft]);
 
-  // Save a Spotify track to the database.
+  // Save a Spotify track: locally while the playlist is a draft, directly
+  // in the database once the playlist exists.
   async function handleAddTrack(spotifyTrack) {
+    const normalized = normalizeTrack(spotifyTrack);
+
+    if (isDraft) {
+      setTracks((previousTracks) => {
+        const alreadyAdded = previousTracks.some(
+          (track) =>
+            track.external_track_id === normalized.external_track_id,
+        );
+
+        return alreadyAdded ? previousTracks : [normalized, ...previousTracks];
+      });
+
+      return;
+    }
+
     try {
       setError("");
 
@@ -61,14 +142,7 @@ export default function PlaylistSetup() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          external_track_id: spotifyTrack.spotifyId,
-          spotify_uri: `spotify:track:${spotifyTrack.spotifyId}`,
-          title: spotifyTrack.title,
-          artist: spotifyTrack.artist,
-          image_url: spotifyTrack.cover,
-          duration_ms: spotifyTrack.durationMs,
-        }),
+        body: JSON.stringify(normalized),
       });
 
       const data = await response.json();
@@ -84,15 +158,28 @@ export default function PlaylistSetup() {
     }
   }
 
-  // Remove a track chosen by the host during the preparation.
+  // Remove a track: locally for a draft, through the API for a saved playlist.
   async function handleRemoveTrack(track) {
-    setRemovingId(track.id);
+    const trackKey = track.id ?? track.external_track_id;
+
+    if (isDraft) {
+      setTracks((previousTracks) =>
+        previousTracks.filter(
+          (item) =>
+            (item.id ?? item.external_track_id) !== trackKey,
+        ),
+      );
+
+      return;
+    }
+
+    setRemovingKey(trackKey);
     setError("");
 
     try {
       const response = await fetch(
         `/api/playlists/${id}/tracks/${track.id}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
 
       const data = await response.json().catch(() => null);
@@ -102,13 +189,57 @@ export default function PlaylistSetup() {
       }
 
       setTracks((previousTracks) =>
-        previousTracks.filter((item) => item.id !== track.id)
+        previousTracks.filter((item) => item.id !== track.id),
       );
     } catch (err) {
       setError(err.message);
     } finally {
-      setRemovingId(null);
+      setRemovingKey(null);
     }
+  }
+
+  // Validate step 2: this is where the playlist and its tracks are actually
+  // created in the database.
+  async function handleNext() {
+    if (!isDraft) {
+      navigate(`/playlist/${id}/share`);
+      return;
+    }
+
+    if (!draft) return;
+
+    setCreating(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/playlists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...draft,
+          tracks: tracks.map(normalizeTrack),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Impossible de créer la soirée");
+      }
+
+      clearPlaylistDraft();
+      navigate(`/playlist/${data.id}/share`, { replace: true });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  if (isDraft && !draft) {
+    return <Navigate to="/createplaylist" replace />;
   }
 
   if (loading) {
@@ -172,41 +303,56 @@ export default function PlaylistSetup() {
           </p>
         ) : (
           <ul className="setup-track-list">
-            {tracks.map((track) => (
-              <li className="setup-track" key={track.id}>
-                {track.image_url && (
-                  <img src={track.image_url} alt="" width="44" height="44" />
-                )}
+            {tracks.map((track) => {
+              const trackKey = track.id ?? track.external_track_id;
 
-                <div className="setup-track-info">
-                  <span className="setup-track-title">{track.title}</span>
-                  <span className="setup-track-artist">{track.artist}</span>
-                </div>
+              return (
+                <li className="setup-track" key={trackKey}>
+                  {track.image_url && (
+                    <img src={track.image_url} alt="" width="44" height="44" />
+                  )}
 
-                <button
-                  type="button"
-                  className="setup-track-remove"
-                  onClick={() => handleRemoveTrack(track)}
-                  disabled={removingId === track.id}
-                  aria-label={`Retirer ${track.title} de la soirée`}
-                  title="Retirer le morceau"
-                >
-                  <i
-                    className={`fa-solid ${
-                      removingId === track.id
-                        ? "fa-spinner fa-spin"
-                        : "fa-xmark"
-                    }`}
-                    aria-hidden="true"
-                  ></i>
-                </button>
-              </li>
-            ))}
+                  <div className="setup-track-info">
+                    <span className="setup-track-title">{track.title}</span>
+                    <span className="setup-track-artist">{track.artist}</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="setup-track-remove"
+                    onClick={() => handleRemoveTrack(track)}
+                    disabled={removingKey === trackKey}
+                    aria-label={`Retirer ${track.title} de la soirée`}
+                    title="Retirer le morceau"
+                  >
+                    <i
+                      className={`fa-solid ${
+                        removingKey === trackKey
+                          ? "fa-spinner fa-spin"
+                          : "fa-xmark"
+                      }`}
+                      aria-hidden="true"
+                    ></i>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
 
-      <Button as={Link} to={`/playlist/${id}/share`} text="Suivant" />
+      <Button
+        type="button"
+        onClick={handleNext}
+        disabled={creating}
+        text={
+          creating
+            ? "Création…"
+            : isDraft
+              ? "Créer ma soirée"
+              : "Suivant"
+        }
+      />
 
       <p className="creation-hint">
         Tu peux passer cette étape : une soirée peut démarrer sans morceau.

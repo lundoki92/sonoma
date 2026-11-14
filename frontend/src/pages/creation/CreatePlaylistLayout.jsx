@@ -10,8 +10,11 @@ export default function CreatePlaylistLayout({
   const { id } = useParams();
 
   // Some steps live under /playlist/:id. `backTo` is either an absolute
-  // path ("/") or the name of a sibling step ("setup", "edit", ...).
-  const backTarget = backTo === "/" ? "/" : `/playlist/${id}/${backTo}`;
+  // path ("/", "/createplaylist") or the name of a sibling step
+  // ("setup", "edit", ...).
+  const backTarget = backTo.startsWith("/")
+    ? backTo
+    : `/playlist/${id}/${backTo}`;
 
   return (
     <div className="creation-layout">

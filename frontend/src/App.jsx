@@ -34,6 +34,15 @@ export default function App() {
         <Route index element={<CreatePlaylistStep1 />} />
       </Route>
 
+      {/* Step 2 of a new playlist: the playlist is created in database when
+          this step is validated, with its first tracks. */}
+      <Route
+        path="/createplaylist/setup"
+        element={<ProtectedRoutes><CreatePlaylistLayout step={2} backTo="/createplaylist" /></ProtectedRoutes>}
+      >
+        <Route index element={<PlaylistSetup />} />
+      </Route>
+
       <Route path="/playlist/:id">
         {/* Send the host to the right place depending on the status */}
         <Route index element={<ProtectedRoutes><PlaylistEntry /></ProtectedRoutes>} />
@@ -45,7 +54,7 @@ export default function App() {
           <Route path="edit" element={<CreatePlaylistStep1 />} />
         </Route>
 
-        {/* Step 2: add the first tracks */}
+        {/* Step 2, existing playlist: add or remove tracks */}
         <Route
           element={<ProtectedRoutes><CreatePlaylistLayout step={2} backTo="edit" /></ProtectedRoutes>}
         >
