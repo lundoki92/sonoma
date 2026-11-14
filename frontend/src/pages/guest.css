@@ -1,0 +1,85 @@
+/* Écrans d'invitation du chemin invité (rejoindre la soirée, playlist).
+   Ils reprennent la grille et l'échelle typo de l'app de soirée pour que
+   l'invité voie exactement les mêmes tailles de texte que l'hôte. */
+
+.guest-screen {
+  min-height: 100vh;
+  background-color: #0c0b12;
+  color: #f4f0fa;
+}
+
+.guest-screen-inner {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--screen-top-offset) var(--screen-padding-x) var(--space-12);
+}
+
+/* Ligne au-dessus du titre : à qui appartient la soirée. */
+.guest-screen-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  color: #a6a1b4;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+}
+
+.guest-screen h1 {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-hero);
+  line-height: var(--leading-tight);
+  font-weight: 750;
+}
+
+/* Sous-titres des écrans invité : même niveau que les titres de sections du
+   dashboard. */
+.guest-screen h2 {
+  margin-top: var(--section-gap);
+  margin-bottom: var(--space-3);
+  font-size: var(--text-title);
+  line-height: var(--leading-tight);
+  font-weight: 600;
+}
+
+.guest-screen p {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: #a6a1b4;
+}
+
+.guest-screen .guest-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--section-gap);
+}
+
+/* Les libellés et messages d'alerte utilisent les composants partagés
+   (.champ, .app-error, .button) : rien de spécifique ici. */
+.guest-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--section-gap);
+}
+
+.guest-link {
+  color: #eaff99;
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.guest-link:hover {
+  text-decoration: underline;
+}
+
+.guest-link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 6px;
+}

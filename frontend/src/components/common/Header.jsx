@@ -1,18 +1,17 @@
 import "./Header.css";
 import { useAuth } from "../../context/AuthContext.jsx";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 export default function Header({
   sessionTitle,
   userPseudo,
   variant = "host",
   greeting = "Hello,",
-  playlistId,
   onLeave,
+  onInvite,
 }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const initials = userPseudo
     ? userPseudo
@@ -49,8 +48,9 @@ export default function Header({
           className="header-logout"
           onClick={handleLogout}
           aria-label="Se déconnecter"
+          title="Se déconnecter"
         >
-          Déconnexion
+          <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
         </button>
       </header>
     );
@@ -74,7 +74,7 @@ export default function Header({
 
         <button
           type="button"
-          className="header-logout"
+          className="header-leave"
           onClick={onLeave}
           aria-label="Quitter la soirée"
         >
@@ -87,9 +87,6 @@ export default function Header({
   // Variant for the host inside a party: the host is already connected, so
   // the header only offers ways to move around. Going back to the dashboard
   // is enough to log out later on, and the pseudo would only take space.
-  const invitePath = `/playlist/${playlistId}/invite`;
-  const isOnInvitePage = location.pathname === invitePath;
-
   return (
     <header className="app-header">
       <div className="header-info">
@@ -106,14 +103,14 @@ export default function Header({
           title="Mes soirées"
           aria-label="Mes soirées"
         >
-          <i className="fa-solid fa-layer-group" aria-hidden="true"></i>
+          <i className="fa-solid fa-house" aria-hidden="true"></i>
         </button>
 
-        {!isOnInvitePage && (
+        {onInvite && (
           <button
             type="button"
             className="header-action"
-            onClick={() => navigate(invitePath)}
+            onClick={onInvite}
             title="Inviter des amis"
             aria-label="Inviter des amis"
           >

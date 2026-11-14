@@ -8,14 +8,38 @@
   user-select: none;
 }
 
+/* Mêmes gouttières et même décalage sous le header que le dashboard et le
+   parcours de création. */
 .party-content {
   flex: 1;
   overflow-y: auto;
-  padding-top: calc(var(--header-height, 80px) + 20px);
-  padding-bottom: 96px;
-  padding-left: 16px;
-  padding-right: 16px;
-  max-width: 480px;
+  padding: var(--screen-top-offset) var(--screen-padding-x) 96px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   width: 100%;
+}
+
+/* The party is not open yet: explain it instead of showing an empty app. */
+.party-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-12);
+  padding: var(--space-7) var(--space-5);
+  border: var(--card-border);
+  border-radius: 24px;
+  background-color: var(--card-background);
+  text-align: center;
+}
+
+.party-error i {
+  font-size: var(--text-hero);
+  color: #eaff99;
+}
+
+.party-error p {
+  color: #f4f0fa;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }

@@ -10,7 +10,7 @@ import PlaylistEntry from './pages/PlaylistEntry.jsx'
 import ProposeTab from './pages/party/ProposeTab.jsx'
 import VoteTab from './pages/party/VoteTab.jsx'
 import ListenTab from './pages/party/ListenTab.jsx'
-import PlaylistInvite from './pages/party/PlaylistInvite.jsx'
+import InviteRedirect from './pages/party/InviteRedirect.jsx'
 import { Login } from './pages/Login.jsx'
 import { Register } from './pages/Register.jsx'
 import { ProtectedRoutes } from './components/ProtectedRoutes.jsx'
@@ -75,7 +75,7 @@ export default function App() {
           <Route path="vote" element={<VoteTab />} />
           <Route path="listen" element={<ListenTab />} />
           {/* Permanent home of the invite link, reachable from the header */}
-          <Route path="invite" element={<PlaylistInvite />} />
+          <Route path="invite" element={<InviteRedirect />} />
         </Route>
       </Route>
 

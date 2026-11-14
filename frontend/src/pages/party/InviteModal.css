@@ -1,0 +1,102 @@
+/* Modale d'invitation : meme carte arrondie que les autres surfaces, avec
+   une croix de fermeture sized like the other icon buttons. */
+
+.invite-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background-color: rgba(6, 5, 10, 0.72);
+  backdrop-filter: blur(4px);
+  animation: invite-modal-fade 0.18s ease;
+}
+
+.invite-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - (var(--space-6) * 2));
+  overflow-y: auto;
+  padding: var(--space-7) var(--card-padding) var(--card-padding);
+  border: var(--card-border);
+  border-radius: 32px;
+  background-color: #121118;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  animation: invite-modal-rise 0.22s ease;
+}
+
+.invite-modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  background: transparent;
+  color: #cfc8e0;
+  font-size: var(--text-body);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.invite-modal-close:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.invite-modal-close:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.invite-modal-header {
+  margin-bottom: var(--space-5);
+  padding-right: var(--space-12);
+}
+
+/* Section title of the modal: same level as the dashboard section titles. */
+.invite-modal-title {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-title);
+  line-height: var(--leading-tight);
+  font-weight: 750;
+  color: #f4f0fa;
+}
+
+.invite-modal-text {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: #a6a1b4;
+}
+
+@keyframes invite-modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes invite-modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-modal-backdrop,
+  .invite-modal {
+    animation: none;
+  }
+}
