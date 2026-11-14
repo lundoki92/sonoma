@@ -159,9 +159,19 @@ export async function getPlaylistByIdAndHostModel(id, hostId) {
 }
 
 // Retrieve a playlist using its invite code.
+// Public invite payload: only what a guest needs to recognise the party.
 export async function getPlaylistByInviteCodeModel(code) {
   const result = await pool.query(
-    "SELECT id, name, date_time, status FROM playlists WHERE invite_code = $1",
+    `
+      SELECT playlists.id,
+             playlists.name,
+             playlists.date_time,
+             playlists.status,
+             users.username AS host_name
+      FROM playlists
+      JOIN users ON users.id = playlists.host_id
+      WHERE playlists.invite_code = $1
+    `,
     [code],
   );
   return result.rows[0] ?? null;

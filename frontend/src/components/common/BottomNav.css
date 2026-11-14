@@ -8,11 +8,11 @@
   background-color: #000000;
   backdrop-filter: blur(8px);
   border-top: 1px solid #2E2A3D;            /* Contours */
-  padding: 12px 32px;
+  padding: var(--space-3) var(--space-8);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
 }
 
@@ -46,13 +46,14 @@
 }
 
 .nav-icon {
-  font-size: 18px;
+  font-size: var(--button-font-size);
   color: #A29DB5;
   transition: color 0.2s ease;
 }
 
 .nav-label {
-  font-size: 11px;
+  font-size: var(--text-micro);
+  line-height: var(--leading-tight);
 }
 
 /* --- ÉLÉMENT ACTIF --- */

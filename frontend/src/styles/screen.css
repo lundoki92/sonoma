@@ -1,0 +1,26 @@
+/* Titre + texte d'introduction d'un écran, taille commune à toute
+   l'application (mêmes tokens que ExplanationText). */
+.screen-intro {
+  margin-bottom: var(--section-gap);
+}
+
+.screen-intro h2 {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-hero);
+  line-height: var(--leading-tight);
+  font-weight: 750;
+  color: #f4f0fa;
+}
+
+.screen-intro p {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: #a6a1b4;
+}
+
+/* Message d'état simple hors formulaire (soirée terminée, vide…). */
+.screen-status {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: #a6a1b4;
+}

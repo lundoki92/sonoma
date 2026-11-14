@@ -1,7 +1,6 @@
 import { useState } from "react";
+import { searchTracks } from "../api/music.js";
 import "./SearchMusic.css";
-
-const API_URL = "http://localhost:3000";
 
 function SearchMusic({ onAddTrack, tracks = [] }) {
   // Store the user's search input
@@ -31,24 +30,8 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
     setResults([]);
 
     try {
-      // Send the search query to the backend
-      const response = await fetch(
-        `${API_URL}/api/music/search?q=${encodeURIComponent(search.trim())}`
-      );
-
-      // Check if the request was successful
-      if (!response.ok) {
-        throw new Error("Unable to search for tracks");
-      }
-
-      const data = await response.json();
-
-      // Extract the tracks from the API response
-      const songs = Array.isArray(data)
-        ? data
-        : Array.isArray(data.tracks)
-          ? data.tracks
-          : data.tracks?.items ?? [];
+      // La recherche passe par la couche api : plus d'URL absolue ici.
+      const songs = await searchTracks(search);
 
       // Display the search results
       setResults(songs);

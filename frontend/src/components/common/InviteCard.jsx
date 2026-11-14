@@ -45,15 +45,14 @@ export default function InviteCard({ inviteLink }) {
       </section>
 
       {error && (
-        <p className="invite-error" role="alert">
+        <p className="app-error" role="alert">
           {error}
         </p>
       )}
 
-      <div className="share-qr" aria-label="QR code bientôt disponible">
-        <i className="fa-solid fa-qrcode" aria-hidden="true"></i>
-        <span>Le QR code de la soirée arrive bientôt.</span>
-      </div>
+      <p className="invite-qr-hint">
+        Le QR code de la soirée arrive bientôt.
+      </p>
     </div>
   );
 }

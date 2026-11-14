@@ -1,36 +1,39 @@
+/* Carte d'invitation partagée par l'étape 3 et la modale d'invitation. */
+
 .invite-card-block {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .share-card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 20px;
-  border: 1px solid #2e2a3d;
+  gap: var(--space-3);
+  padding: var(--card-padding);
+  border: var(--card-border);
   border-radius: 24px;
-  background-color: #15131d;
+  background-color: var(--card-background);
 }
 
 .share-label {
-  margin: 0;
-  font-size: 12px;
+  font-size: var(--text-caption);
   font-weight: 700;
   letter-spacing: 0.06em;
+  line-height: var(--leading-tight);
   text-transform: uppercase;
   color: #a1a1aa;
 }
 
 .share-link {
   display: block;
-  padding: 12px 14px;
-  border: 1px solid #2e2a3d;
+  padding: var(--space-3) var(--space-4);
+  border: var(--card-border);
   border-radius: 14px;
   background-color: #0f0e15;
   color: #eaff99;
-  font-size: 13px;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
   text-decoration: none;
   overflow-wrap: anywhere;
 }
@@ -39,18 +42,19 @@
   border-color: #3d3852;
 }
 
+/* Secondary action: same height as a field, not as the main CTA. */
 .share-copy {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 46px;
+  gap: var(--space-2);
+  min-height: var(--control-height);
   border: 1px solid rgba(234, 255, 153, 0.45);
   border-radius: 999px;
   background-color: rgba(234, 255, 153, 0.08);
   color: #eaff99;
-  font-family: inherit;
-  font-size: 14px;
+  font-family: var(--font-ui);
+  font-size: var(--text-label);
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -70,39 +74,19 @@
 }
 
 .share-copy:focus-visible {
-  outline: 2px solid #eaff99;
+  outline: var(--focus-ring);
   outline-offset: 2px;
 }
 
-.share-qr {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: min(220px, 100%);
-  margin: 0 auto;
-  padding: 20px;
-  box-sizing: border-box;
-  aspect-ratio: 1;
-  border: 1px dashed #3d3852;
-  border-radius: 24px;
-  background-color: #0f0e15;
-  color: #7b758c;
-  font-size: 12px;
+.invite-qr-hint {
+  margin-top: calc(-1 * var(--space-1));
   text-align: center;
+  font-size: var(--text-caption);
+  line-height: var(--leading-snug);
+  color: #7b758c;
 }
 
-.share-qr i {
-  font-size: 40px;
-}
-
-.invite-error {
-  margin: 0;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 107, 107, 0.35);
-  background-color: rgba(255, 107, 107, 0.1);
-  color: #ffb3b3;
-  font-size: 13px;
+.invite-card-block .app-error {
+  /* La carte est déjà espacée par le flex gap : pas de marge en plus. */
+  margin-top: 0;
 }

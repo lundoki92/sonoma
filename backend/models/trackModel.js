@@ -119,3 +119,20 @@ export async function deleteHostTrackModel(playlistId, trackId) {
 
   return result.rows[0] ?? null;
 }
+
+// Delete a track proposed by one specific guest.
+// The guest id guard prevents a guest from removing someone else's track.
+export async function deleteGuestTrackModel(playlistId, trackId, guestId) {
+  const result = await pool.query(
+    `
+      DELETE FROM tracks
+      WHERE id = $1
+        AND playlist_id = $2
+        AND guest_id = $3
+      RETURNING *;
+    `,
+    [trackId, playlistId, guestId],
+  );
+
+  return result.rows[0] ?? null;
+}

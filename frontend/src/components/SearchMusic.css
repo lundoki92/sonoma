@@ -1,30 +1,30 @@
 /* Recherche Spotify partagée par la création de soirée et l'invitation.
-   Mêmes tokens que l'authentification pour rester cohérent. */
+   Les champs reprennent les tokens globaux : même hauteur, même radius,
+   même taille de texte que les champs du formulaire d'authentification. */
 
 .music-search {
   width: 100%;
-  max-width: 700px;
+  max-width: var(--content-max-width);
 }
 
 .music-search-form {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: var(--space-3);
+  margin-bottom: var(--section-gap);
 }
 
 .music-search-form input {
   flex: 1;
   min-width: 0;
-  height: 52px;
-  padding: 0 20px;
-  box-sizing: border-box;
-  border: 1px solid #2e2a3d;
-  border-radius: 30px;
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  border: var(--card-border);
+  border-radius: var(--control-radius);
   background-color: #0c0b12;
   color: #f4f0fa;
-  font-family: inherit;
-  font-size: 15px;
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
   caret-color: #eaff99;
   color-scheme: dark;
   transition:
@@ -50,29 +50,31 @@
   box-shadow: 0 0 0 3px rgba(185, 168, 255, 0.18);
 }
 
-/* Bouton loupe : rond, 52px pour s'aligner sur le champ */
+/* Search button: a round icon button sized like the field it submits. */
 .music-search-submit {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 52px;
-  height: 52px;
+  width: var(--control-height);
+  height: var(--control-height);
   padding: 0;
-  border: none;
+  border: var(--card-border);
   border-radius: 50%;
-  background-color: #eaff99;
-  color: #121214;
-  font-size: 18px;
+  background-color: var(--card-background);
+  color: #f4f0fa;
+  font-size: var(--button-font-size);
   cursor: pointer;
   transition:
-    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
     transform 0.15s ease,
     opacity 0.2s ease;
 }
 
 .music-search-submit:hover:not(:disabled) {
-  box-shadow: 0 0 16px rgba(234, 255, 153, 0.55);
+  border-color: #eaff99;
+  color: #eaff99;
 }
 
 .music-search-submit:active:not(:disabled) {
@@ -80,7 +82,7 @@
 }
 
 .music-search-submit:focus-visible {
-  outline: 2px solid #eaff99;
+  outline: var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -90,24 +92,26 @@
 }
 
 .music-results h3 {
-  margin: 0 0 12px;
+  margin-bottom: var(--space-3);
   color: #cfc8e0;
-  font-size: 13px;
+  font-size: var(--text-caption);
   font-weight: 600;
   letter-spacing: 0.04em;
+  line-height: var(--leading-tight);
   text-transform: uppercase;
 }
 
-/* Chaque résultat est une carte arrondie au maximum */
+/* Chaque résultat est une carte arrondie au maximum, comme les morceaux
+   déjà choisis (.track-item). */
 .music-result {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 10px;
-  padding: 10px 12px 10px 10px;
-  border: 1px solid #2e2a3d;
+  gap: var(--space-3);
+  margin-bottom: var(--list-gap);
+  padding: 10px var(--space-3) 10px 10px;
+  border: var(--card-border);
   border-radius: 999px;
-  background-color: #15131d;
+  background-color: var(--card-background);
   transition: border-color 0.2s ease;
 }
 
@@ -118,10 +122,10 @@
 /* Display the album cover */
 .music-cover {
   display: block;
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
-  min-height: 48px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   object-fit: cover;
   border-radius: 50%;
 }
@@ -129,42 +133,38 @@
 .music-info {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: var(--space-1);
   flex: 1;
   min-width: 0;
 }
 
-.music-info strong,
-.music-info span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .music-info strong {
   color: #f4f0fa;
-  font-size: 14px;
+  font-size: var(--text-secondary);
   font-weight: 600;
+  line-height: var(--leading-tight);
 }
 
 .music-info span {
   color: #a6a1b4;
-  font-size: 12px;
+  font-size: var(--text-caption);
+  line-height: var(--leading-tight);
 }
 
+/* Same size as the track remove button and the header icon actions. */
 .music-add-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
   flex-shrink: 0;
   padding: 0;
   border: 1px solid #2e2a3d;
   border-radius: 50%;
   background-color: #0c0b12;
   color: #eaff99;
-  font-size: 15px;
+  font-size: var(--text-body);
   cursor: pointer;
   transition:
     border-color 0.2s ease,
@@ -179,7 +179,7 @@
 }
 
 .music-add-button:focus-visible {
-  outline: 2px solid #eaff99;
+  outline: var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -198,14 +198,15 @@
   opacity: 1;
 }
 
-.music-error {
-  margin: 0 0 16px;
+.music-error,
+.music-empty {
+  margin-bottom: var(--space-3);
   color: #ffb3b3;
-  font-size: 13px;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
 }
 
 .music-empty {
-  margin: 0;
+  margin-bottom: 0;
   color: #7b758c;
-  font-size: 13px;
 }

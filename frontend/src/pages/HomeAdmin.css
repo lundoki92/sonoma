@@ -1,4 +1,3 @@
-
 /* PAGE HOME ADMIN */
 
 .host-dashboard {
@@ -11,21 +10,26 @@
 
 /* CONTENU PRINCIPAL */
 
+/* Le texte d'accueil occupe la largeur utile de la page : 20px de gouttières
+   de chaque côté, comme sur les écrans de création et l'app de soirée. */
 .host-dashboard .explanation-text {
   width: 100%;
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  box-sizing: border-box;
-
-  /* Espace sous le header commun (80px) */
-  padding-top: calc(var(--header-height, 80px) + 32px);
+  padding: var(--screen-top-offset) var(--screen-padding-x) 0;
 }
 
-/* RESPONSIVE */
+/* The main action aligns with the playlist cards (container padding: 20px). */
+.host-dashboard .dashboard-create-button {
+  width: calc(100% - (var(--screen-padding-x) * 2));
+  max-width: calc(var(--content-max-width) - (var(--screen-padding-x) * 2));
+}
 
-@media (max-width: 480px) {
-  .host-dashboard .explanation-text {
-    padding-left: 28px;
-    padding-right: 28px;
-  }
+/* Loading and error lines share the same gutters as the lists below them. */
+.host-dashboard .app-status {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding-left: var(--screen-padding-x);
+  padding-right: var(--screen-padding-x);
 }
