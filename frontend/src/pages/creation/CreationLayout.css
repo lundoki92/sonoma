@@ -148,16 +148,4 @@
   color: #7b758c;
 }
 
-/* Shared metadata pill used by the setup and share steps */
-
-.creation-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border: 1px solid #2e2a3d;
-  border-radius: 999px;
-  background-color: #15131d;
-  color: #cfc8e0;
-  font-size: 12px;
-}
+/* Shared metadata pill lives in global.css as .app-chip */

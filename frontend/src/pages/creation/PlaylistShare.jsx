@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
+import InviteCard from "../../components/common/InviteCard.jsx";
 import { getServiceIcon, getServiceLabel } from "./services.js";
 import "./PlaylistShare.css";
 
@@ -12,10 +13,7 @@ export default function PlaylistShare() {
   const [playlist, setPlaylist] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
   const [starting, setStarting] = useState(false);
-
-  const copyTimer = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -41,33 +39,8 @@ export default function PlaylistShare() {
 
     return () => {
       cancelled = true;
-      clearTimeout(copyTimer.current);
     };
   }, [id]);
-
-  if (loading) {
-    return <p className="creation-status">Chargement de la soirée…</p>;
-  }
-
-  if (!playlist) {
-    return (
-      <p className="creation-status">{error || "Soirée introuvable"}</p>
-    );
-  }
-
-  const inviteLink = `${window.location.origin}/join/${playlist.invite_code}`;
-
-  async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(inviteLink);
-
-      setCopied(true);
-      clearTimeout(copyTimer.current);
-      copyTimer.current = setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setError("Impossible de copier le lien.");
-    }
-  }
 
   // Start the party: the playlist becomes active and the host enters the
   // party application. A playlist that is already started only needs the
@@ -97,6 +70,18 @@ export default function PlaylistShare() {
     }
   }
 
+  if (loading) {
+    return <p className="creation-status">Chargement de la soirée…</p>;
+  }
+
+  if (!playlist) {
+    return (
+      <p className="creation-status">{error || "Soirée introuvable"}</p>
+    );
+  }
+
+  const inviteLink = `${window.location.origin}/join/${playlist.invite_code}`;
+
   return (
     <div className="share-step">
       <div className="creation-intro">
@@ -108,7 +93,7 @@ export default function PlaylistShare() {
       </div>
 
       <div className="share-meta">
-        <span className="creation-chip">
+        <span className="app-chip">
           <i className="fa-solid fa-calendar" aria-hidden="true"></i>
           {new Date(playlist.date_time).toLocaleString("fr-FR", {
             dateStyle: "long",
@@ -116,7 +101,7 @@ export default function PlaylistShare() {
           })}
         </span>
 
-        <span className="creation-chip">
+        <span className="app-chip">
           <i
             className={getServiceIcon(playlist.streaming_service)}
             aria-hidden="true"
@@ -125,30 +110,7 @@ export default function PlaylistShare() {
         </span>
       </div>
 
-      <section className="share-card">
-        <p className="share-label">Lien d'invitation</p>
-
-        <a className="share-link" href={inviteLink}>
-          {inviteLink}
-        </a>
-
-        <button
-          type="button"
-          className={`share-copy${copied ? " is-copied" : ""}`}
-          onClick={handleCopy}
-        >
-          <i
-            className={`fa-solid ${copied ? "fa-check" : "fa-copy"}`}
-            aria-hidden="true"
-          ></i>
-          {copied ? "Lien copié !" : "Copier le lien"}
-        </button>
-      </section>
-
-      <div className="share-qr" aria-label="QR code bientôt disponible">
-        <i className="fa-solid fa-qrcode" aria-hidden="true"></i>
-        <span>Le QR code de la soirée arrive bientôt.</span>
-      </div>
+      <InviteCard inviteLink={inviteLink} />
 
       {error && (
         <p className="creation-error" role="alert">

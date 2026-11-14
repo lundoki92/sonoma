@@ -54,6 +54,7 @@ export default function PartyLayout({ role = "host" }) {
         variant={role}
         sessionTitle={playlist?.name ?? "Soirée"}
         userPseudo={pseudo}
+        playlistId={id}
         onLeave={handleLeave}
       />
 

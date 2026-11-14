@@ -263,12 +263,12 @@ export default function PlaylistSetup() {
       </div>
 
       <div className="setup-playlist-meta">
-        <span className="creation-chip">
+        <span className="app-chip">
           <i className="fa-solid fa-compact-disc" aria-hidden="true"></i>
           {playlist.name}
         </span>
 
-        <span className="creation-chip">
+        <span className="app-chip">
           <i className="fa-solid fa-calendar" aria-hidden="true"></i>
           {new Date(playlist.date_time).toLocaleString("fr-FR", {
             dateStyle: "long",
@@ -276,7 +276,7 @@ export default function PlaylistSetup() {
           })}
         </span>
 
-        <span className="creation-chip">
+        <span className="app-chip">
           <i
             className={getServiceIcon(playlist.streaming_service)}
             aria-hidden="true"
