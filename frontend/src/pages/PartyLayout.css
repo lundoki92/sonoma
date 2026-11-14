@@ -11,7 +11,7 @@
 .party-content {
   flex: 1;
   overflow-y: auto;
-  padding-top: 80px;
+  padding-top: calc(var(--header-height, 80px) + 20px);
   padding-bottom: 96px;
   padding-left: 16px;
   padding-right: 16px;

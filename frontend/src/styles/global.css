@@ -1,4 +1,12 @@
 /* --- RESET & VARIABLES GLOBALES --- */
+:root {
+  /* Shared header metrics so every screen aligns the same way. */
+  --header-height: 80px;
+  --header-padding-x: 20px;
+  --header-border: 1px solid rgba(255, 255, 255, 0.1);
+  --header-background: rgba(12, 11, 18, 0.92);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -17,6 +25,19 @@ body {
   max-width: 480px;
   margin: 0 auto;
   padding: 16px;
+}
+
+/* Metadata pill used by the creation wizard and the party app */
+.app-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #2e2a3d;
+  border-radius: 999px;
+  background-color: #15131d;
+  color: #cfc8e0;
+  font-size: 12px;
 }
 
 /* Scrollbar propre */

@@ -1,0 +1,108 @@
+.invite-card-block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.share-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #2e2a3d;
+  border-radius: 24px;
+  background-color: #15131d;
+}
+
+.share-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a1a1aa;
+}
+
+.share-link {
+  display: block;
+  padding: 12px 14px;
+  border: 1px solid #2e2a3d;
+  border-radius: 14px;
+  background-color: #0f0e15;
+  color: #eaff99;
+  font-size: 13px;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.share-link:hover {
+  border-color: #3d3852;
+}
+
+.share-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  border: 1px solid rgba(234, 255, 153, 0.45);
+  border-radius: 999px;
+  background-color: rgba(234, 255, 153, 0.08);
+  color: #eaff99;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.share-copy:hover {
+  background-color: rgba(234, 255, 153, 0.14);
+}
+
+.share-copy.is-copied {
+  border-color: rgba(0, 230, 160, 0.45);
+  background-color: rgba(0, 230, 160, 0.1);
+  color: #00e6a0;
+}
+
+.share-copy:focus-visible {
+  outline: 2px solid #eaff99;
+  outline-offset: 2px;
+}
+
+.share-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(220px, 100%);
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  border: 1px dashed #3d3852;
+  border-radius: 24px;
+  background-color: #0f0e15;
+  color: #7b758c;
+  font-size: 12px;
+  text-align: center;
+}
+
+.share-qr i {
+  font-size: 40px;
+}
+
+.invite-error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  background-color: rgba(255, 107, 107, 0.1);
+  color: #ffb3b3;
+  font-size: 13px;
+}

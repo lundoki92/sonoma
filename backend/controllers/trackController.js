@@ -1,6 +1,7 @@
 import {
   getTracksByPlaylistService,
   addTrackToPlaylistService,
+  deleteTrackFromPlaylistService,
 } from "../services/trackService.js";
 
 // Handle the retrieval of tracks belonging to a playlist.
@@ -118,6 +119,41 @@ export async function addTrackToPlaylistController(req, res) {
 
     return res.status(500).json({
       error: "Failed to add track",
+    });
+  }
+}
+
+// Handle the removal of a host track from a playlist.
+export async function deleteTrackFromPlaylistController(req, res) {
+  try {
+    const { playlistId, trackId } = req.params;
+
+    // Validate both IDs before calling the service.
+    if (!/^\d+$/.test(playlistId) || !/^\d+$/.test(trackId)) {
+      return res.status(400).json({
+        error: "Invalid track or playlist ID",
+      });
+    }
+
+    const track = await deleteTrackFromPlaylistService(
+      playlistId,
+      req.user.id,
+      trackId,
+    );
+
+    return res.status(200).json(track);
+  } catch (error) {
+    // Return the appropriate status for known application errors.
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        error: error.message,
+      });
+    }
+
+    console.error("Error deleting track:", error);
+
+    return res.status(500).json({
+      error: "Failed to delete track",
     });
   }
 }

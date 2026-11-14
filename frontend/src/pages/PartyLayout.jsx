@@ -1,33 +1,68 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { Outlet, useNavigate, useParams } from "react-router";
 import Header from "../components/common/Header";
 import BottomNav from "../components/common/BottomNav";
+import { useAuth } from "../context/AuthContext.jsx";
 import "./PartyLayout.css";
 
-export default function PartyLayout() {
-  const { id: playlistId } = useParams();
-  const [partyName, setPartyName] = useState("Lovelace Night");
-  const [userPseudo, setUserPseudo] = useState("Zoé");
+export default function PartyLayout({ role = "host" }) {
+  const { id, code } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
+  const [playlist, setPlaylist] = useState(null);
+  // The guest pseudo is read once on mount. It will be replaced by the
+  // guest session endpoint in a later step.
+  const [guestName] = useState(() => localStorage.getItem("guest_name") ?? "");
+
+  // The header needs the party name. The host reads it from the protected
+  // endpoint, the guest from the public invite endpoint.
   useEffect(() => {
-    const storedGuestName = localStorage.getItem("guest_name");
-    if (storedGuestName) {
-      setUserPseudo(storedGuestName);
+    let cancelled = false;
+
+    async function loadPlaylist() {
+      const url =
+        role === "guest" ? `/api/invite/${code}` : `/api/playlists/${id}`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (!cancelled) setPlaylist(data);
+      } catch {
+        // The fallback title is enough while the API is unavailable.
+      }
     }
-  }, [playlistId]);
+
+    loadPlaylist();
+    return () => {
+      cancelled = true;
+    };
+  }, [role, id, code]);
+
+  const basePath = role === "guest" ? `/join/${code}/party` : `/playlist/${id}`;
+  const pseudo = role === "guest" ? guestName : user?.username;
+
+  function handleLeave() {
+    navigate(role === "guest" ? `/join/${code}` : "/");
+  }
 
   return (
     <div className="party-layout">
-      {/* HEADER FIXE */}
-      <Header sessionTitle={partyName} userPseudo={userPseudo} />
+      <Header
+        variant={role}
+        sessionTitle={playlist?.name ?? "Soirée"}
+        userPseudo={pseudo}
+        playlistId={id}
+        onLeave={handleLeave}
+      />
 
-      {/* CONTENU PRINCIPAL */}
       <main className="party-content">
-        <Outlet context={{ playlistId, userPseudo }} />
+        <Outlet context={{ role, playlist, basePath, pseudo }} />
       </main>
 
-      {/* NAVIGATION STICKY */}
-      <BottomNav playlistId={playlistId} />
+      <BottomNav basePath={basePath} />
     </div>
   );
 }
