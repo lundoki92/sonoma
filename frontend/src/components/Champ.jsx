@@ -1,4 +1,6 @@
 // Un champ de formulaire accessible : label relié, message d'erreur annoncé
+import "./Champ.css";
+
 export function Champ({ id, label, erreur, ...props }) {
   return (
     <div className="champ">

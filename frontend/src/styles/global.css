@@ -1,4 +1,67 @@
-/* --- RESET & VARIABLES GLOBALES --- */
+/* --- RESET & DESIGN TOKENS ---
+   Une seule échelle typographique et une seule échelle d'espacement pour
+   toutes les écrans. Les composants ne font que référencer ces variables. */
+:root {
+  /* Typographies */
+  --font-ui: "Geist", system-ui, -apple-system, sans-serif;
+  --font-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+
+  /* Échelle de texte : heros > titre > label > corps > secondaire > caption > micro */
+  --text-hero: clamp(26px, 7vw, 32px);
+  --text-title: 20px;
+  --text-label: 17px;
+  --text-body: 15px;
+  --text-secondary: 14px;
+  --text-caption: 12px;
+  --text-micro: 11px;
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-body: 1.5;
+
+  /* Échelle d'espacement */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Champs et boutons partagés */
+  --control-height: 52px;
+  --control-radius: 30px;
+  --control-padding-x: 16px;
+  --field-gap: 18px;
+  --button-height: 56px;
+  --button-radius: 40px;
+  --button-font-size: 17px;
+  --icon-button-size: 38px;
+  --icon-button-size-lg: 44px;
+
+  /* Mise en page commune à tous les écrans */
+  --content-max-width: 480px;
+  --screen-padding-x: 20px;
+  --screen-top-offset: calc(var(--header-height, 80px) + var(--space-6));
+  --card-padding: 20px;
+  --section-gap: 24px;
+  --list-gap: 12px;
+
+  /* Contours et ombres répétés */
+  --card-border: 1px solid #2e2a3d;
+  --card-background: #15131d;
+  --focus-ring: 2px solid #eaff99;
+
+  /* Shared header metrics so every screen aligns the same way. */
+  --header-height: 80px;
+  --header-padding-x: 20px;
+  --header-border: 1px solid rgba(255, 255, 255, 0.1);
+  --header-background: rgba(12, 11, 18, 0.92);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,15 +71,75 @@
 body {
   background-color: #121214;
   color: #ffffff;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- TITRES ET BOUTONS (Bricolage Grotesque) --- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+.btn,
+.header-title,
+.nav-label {
+  font-family: var(--font-display);
 }
 
 /* --- CLASSES UTILITAIRES COMMUNES --- */
 .container {
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 16px;
+  padding: var(--space-4);
+}
+
+/* Metadata pill used by the creation wizard and the party app */
+.app-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: var(--card-border);
+  border-radius: 999px;
+  background-color: var(--card-background);
+  color: #cfc8e0;
+  font-size: var(--text-caption);
+  line-height: var(--leading-tight);
+}
+
+/* Rangée de pastilles (nom, date, service, morceaux) : identique dans le
+   wizard de création et l'app de soirée. */
+.app-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--section-gap);
+}
+
+/* Message d'état partagé : chargement, liste vide, soirée terminée… */
+.app-status {
+  padding: var(--space-10) 0;
+  text-align: center;
+  color: #a1a1aa;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
+}
+
+/* Boîte d'erreur partagée : même forme et même taille de texte partout. */
+.app-error {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  background-color: rgba(255, 107, 107, 0.1);
+  color: #ffb3b3;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
 }
 
 /* Scrollbar propre */

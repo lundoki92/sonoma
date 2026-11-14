@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../context/AuthContext.jsx';
 import { Champ } from '../components/Champ.jsx';
+import Button from '../components/common/Button.jsx';
 import ExplanationText from '../components/common/ExplanationText.jsx';
 import './Auth.css';
 
@@ -90,9 +91,11 @@ export function Login() {
             required
           />
 
-          <button type="submit" disabled={send || !canSubmit}>
-            {send ? 'Connexion…' : 'Se connecter'}
-          </button>
+          <Button
+            type="submit"
+            disabled={send || !canSubmit}
+            text={send ? 'Connexion…' : 'Se connecter'}
+          />
         </form>
 
         <p>
