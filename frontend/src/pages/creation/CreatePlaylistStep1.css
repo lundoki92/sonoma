@@ -1,0 +1,127 @@
+/* Étape 1 : nom, date et service de streaming. */
+
+.creation-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Un seul rythme vertical pour tous les formulaires de l'application,
+   identique à celui de la carte d'authentification. */
+.creation-form .champ {
+  margin-bottom: var(--field-gap);
+}
+
+.creation-field {
+  min-width: 0;
+  margin-bottom: var(--field-gap);
+  padding: 0;
+  border: none;
+}
+
+.creation-field > legend {
+  display: block;
+  margin-bottom: var(--space-2);
+  padding: 0;
+  font-size: var(--text-label);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: 0.01em;
+  color: #f4f0fa;
+}
+
+/* STREAMING SERVICE CARDS */
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 104px;
+  padding: var(--space-3) var(--space-2);
+  border: var(--card-border);
+  border-radius: 18px;
+  background-color: var(--card-background);
+  color: #cfc8e0;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.service-card i {
+  font-size: var(--text-hero);
+}
+
+.service-card:hover {
+  border-color: #3d3852;
+}
+
+/* The radio stays in the DOM for accessibility, only hidden visually. */
+.service-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.service-card:has(input:checked) {
+  border-color: #eaff99;
+  background-color: rgba(234, 255, 153, 0.08);
+  color: #eaff99;
+}
+
+.service-card:has(input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.service-card.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.service-card.is-disabled:hover {
+  border-color: #2e2a3d;
+}
+
+.service-badge {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  padding: 2px 7px;
+  border-radius: 999px;
+  background-color: #2a2735;
+  color: #a1a1aa;
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+}
+
+.service-name {
+  font-size: var(--text-secondary);
+  line-height: var(--leading-tight);
+  text-align: center;
+}
+
+@media (max-width: 360px) {
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card {
+    flex-direction: row;
+    justify-content: flex-start;
+    min-height: var(--control-height);
+    padding: var(--space-3) var(--space-4);
+  }
+}

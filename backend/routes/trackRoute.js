@@ -2,6 +2,7 @@ import express from "express";
 import {
   getTracksByPlaylistController,
   addTrackToPlaylistController,
+  deleteTrackFromPlaylistController,
 } from "../controllers/trackController.js";
 import { auth } from "../middlewares/auth.js";
 
@@ -14,5 +15,12 @@ trackRoute.get("/:playlistId/tracks", auth, getTracksByPlaylistController);
 
 // Add a new track to a playlist.
 trackRoute.post("/:playlistId/tracks", auth, addTrackToPlaylistController);
+
+// Remove a host track from a playlist.
+trackRoute.delete(
+  "/:playlistId/tracks/:trackId",
+  auth,
+  deleteTrackFromPlaylistController,
+);
 
 export default trackRoute;

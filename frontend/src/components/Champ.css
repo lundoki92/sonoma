@@ -1,0 +1,95 @@
+/* Champs de formulaire partagés par l'authentification et la création de
+   soirée. Les dimensions viennent des tokens globaux : un seul endroit pour
+   la hauteur, le radius et la taille de texte de tous les inputs. */
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.champ label {
+  font-size: var(--text-label);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: 0.01em;
+  color: var(--auth-text, #f4f0fa);
+  transition: color 0.2s ease;
+}
+
+/* Le label suit l'état du champ : petit détail qui rend le focus lisible */
+.champ:focus-within label {
+  color: var(--auth-focus, #b9a8ff);
+}
+
+.champ input {
+  width: 100%;
+  height: var(--control-height);
+  box-sizing: border-box;
+  padding: 0 var(--control-padding-x);
+  border: 1px solid var(--auth-border, #2e2a3d);
+  border-radius: var(--control-radius);
+  background-color: var(--auth-bg, #0c0b12);
+  color: var(--auth-text, #f4f0fa);
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  caret-color: var(--auth-accent, #eaff99);
+  color-scheme: dark;
+}
+
+.champ input::placeholder {
+  color: var(--auth-placeholder, #71717a);
+  opacity: 1;
+}
+
+/* Survol : on éclaircit juste la bordure (sauf au focus, qui garde le violet) */
+.champ input:hover:not(:disabled):not([aria-invalid="true"]):not(:focus) {
+  border-color: var(--auth-border-hover, #3f3f46);
+  background-color: #121118;
+}
+
+/* Focus : bordure violette + halo, sans outline par défaut */
+.champ input:focus {
+  outline: none;
+  border-color: var(--auth-focus, #b9a8ff);
+  background-color: #121118;
+  box-shadow: 0 0 0 3px var(--auth-focus-soft, rgba(185, 168, 255, 0.18));
+}
+
+/* Erreur : la bordure passe en rouge et le halo aussi (jamais les deux) */
+.champ input[aria-invalid="true"] {
+  border-color: var(--auth-danger, #c62828);
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.14);
+}
+
+.champ input[aria-invalid="true"]:focus {
+  border-color: var(--auth-danger, #c62828);
+  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.24);
+}
+
+.champ input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Autofill Chrome/Safari : sans ça, le fond redevient blanc */
+.champ input:-webkit-autofill,
+.champ input:-webkit-autofill:hover,
+.champ input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--auth-text, #f4f0fa);
+  -webkit-box-shadow: 0 0 0 1000px var(--auth-bg, #0c0b12) inset;
+  caret-color: var(--auth-accent, #eaff99);
+}
+
+.champ .erreur {
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
+  color: var(--auth-danger-text, #ff9b93);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .champ input,
+  .champ label {
+    transition: none;
+  }
+}

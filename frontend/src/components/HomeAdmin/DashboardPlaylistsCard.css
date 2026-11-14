@@ -1,50 +1,45 @@
-/* BASE CARD */
+/* BASE CARD: every status shares the same height so the list stays even.
+   Sizes come from the global tokens, so this card matches the other cards
+   of the app (share card, auth card). */
+
 .dashboard-playlist-card {
   width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #2E2A3D;
+  min-height: 122px;
+  display: flex;
+  align-items: center;
+  padding: var(--card-padding) var(--space-6);
+  border: var(--card-border);
   border-radius: 48px;
-  padding: 26px;
   transition: border-color 0.25s ease;
 }
 
-/* LIVE PLAYLIST */
+/* Deux familles de cartes : celles qui s'ouvrent (brouillon, en direct) et
+   celles qui sont de l'historique (terminée, archivée). */
+
 .card-live {
-  min-height: 202px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   background: #000000;
-  border-color: #2E2A3D;
-  cursor: pointer;
 }
 
-.card-live:hover,
-.card-live:active {
-  border-color: #EAFF99;
+.card-archived,
+.card-preparing,
+.card-past,
+.card-unknown {
+  background: #17141f;
 }
 
-/* Live Badge */
-.card-header {
-  display: flex;
-  align-items: center;
-}
-
-.badge-live {
-  padding: 7px 21px;
-  border-radius: 30px;
-  background: #10483B;
-  color: #00E6A0;
-  font-size: 14px;
-  font-weight: 500;
+/* Une carte fermée reste muette : pas de curseur main, pas de survol.
+   Le clic est déjà retiré dans le conteneur, ça le rend évident. */
+.dashboard-playlist-locked .dashboard-playlist-card {
+  cursor: default;
 }
 
 /* CARD CONTENT */
+
 .card-body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-4);
   width: 100%;
 }
 
@@ -52,103 +47,115 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.card-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 80px;
+  gap: var(--space-1);
 }
 
 .card-title {
-  margin: 0;
-  color: #F4F1FA;
-  font-size: 21px;
+  overflow: hidden;
+  color: #f4f1fa;
+  font-size: var(--text-title);
   font-weight: 600;
+  line-height: var(--leading-tight);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-subtitle {
+  color: #a49db5;
+  font-size: var(--text-secondary);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+}
+
+/* Compteurs : ce que la soirée contient déjà, et qui est venu. */
+.card-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  color: #8f88a3;
+  font-size: var(--text-caption);
+  line-height: var(--leading-tight);
+}
+
+.card-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-count i {
+  font-size: var(--text-micro);
+}
+
+/* Badge and arrow stay grouped on the right of the card. */
+
+.card-end {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin: 0;
-  color: #A49DB5;
-  font-size: 15px;
-  font-weight: 400;
-}
-
-.dot {
-  color: #A49DB5;
-}
-
-/* ARROW BUTTON */
-.card-action {
+  gap: var(--space-3);
   flex-shrink: 0;
 }
 
-.arrow-btn {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #17141F;
-  color: #837C96;
-  transition: background 0.25s ease, color 0.25s ease;
+/* STATUS BADGES */
+
+.badge {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.card-live:hover .arrow-btn {
-  background: #EAFF99;
-  color: #17141F;
+.badge-live {
+  background: #10483b;
+  color: #00e6a0;
 }
 
-/* ARCHIVED AND PREPARING PLAYLISTS */
-.card-archived,
-.card-preparing,
-.card-unknown {
-  min-height: 122px;
-  display: flex;
-  align-items: center;
-  background: #17141F;
+/* Terminée : soirée ouverte encore, mais dont le jour est passé. */
+.badge-past {
+  background: #252130;
+  color: #8f88a3;
+  font-weight: 400;
 }
 
-/* Status Badges */
 .badge-archived,
 .badge-preparing,
 .badge-unknown {
-  flex-shrink: 0;
-  padding: 7px 16px;
-  margin-left: auto;
-  border-radius: 30px;
   background: #252130;
-  color: #A49DB5;
-  font-size: 14px;
+  color: #a49db5;
   font-weight: 400;
 }
 
+/* ARROW BUTTON */
+
+.arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-button-size-lg);
+  height: var(--icon-button-size-lg);
+  border-radius: 50%;
+  background: #17141f;
+  color: #837c96;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.card-live:hover .arrow-btn {
+  background: #eaff99;
+  color: #17141f;
+}
+
 /* RESPONSIVE DESIGN */
+
 @media (max-width: 480px) {
   .dashboard-playlist-card {
-    padding: 22px;
+    padding: var(--card-padding) var(--space-5);
     border-radius: 40px;
-  }
-
-  .card-title {
-    font-size: 19px;
-  }
-
-  .card-subtitle {
-    font-size: 14px;
-    flex-wrap: wrap;
-  }
-
-  .badge-archived,
-  .badge-preparing {
-    padding: 6px 12px;
-    font-size: 12px;
   }
 }

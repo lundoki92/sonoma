@@ -1,4 +1,3 @@
-import React from "react";
 import "./ExplanationText.css";
 
 export default function ExplanationText({

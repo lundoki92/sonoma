@@ -3,23 +3,20 @@ import {
   createPlaylistController,
   getPlaylistByIdController,
   getMyPlaylistsController,
+  updatePlaylistController,
 } from "../controllers/playlistController.js";
 import { auth } from '../middlewares/auth.js'
 
 const routePlaylist = express.Router();
 
-
-// HOST 
-// Create a new playlist.
+// HOST
+// Create a party and open it (last step of the wizard).
 routePlaylist.post("/", auth, createPlaylistController);
-// Retrieve all playlist 
+// Retrieve all the host's parties.
 routePlaylist.get("/", auth, getMyPlaylistsController);
-// Retrieve a playlist by its ID.
+// Retrieve one party.
 routePlaylist.get("/:id", auth, getPlaylistByIdController);
-
-// Invité (pas d'auth, accès via le code)
-// routePlaylist.get("/invite/:code", getPlaylistByInviteController);
-// routePlaylist.get("/invite/:code/tracks", getInviteTracksController);
-// routePlaylist.post("/invite/:code/tracks", addInviteTrackController);
+// Update the editable fields of a party.
+routePlaylist.patch("/:id", auth, updatePlaylistController);
 
 export default routePlaylist;

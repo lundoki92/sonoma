@@ -1,0 +1,7 @@
+/* Étape 2 : ajout des premiers morceaux. La rangée de pastilles utilise la
+   classe partagée .app-meta-row (styles/global.css). */
+
+.setup-step {
+  display: flex;
+  flex-direction: column;
+}

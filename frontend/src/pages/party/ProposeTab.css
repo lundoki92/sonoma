@@ -1,0 +1,26 @@
+/* Onglet Proposer de l'app de soirée (hôte et invité). */
+
+.propose-tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.propose-intro {
+  margin-bottom: var(--section-gap);
+}
+
+/* Le titre reprend l'échelle commune : même taille que les titres des
+   écrans de création et de la carte d'authentification. */
+.propose-title {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-hero);
+  line-height: var(--leading-tight);
+  font-weight: 750;
+  color: #f4f0fa;
+}
+
+.propose-text {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: #a6a1b4;
+}
