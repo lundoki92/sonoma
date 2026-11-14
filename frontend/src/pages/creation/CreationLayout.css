@@ -106,17 +106,22 @@
   color: #a1a1aa;
 }
 
-.creation-intro h1 {
-  margin: 0 0 8px;
-  font-size: 26px;
-  line-height: 1.15;
+.creation-intro {
+  margin-bottom: 24px;
 }
 
-.creation-intro p {
-  margin: 0 0 24px;
-  color: #a1a1aa;
+.creation-intro .explanation-text {
+  padding: 0;
+}
+
+.creation-intro .explanation-text-title {
+  margin-bottom: 10px;
+  font-size: clamp(26px, 7vw, 30px);
+}
+
+.creation-intro .explanation-text-text {
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .creation-error {
@@ -127,42 +132,6 @@
   background-color: rgba(255, 107, 107, 0.1);
   color: #ffb3b3;
   font-size: 13px;
-}
-
-.creation-submit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 56px;
-  margin-top: 28px;
-  padding: 0 20px;
-  box-sizing: border-box;
-  border: none;
-  border-radius: 40px;
-  background-color: #eaff99;
-  color: #14120a;
-  font-size: 16px;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    box-shadow 0.25s ease,
-    opacity 0.2s ease;
-}
-
-.creation-submit:hover:not(:disabled) {
-  box-shadow: 0 0 18px rgba(234, 255, 153, 0.45);
-}
-
-.creation-submit:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.creation-submit:focus-visible {
-  outline: 2px solid #ffffff;
-  outline-offset: 2px;
 }
 
 .creation-hint {

@@ -34,14 +34,20 @@
   list-style: none;
 }
 
+/* Cartes de morceaux arrondies au maximum, comme la recherche */
 .setup-track {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px;
+  padding: 10px 12px 10px 10px;
   border: 1px solid #2e2a3d;
-  border-radius: 16px;
+  border-radius: 999px;
   background-color: #15131d;
+  transition: border-color 0.2s ease;
+}
+
+.setup-track:hover {
+  border-color: #3f3f46;
 }
 
 .setup-track img {
@@ -49,7 +55,7 @@
   width: 44px;
   height: 44px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 50%;
 }
 
 .setup-track-info {
@@ -62,6 +68,7 @@
 
 .setup-track-title {
   overflow: hidden;
+  color: #f4f0fa;
   font-size: 14px;
   font-weight: 600;
   text-overflow: ellipsis;
@@ -71,95 +78,44 @@
 .setup-track-artist {
   overflow: hidden;
   font-size: 12px;
-  color: #a1a1aa;
+  color: #a6a1b4;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.setup-track-status {
+/* Croix pour annuler le choix d'un morceau */
+.setup-track-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background-color: #1c1a26;
-  color: #a1a1aa;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  border-radius: 50%;
+  background-color: rgba(255, 107, 107, 0.08);
+  color: #ff9b93;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
-.setup-track-status.status-voting {
-  background-color: rgba(234, 255, 153, 0.1);
-  color: #eaff99;
-}
-
-.setup-track-status.status-selected,
-.setup-track-status.status-played {
-  background-color: rgba(0, 230, 160, 0.12);
-  color: #00e6a0;
-}
-
-/* Dark skin for the shared Spotify search inside the creation step */
-
-.setup-step .music-search-form input {
-  min-height: 52px;
-  padding: 0 16px;
-  box-sizing: border-box;
-  border: 1px solid #2e2a3d;
-  border-radius: 16px;
-  background-color: #15131d;
-  color: #f4f0fa;
-  font-family: inherit;
-  color-scheme: dark;
-}
-
-.setup-step .music-search-form input::placeholder {
-  color: #6d687c;
-}
-
-.setup-step .music-search-form input:focus {
-  outline: none;
-  border-color: #eaff99;
-}
-
-.setup-step .music-search-form > button {
-  padding: 0 18px;
-  border-radius: 16px;
-  background-color: #eaff99;
-  color: #14120a;
-  font-family: inherit;
-  font-weight: 700;
-}
-
-.setup-step .music-search-form > button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.setup-step .music-result {
-  border-bottom: 1px solid #232030;
-}
-
-.setup-step .music-info span {
-  color: #a1a1aa;
-}
-
-.setup-step .music-add-button {
-  border-color: #2e2a3d;
-  background-color: #15131d;
-  color: #eaff99;
-}
-
-.setup-step .music-add-button:hover:not(:disabled) {
-  border-color: #eaff99;
-  background-color: rgba(234, 255, 153, 0.12);
-  color: #eaff99;
-}
-
-.setup-step .music-error {
+.setup-track-remove:hover:not(:disabled) {
+  border-color: rgba(255, 107, 107, 0.65);
+  background-color: rgba(255, 107, 107, 0.16);
   color: #ffb3b3;
 }
 
-.setup-step .music-empty {
-  color: #7b758c;
+.setup-track-remove:focus-visible {
+  outline: 2px solid #ff9b93;
+  outline-offset: 2px;
+}
+
+.setup-track-remove:disabled {
+  opacity: 0.55;
+  cursor: wait;
 }

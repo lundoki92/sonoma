@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { Champ } from "../../components/Champ.jsx";
+import Button from "../../components/common/Button.jsx";
+import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { STREAMING_SERVICES } from "./services.js";
 import "./CreatePlaylistStep1.css";
 
@@ -121,39 +124,33 @@ export default function CreatePlaylistStep1() {
 
   return (
     <form className="creation-form" onSubmit={handleSubmit}>
-      <header className="creation-intro">
-        <h1>{isEdit ? "Modifier ma soirée" : "Créer ma soirée"}</h1>
-        <p>
-          Donne-lui un nom, choisis la date et le service de streaming à
-          utiliser.
-        </p>
-      </header>
-
-      <div className="creation-field">
-        <label htmlFor="playlist-name">Nom de ma soirée</label>
-
-        <input
-          id="playlist-name"
-          type="text"
-          placeholder="Anniversaire de Léa"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          maxLength={100}
-          required
+      <div className="creation-intro">
+        <ExplanationText
+          hasAppTitle={false}
+          title={isEdit ? "Modifier ma soirée" : "Créer ma soirée"}
+          text="Donne-lui un nom, choisis la date et le service de streaming à utiliser."
         />
       </div>
 
-      <div className="creation-field">
-        <label htmlFor="playlist-date">Date de la soirée</label>
+      <Champ
+        id="playlist-name"
+        label="Nom de ma soirée"
+        type="text"
+        placeholder="Anniversaire de Léa"
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        maxLength={100}
+        required
+      />
 
-        <input
-          id="playlist-date"
-          type="datetime-local"
-          value={dateTime}
-          onChange={(event) => setDateTime(event.target.value)}
-          required
-        />
-      </div>
+      <Champ
+        id="playlist-date"
+        label="Date de la soirée"
+        type="datetime-local"
+        value={dateTime}
+        onChange={(event) => setDateTime(event.target.value)}
+        required
+      />
 
       <fieldset className="creation-field">
         <legend>Service de streaming</legend>
@@ -200,13 +197,17 @@ export default function CreatePlaylistStep1() {
         </p>
       )}
 
-      <button type="submit" className="creation-submit" disabled={loading}>
-        {loading
-          ? "Enregistrement…"
-          : isEdit
-            ? "Enregistrer et continuer"
-            : "Créer ma soirée"}
-      </button>
+      <Button
+        type="submit"
+        disabled={loading}
+        text={
+          loading
+            ? "Enregistrement…"
+            : isEdit
+              ? "Enregistrer et continuer"
+              : "Créer ma soirée"
+        }
+      />
     </form>
   );
 }

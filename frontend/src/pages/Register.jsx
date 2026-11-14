@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { registered } from '../api/Frontauth.js';
 import { Champ } from '../components/Champ.jsx';
+import Button from '../components/common/Button.jsx';
 import ExplanationText from '../components/common/ExplanationText.jsx';
 import './Auth.css';
 
@@ -94,9 +95,11 @@ export function Register() {
             required
           />
 
-          <button type="submit" disabled={send || !canSubmit}>
-            {send ? 'Création…' : 'Créer mon compte'}
-          </button>
+          <Button
+            type="submit"
+            disabled={send || !canSubmit}
+            text={send ? 'Création…' : 'Créer mon compte'}
+          />
         </form>
 
         <p>

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
+import Button from "../../components/common/Button.jsx";
+import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { getServiceIcon, getServiceLabel } from "./services.js";
 import "./PlaylistShare.css";
 
@@ -67,13 +69,13 @@ export default function PlaylistShare() {
 
   return (
     <div className="share-step">
-      <header className="creation-intro">
-        <h1>Ta soirée est prête</h1>
-        <p>
-          Partage ce lien à tes invités pour qu'ils rejoignent la playlist de{" "}
-          <strong>{playlist.name}</strong>.
-        </p>
-      </header>
+      <div className="creation-intro">
+        <ExplanationText
+          hasAppTitle={false}
+          title="Ta soirée est prête"
+          text={`Partage ce lien à tes invités pour qu'ils rejoignent la playlist de ${playlist.name}.`}
+        />
+      </div>
 
       <div className="share-meta">
         <span className="creation-chip">
@@ -124,14 +126,12 @@ export default function PlaylistShare() {
         </p>
       )}
 
-      <button
+      <Button
         type="button"
-        className="creation-submit"
         disabled
+        text="Démarrer la soirée"
         title="Le démarrage de la soirée arrive dans une prochaine version."
-      >
-        Démarrer la soirée
-      </button>
+      />
 
       <p className="creation-hint">
         Le démarrage et le vote seront disponibles dans une prochaine version.

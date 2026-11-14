@@ -82,90 +82,8 @@
 }
 
 /* ---------- CHAMPS ---------- */
-
-.champ {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.champ label {
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--auth-text);
-  transition: color 0.2s ease;
-}
-
-/* Le label suit l'état du champ : petit détail qui rend le focus lisible */
-.champ:focus-within label {
-  color: var(--auth-focus);
-}
-
-.champ input {
-  width: 100%;
-  height: 52px;
-  box-sizing: border-box;
-  padding: 0 16px;
-  background-color: var(--auth-bg);
-  border: 1px solid var(--auth-border);
-  border-radius: 30px;
-  color: var(--auth-text);
-  font-family: inherit;
-  font-size: 15px;
-  caret-color: var(--auth-accent);
-}
-
-.champ input::placeholder {
-  color: var(--auth-placeholder);
-  opacity: 1;
-}
-
-/* Survole : on éclaircit juste la bordure (sauf au focus, qui garde le violet) */
-.champ input:hover:not(:disabled):not([aria-invalid="true"]):not(:focus) {
-  border-color: var(--auth-border-hover);
-  background-color: #121118;
-}
-
-/* Focus : bordure violette + halo, sans outline par défaut */
-.champ input:focus {
-  outline: none;
-  border-color: var(--auth-focus);
-  background-color: #121118;
-  box-shadow: 0 0 0 3px var(--auth-focus-soft);
-}
-
-/* Erreur : la bordure passe en rouge et le halo aussi (jamais les deux) */
-.champ input[aria-invalid="true"] {
-  border-color: var(--auth-danger);
-  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.14);
-}
-
-.champ input[aria-invalid="true"]:focus {
-  border-color: var(--auth-danger);
-  box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.24);
-}
-
-.champ input:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-/* Autofill Chrome/Safari : sans ça, le fond redevient blanc */
-.champ input:-webkit-autofill,
-.champ input:-webkit-autofill:hover,
-.champ input:-webkit-autofill:focus {
-  -webkit-text-fill-color: var(--auth-text);
-  -webkit-box-shadow: 0 0 0 1000px var(--auth-bg) inset;
-  caret-color: var(--auth-accent);
-}
-
-.champ .erreur {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: var(--auth-danger-text);
-}
+/* Les styles des champs vivent dans components/Champ.css pour être partagés
+   avec la création de soirée. */
 
 /* ---------- MESSAGES GLOBAUX ---------- */
 
@@ -190,51 +108,12 @@
   color: #d9ff72;
 }
 
-/* ---------- BOUTON (mêmes paramètres que .button) ---------- */
+/* ---------- BOUTON ---------- */
+/* Le bouton principal est le composant commun Button (.button).
+   On réduit juste l'espace au-dessus dans la carte auth. */
 
-.auth-card form button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 56px;
+.auth-card .button {
   margin-top: 6px;
-  border: 0;
-  border-radius: 40px;
-  background-color: var(--auth-accent);
-  color: #121214;
-  font-family:
-    "Bricolage Grotesque",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    box-shadow 0.3s ease,
-    transform 0.15s ease,
-    opacity 0.2s ease;
-}
-
-.auth-card form button:hover:not(:disabled) {
-  box-shadow: 0 0 16px rgba(234, 255, 153, 0.7);
-}
-
-.auth-card form button:active:not(:disabled) {
-  transform: translateY(1px) scale(0.995);
-  box-shadow: 0 0 10px rgba(234, 255, 153, 0.5);
-}
-
-.auth-card form button:focus-visible {
-  outline: 2px solid var(--auth-accent);
-  outline-offset: 3px;
-}
-
-.auth-card form button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  box-shadow: none;
 }
 
 /* ---------- LIEN DE BASCULE ---------- */
@@ -270,6 +149,7 @@
 @media (max-width: 480px) {
   .carte-form {
     justify-content: flex-start;
+    align-items: center;
     padding: 24px 16px 32px;
   }
 
@@ -281,9 +161,7 @@
 
 /* Accessibilité : on coupe les animations si l'utilisateur le demande */
 @media (prefers-reduced-motion: reduce) {
-  .champ input,
-  .champ label,
-  .auth-card form button,
+  .auth-card .button,
   .auth-card a {
     transition: none;
   }

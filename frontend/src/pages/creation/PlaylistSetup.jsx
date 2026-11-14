@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import SearchMusic from "../../components/SearchMusic";
+import Button from "../../components/common/Button.jsx";
+import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { getServiceIcon, getServiceLabel } from "./services.js";
 import "./PlaylistSetup.css";
-
-const TRACK_STATUS = {
-  proposed: "Proposé",
-  voting: "En vote",
-  selected: "Validé",
-  played: "Joué",
-};
 
 export default function PlaylistSetup() {
   const { id } = useParams();
@@ -18,6 +13,7 @@ export default function PlaylistSetup() {
   const [tracks, setTracks] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [removingId, setRemovingId] = useState(null);
 
   // Load the playlist and its tracks when the step opens.
   useEffect(() => {
@@ -88,6 +84,33 @@ export default function PlaylistSetup() {
     }
   }
 
+  // Remove a track chosen by the host during the preparation.
+  async function handleRemoveTrack(track) {
+    setRemovingId(track.id);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `/api/playlists/${id}/tracks/${track.id}`,
+        { method: "DELETE" }
+      );
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Impossible de retirer le morceau");
+      }
+
+      setTracks((previousTracks) =>
+        previousTracks.filter((item) => item.id !== track.id)
+      );
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRemovingId(null);
+    }
+  }
+
   if (loading) {
     return <p className="creation-status">Chargement de la soirée…</p>;
   }
@@ -100,13 +123,13 @@ export default function PlaylistSetup() {
 
   return (
     <div className="setup-step">
-      <header className="creation-intro">
-        <h1>Ajoute les premiers morceaux</h1>
-        <p>
-          Recherche dans le catalogue Spotify et prépare l'ambiance de ta
-          soirée.
-        </p>
-      </header>
+      <div className="creation-intro">
+        <ExplanationText
+          hasAppTitle={false}
+          title="Ajoute les premiers morceaux"
+          text="Recherche dans le catalogue Spotify et prépare l'ambiance de ta soirée."
+        />
+      </div>
 
       <div className="setup-playlist-meta">
         <span className="creation-chip">
@@ -160,20 +183,30 @@ export default function PlaylistSetup() {
                   <span className="setup-track-artist">{track.artist}</span>
                 </div>
 
-                <span
-                  className={`setup-track-status status-${track.status}`}
+                <button
+                  type="button"
+                  className="setup-track-remove"
+                  onClick={() => handleRemoveTrack(track)}
+                  disabled={removingId === track.id}
+                  aria-label={`Retirer ${track.title} de la soirée`}
+                  title="Retirer le morceau"
                 >
-                  {TRACK_STATUS[track.status] ?? track.status}
-                </span>
+                  <i
+                    className={`fa-solid ${
+                      removingId === track.id
+                        ? "fa-spinner fa-spin"
+                        : "fa-xmark"
+                    }`}
+                    aria-hidden="true"
+                  ></i>
+                </button>
               </li>
             ))}
           </ul>
         )}
       </section>
 
-      <Link className="creation-submit" to={`/playlist/${id}/share`}>
-        Suivant
-      </Link>
+      <Button as={Link} to={`/playlist/${id}/share`} text="Suivant" />
 
       <p className="creation-hint">
         Tu peux passer cette étape : une soirée peut démarrer sans morceau.

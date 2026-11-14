@@ -3,6 +3,15 @@
   flex-direction: column;
 }
 
+/* Same rhythm as the auth form. */
+.creation-form .champ {
+  margin-bottom: 18px;
+}
+
+.creation-form .button {
+  margin-top: 8px;
+}
+
 .creation-field {
   min-width: 0;
   margin: 0 0 20px;
@@ -10,44 +19,14 @@
   border: none;
 }
 
-.creation-field > label,
 .creation-field > legend {
   display: block;
   margin-bottom: 8px;
-  font-size: 13px;
+  padding: 0;
+  font-size: 17px;
   font-weight: 600;
-  color: #cfc8e0;
-}
-
-.creation-field input[type="text"],
-.creation-field input[type="datetime-local"] {
-  width: 100%;
-  min-height: 54px;
-  padding: 0 16px;
-  box-sizing: border-box;
-  border: 1px solid #2e2a3d;
-  border-radius: 16px;
-  background-color: #15131d;
+  letter-spacing: 0.01em;
   color: #f4f0fa;
-  font-family: inherit;
-  font-size: 15px;
-  color-scheme: dark;
-  transition: border-color 0.2s ease;
-}
-
-.creation-field input[type="text"]:hover,
-.creation-field input[type="datetime-local"]:hover {
-  border-color: #3d3852;
-}
-
-.creation-field input[type="text"]:focus,
-.creation-field input[type="datetime-local"]:focus {
-  outline: none;
-  border-color: #eaff99;
-}
-
-.creation-field input::placeholder {
-  color: #6d687c;
 }
 
 /* STREAMING SERVICE CARDS */
