@@ -13,14 +13,13 @@
   transition: border-color 0.25s ease;
 }
 
-/* Deux familles de cartes : celles qui s'ouvrent (brouillon, en direct) et
-   celles qui sont de l'historique (terminée, archivée). */
+/* Deux familles de cartes : celles qui s'ouvrent (en direct, en préparation)
+   et celles qui sont de l'historique (terminées). */
 
 .card-live {
   background: #000000;
 }
 
-.card-archived,
 .card-preparing,
 .card-past,
 .card-unknown {
@@ -122,7 +121,6 @@
   font-weight: 400;
 }
 
-.badge-archived,
 .badge-preparing,
 .badge-unknown {
   background: #252130;

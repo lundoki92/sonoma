@@ -1,17 +1,17 @@
 // État d'une soirée, tel qu'il doit être affiché à l'écran.
 //
-// Deux questions comptent au dashboard : la préparation est-elle terminée,
-// et le jour est-il passé ?
+// Deux questions comptent au dashboard : la soirée est-elle ouverte, et son
+// jour est-il passé ? Le statut technique répond à la première, la date à la
+// seconde.
 const STATES = {
-  draft: { key: "draft", label: "Brouillon", badge: "preparing" },
   live: { key: "live", label: "En direct", badge: "live" },
+  preparing: { key: "preparing", label: "En préparation", badge: "preparing" },
   past: { key: "past", label: "Terminée", badge: "past" },
-  archived: { key: "archived", label: "Archivée", badge: "archived" },
   unknown: { key: "unknown", label: "Inconnue", badge: "unknown" },
 };
 
 // Ordre d'affichage sur le dashboard : ce qui se joue, puis ce qui est joué.
-export const STATE_ORDER = ["live", "draft", "past", "archived", "unknown"];
+export const STATE_ORDER = ["live", "preparing", "past", "unknown"];
 
 // Même jour calendaire, à la date locale près.
 function isSameDay(a, b) {
@@ -26,14 +26,15 @@ function isSameDay(a, b) {
 export function getPartyState(playlist, now = new Date()) {
   if (!playlist) return STATES.unknown;
 
-  if (playlist.status === "finished") return STATES.archived;
+  // Le statut prime sur la date : une soirée jamais ouverte reste en
+  // préparation, même si son jour est passé.
+  if (playlist.status === "preparing") return STATES.preparing;
 
-  // La préparation n'est pas terminée : la soirée n'est pas encore ouverte,
-  // mais elle reste à ouvrir pour finir de la créer.
-  if (playlist.status === "preparing") return STATES.draft;
+  // Soirée close explicitement : terminée, quel que soit son jour.
+  if (playlist.status === "finished") return STATES.past;
 
-  // Un statut qu'on n'attend plus (donnée écrite à la main) : on l'affiche
-  // comme inconnu plutôt que de le faire passer pour une soirée ouverte.
+  // Un statut qu'on n'attend plus : on l'affiche comme inconnu plutôt que de
+  // le faire passer pour une soirée ouverte.
   if (playlist.status !== "active") return STATES.unknown;
 
   const startsAt = new Date(playlist.date_time);
@@ -48,10 +49,10 @@ export function getPartyState(playlist, now = new Date()) {
   return STATES.live;
 }
 
-// Une soirée passée ou archivée est de l'historique : on la lit sur la carte,
-// on ne l'ouvre plus. Un brouillon reste ouvrable pour finir de le préparer.
+// Une soirée terminée est de l'historique : on la lit sur la carte, on ne
+// l'ouvre plus. Une soirée en préparation reste ouvrable pour la finir.
 export function isPartyActionable(playlist, now = new Date()) {
   const { key } = getPartyState(playlist, now);
 
-  return key === "live" || key === "draft";
+  return key === "live" || key === "preparing";
 }
