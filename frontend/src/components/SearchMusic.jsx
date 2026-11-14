@@ -63,12 +63,11 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
   // Add a Spotify track to the current playlist
   async function handleAdd(track) {
     // Get the track ID
-    const trackId = track.id ?? track.external_track_id;
+    const trackId = track.spotifyId ?? track.id ?? track.external_track_id;
 
     setAddingId(trackId);
 
     try {
-      console.log("TRACK TO ADD:", track);
       // Call the function provided by PlaylistPage
       await onAddTrack(track);
     } catch (err) {
@@ -104,17 +103,21 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
           <h3>Résultats Spotify</h3>
 
           {results.map((track) => {
-            // Get the track information from the API response
-            const trackId = track.id ?? track.external_track_id;
+            // Get the track information from the API response.
+            // The Spotify search endpoint answers with spotifyId, while the
+            // tracks already in the playlist carry external_track_id.
+            const trackId = track.spotifyId ?? track.id ?? track.external_track_id;
 
-            const trackTitle = track.name ?? track.title;
+            const trackTitle = track.title ?? track.name;
 
-            const trackArtist = Array.isArray(track.artists)
-              ? track.artists.map((artist) => artist.name).join(", ")
-              : track.artist;
+            const trackArtist = track.artist
+              ? track.artist
+              : Array.isArray(track.artists)
+                ? track.artists.map((artist) => artist.name).join(", ")
+                : "";
 
             // Get the album cover from the Spotify API response
-            const trackImage = track.cover;
+            const trackImage = track.cover ?? track.image_url;
 
             // Check whether the track is already in the playlist
             const alreadyAdded = tracks.some(
@@ -128,7 +131,7 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
                     <img
                       className="music-cover"
                       src={trackImage}
-                      alt={track.title}
+                      alt={trackTitle}
                     />
                   )}
 
@@ -140,21 +143,33 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
                 {/* Add track button */}
                 <button
-                  className="music-add-button"
+                  className={`music-add-button${
+                    alreadyAdded ? " is-added" : ""
+                  }`}
                   type="button"
                   onClick={() => handleAdd(track)}
                   disabled={alreadyAdded || addingId === trackId}
+                  aria-label={
+                    alreadyAdded
+                      ? `${trackTitle} est déjà dans la soirée`
+                      : `Ajouter ${trackTitle}`
+                  }
                   title={
                     alreadyAdded
-                      ? "Déjà ajouté"
+                      ? "Ajouté à la soirée"
                       : "Ajouter le morceau"
                   }
                 >
-                  {alreadyAdded
-                    ? "✓"
-                    : addingId === trackId
-                      ? "…"
-                      : "+"}
+                  {alreadyAdded ? (
+                    <i className="fa-solid fa-check" aria-hidden="true"></i>
+                  ) : addingId === trackId ? (
+                    <i
+                      className="fa-solid fa-spinner fa-spin"
+                      aria-hidden="true"
+                    ></i>
+                  ) : (
+                    <i className="fa-solid fa-plus" aria-hidden="true"></i>
+                  )}
                 </button>
               </div>
             );

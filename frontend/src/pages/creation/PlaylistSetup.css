@@ -1,0 +1,166 @@
+/* Étape 2 : ajout des premiers morceaux. La rangée de pastilles utilise la
+   classe partagée .app-meta-row (styles/global.css). */
+
+.setup-step {
+  display: flex;
+  flex-direction: column;
+}
+
+/* SearchMusic est partagé avec l'app de la soirée, où il garde ses anciens
+   styles. Ici, ces règles plus spécifiques replacent la recherche aux
+   dimensions et couleurs du wizard, sans toucher au composant. */
+.setup-step .music-search {
+  max-width: none;
+}
+
+.setup-step .music-search-form {
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.setup-step .music-search-form input {
+  height: var(--control-height);
+  padding: 0 var(--control-padding-x);
+  border: var(--card-border);
+  border-radius: var(--control-radius);
+  background-color: #0c0b12;
+  color: #f4f0fa;
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  color-scheme: dark;
+}
+
+.setup-step .music-search-form input::placeholder {
+  color: #71717a;
+  opacity: 1;
+}
+
+.setup-step .music-search-form input:focus {
+  outline: none;
+  border-color: #b9a8ff;
+  box-shadow: 0 0 0 3px rgba(185, 168, 255, 0.18);
+}
+
+.setup-step .music-search-form > button {
+  height: var(--control-height);
+  padding: 0 var(--space-4);
+  border: var(--card-border);
+  border-radius: var(--control-radius);
+  background-color: #17141f;
+  color: #f4f0fa;
+  font-family: var(--font-ui);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.setup-step .music-search-form > button:hover:not(:disabled) {
+  border-color: #3f3f46;
+}
+
+.setup-step .music-search-form > button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.setup-step .music-results h3 {
+  margin-bottom: var(--space-3);
+  color: #a1a1aa;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.setup-step .music-result {
+  gap: var(--space-3);
+  margin-bottom: var(--list-gap);
+  padding: 10px var(--space-3) 10px 10px;
+  border: var(--card-border);
+  border-radius: 999px;
+  background-color: var(--card-background);
+  transition: border-color 0.2s ease;
+}
+
+.setup-step .music-result:hover {
+  border-color: #3f3f46;
+}
+
+/* La dernière carte n'a pas besoin de marge : la liste des morceaux choisis
+   apporte déjà son espacement. */
+.setup-step .music-result:last-child {
+  margin-bottom: 0;
+}
+
+.setup-step .music-cover {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+}
+
+.setup-step .music-info {
+  gap: var(--space-1);
+}
+
+.setup-step .music-info strong {
+  color: #f4f0fa;
+  font-size: var(--text-secondary);
+  font-weight: 600;
+}
+
+.setup-step .music-info span {
+  color: #a1a1aa;
+  font-size: var(--text-caption);
+}
+
+/* Le bouton d'ajout reprend la taille des boutons ronds partagés (même
+   diamètre que la croix de retrait et que les icônes du header). */
+.setup-step .music-add-button {
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  border: var(--card-border);
+  background-color: #0c0b12;
+  color: #eaff99;
+  font-size: var(--text-body);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.setup-step .music-add-button:hover:not(:disabled) {
+  border-color: #eaff99;
+  background-color: rgba(234, 255, 153, 0.12);
+  color: #eaff99;
+}
+
+.setup-step .music-add-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Morceau déjà choisi : le "+" devient une coche verte discrète. */
+.setup-step .music-add-button.is-added {
+  border-color: rgba(0, 230, 160, 0.45);
+  background-color: rgba(0, 230, 160, 0.12);
+  color: #00e6a0;
+}
+
+.setup-step .music-add-button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.setup-step .music-error {
+  margin-bottom: var(--space-3);
+  color: #ff9b93;
+  font-size: var(--text-secondary);
+}
+
+.setup-step .music-empty {
+  color: #a1a1aa;
+  font-size: var(--text-secondary);
+}
