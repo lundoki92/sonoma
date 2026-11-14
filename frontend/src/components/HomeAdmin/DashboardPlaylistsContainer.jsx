@@ -37,7 +37,8 @@ export default function DashboardPlaylistsContainer({ playlists = [] }) {
         </div>
 
         <p className="dashboard-playlists-hint">
-          Passé leur jour, les soirées restent visibles mais ne s'ouvrent plus.
+          En direct : c&apos;est aujourd&apos;hui · En préparation : pas encore
+          démarrée · Terminée : son jour est passé
         </p>
       </div>
 
