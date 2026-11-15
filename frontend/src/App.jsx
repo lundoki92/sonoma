@@ -1,9 +1,10 @@
 import './App.css'
-import { Routes, Route } from 'react-router'
+import { Routes, Route, Navigate } from 'react-router'
 import HomeAdmin from './pages/HomeAdmin.jsx'
 import PartyLayout from './pages/PartyLayout.jsx'
-import PlaylistPage from './pages/Playlist.jsx'
-import EmptyPage from './pages/EmptyPage.jsx'
+import ProposeTab from './pages/party/ProposeTab.jsx'
+import VoteTab from './pages/party/VoteTab.jsx'
+import ListenTab from './pages/party/ListenTab.jsx'
 import { Login } from './pages/Login.jsx'
 import { Register } from './pages/Register.jsx'
 import { ProtectedRoutes } from './components/ProtectedRoutes.jsx'
@@ -50,10 +51,19 @@ export default function App() {
         </Route>
 
         <Route path="/" element={<ProtectedRoutes><HomeAdmin /></ProtectedRoutes>} />
-        <Route path="/playlist/:id" element={<ProtectedRoutes><PlaylistPage /></ProtectedRoutes>} />
-        {/* <Route path="propose" element={<PlaylistPage />} />
-        <Route path="vote" element={<EmptyPage />} />
-        <Route path="playlist" element={<EmptyPage />} /> */}
+
+        {/* Party app: one shell (header + bottom menu), one screen per tab.
+          The dashboard lands here, so the index goes to the only screen
+          that is live today: Proposer. */}
+        <Route
+          path="/playlist/:id"
+          element={<ProtectedRoutes><PartyLayout /></ProtectedRoutes>}
+        >
+          <Route index element={<Navigate to="propose" replace />} />
+          <Route path="propose" element={<ProposeTab />} />
+          <Route path="vote" element={<VoteTab />} />
+          <Route path="listen" element={<ListenTab />} />
+        </Route>
       </Routes>
     
   )

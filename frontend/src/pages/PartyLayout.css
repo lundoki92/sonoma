@@ -1,21 +1,28 @@
+/* PAGE SOIRÉE : le header et le menu bas d'écran sont fixes, l'écran courant
+   défile entre les deux. Les mesures viennent des tokens globaux, comme sur
+   le dashboard. */
+
 .party-layout {
-  background-color: #121214;
-  color: #ffffff;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  user-select: none;
+  min-height: 100dvh;
+  width: 100%;
+  background-color: #0c0b12;
+  color: #f4f0fa;
+  overflow-x: hidden;
 }
 
 .party-content {
-  flex: 1;
-  overflow-y: auto;
-  padding-top: 80px;
-  padding-bottom: 96px;
-  padding-left: 16px;
-  padding-right: 16px;
-  max-width: 480px;
-  margin: 0 auto;
+  box-sizing: border-box;
   width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  /* header fixe + un cran d'air en haut, menu fixe + un cran d'air en bas */
+  padding: var(--screen-top-offset) var(--screen-padding-x) 104px;
+}
+
+/* Écran à venir : même traitement visuel qu'une carte informative. */
+.party-placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }

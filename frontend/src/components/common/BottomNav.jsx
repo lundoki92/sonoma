@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router";
 import "./BottomNav.css";
 
@@ -26,7 +25,7 @@ export default function BottomNav({ playlistId }) {
       </NavLink>
 
       <NavLink
-        to={`/playlist/${playlistId}/playlist`}
+        to={`/playlist/${playlistId}/listen`}
         className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
       >
         <div className="nav-icon-wrapper">
