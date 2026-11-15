@@ -296,8 +296,6 @@ En résumé :
 - Toute modification passe par une **pull request**, relue et approuvée.
 - Les messages de commit suivent la convention [Conventional Commits](https://www.conventionalcommits.org/fr/) (`feat:`, `fix:`, `docs:`, `style:`, `refactor:`…).
 - Ne pas modifier `backend/db/migration_up.sql` sans accord.
-- Ne pas supprimer de soirée sans accord.
-- Ne pas écraser `soutenance-s9.md` / `soutenance-s9.html`.
 
 ---
 
@@ -305,7 +303,7 @@ En résumé :
 
 | Membre | GitHub |
 |---|---|
-| Andréa Vignon | — |
+| Andréa Vignon | [@Androuashky](https://github.com/Androuashky) |
 | Jennifer LECOQ | [@lundoki92](https://github.com/lundoki92) |
-| Jérémy | — |
-| Nastassja | — |
+| Jérémy | [@jottavy](https://github.com/jottavy) |
+| Nastassja | [@nlhdd](https://github.com/nlhdd) |
