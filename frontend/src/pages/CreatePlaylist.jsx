@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import ExplanationText from "../components/common/ExplanationText";
+import Button from "../components/common/Button";
+import { Champ } from "../components/Champ.jsx";
+import "./Auth.css";
 
 
 function CreatePlaylist() {
@@ -49,14 +53,17 @@ function CreatePlaylist() {
   };
 
   return (
-    <div>
-      <h1>Create a playlist</h1>
+    <main className="carte-form">
+      <div className="auth-card">
+        <ExplanationText
+          title="Create a playlist"
+          text="Name your party and choose when it starts."
+        />
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="playlist-name">Playlist name</label>
-          <input
+        <form onSubmit={handleSubmit}>
+          <Champ
             id="playlist-name"
+            label="Playlist name"
             type="text"
             placeholder="My birthday party"
             value={name}
@@ -64,35 +71,43 @@ function CreatePlaylist() {
             maxLength={100}
             required
           />
-        </div>
 
-        <div>
-          <label htmlFor="playlist-date">Date and time</label>
-          <input
+          <Champ
             id="playlist-date"
+            label="Date and time"
             type="datetime-local"
             value={dateTime}
             onChange={(event) => setDateTime(event.target.value)}
             required
           />
-        </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating..." : "Create playlist"}
-        </button>
-      </form>
+          <Button
+            type="submit"
+            disabled={loading}
+            text={loading ? "Creating..." : "Create playlist"}
+          />
+        </form>
 
-      {error && <p role="alert">{error}</p>}
+        {error && (
+          <p className="alerte" role="alert">
+            {error}
+          </p>
+        )}
 
-      {playlist && (
-        <div>
-          <h2>Playlist created successfully!</h2>
-          <p>Name: {playlist.name}</p>
-          <p>Playlist ID: {playlist.id}</p>
-          <p>Status: {playlist.status}</p>
-        </div>
-      )}
-    </div>
+        {playlist && (
+          <div className="succes">
+            <h2>Playlist created successfully!</h2>
+            <p>Name: {playlist.name}</p>
+            <p>Playlist ID: {playlist.id}</p>
+            <p>Status: {playlist.status}</p>
+          </div>
+        )}
+
+        <p className="form-back">
+          <Link to="/">← Back to the dashboard</Link>
+        </p>
+      </div>
+    </main>
   );
 }
 

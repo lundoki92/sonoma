@@ -34,6 +34,8 @@
   padding: 32px 16px;
   background-color: var(--auth-bg);
   color: var(--auth-text);
+  /* Rend les contrôles natifs (calendrier, heure) lisibles sur fond sombre. */
+  color-scheme: dark;
 }
 
 /* ---------- LA CARTE ---------- */
@@ -240,6 +242,14 @@
 /* ---------- LIEN DE BASCULE ---------- */
 
 .auth-card form + p {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--auth-muted);
+}
+
+/* Lien de retour des formulaires hors auth (création de soirée). */
+.auth-card .form-back {
   margin: 20px 0 0;
   text-align: center;
   font-size: 14px;
