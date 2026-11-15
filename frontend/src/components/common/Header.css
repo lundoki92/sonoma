@@ -4,41 +4,97 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background-color: rgba(18, 18, 20, 0.9);
+  height: var(--header-height, 80px);
+  box-sizing: border-box;
+  background-color: var(--header-background, rgba(12, 11, 18, 0.92));
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 12px 16px;
+  border-bottom: var(--header-border, 1px solid rgba(255, 255, 255, 0.1));
+  padding: 0 var(--header-padding-x, 20px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
 }
 
 .header-subtitle {
-  font-size: 10px;
+  font-size: var(--text-micro);
+  line-height: var(--leading-tight);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: #a1a1aa;
   font-weight: 600;
   display: block;
 }
 
 .header-title {
-  font-size: 16px;
+  font-size: var(--text-label);
+  line-height: var(--leading-tight);
   font-weight: bold;
   color: #ffffff;
   margin: 0;
 }
 
+/* Party header: the title takes the remaining space and is truncated. */
+.header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.header-info .header-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Icon actions of the host party header */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: var(--space-3);
+}
+
+.header-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #cfc8e0;
+  font-size: var(--text-body);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.header-action:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.header-action:focus-visible {
+  outline: 2px solid #b9a8ff;
+  outline-offset: 2px;
+}
+
 .header-badge {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   background-color: #18181b;
   border: 1px solid #27272a;
   padding: 6px 12px;
   border-radius: 9999px;
+  margin-right: var(--space-2);
 }
 
 .avatar {
@@ -50,32 +106,15 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 12px;
+  font-size: var(--text-caption);
   color: #ffffff;
 }
 
 .pseudo {
-  font-size: 12px;
+  font-size: var(--text-caption);
+  line-height: var(--leading-tight);
   font-weight: 500;
   color: #e4e4e7;
-}
-
-
-.app-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  background-color: rgba(18, 18, 20, 0.9);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 480px;
-  margin: 0 auto;
 }
 
 /* Dashboard variant */
@@ -83,10 +122,7 @@
 .app-header--greeting {
   justify-content: flex-start;
   gap: 14px;
-  padding: 30px 36px;
-  min-height: 108px;
-  box-sizing: border-box;
-  background-color: #0c0b12;
+  background-color: var(--header-background, rgba(12, 11, 18, 0.92));
 }
 
 .header-avatar {
@@ -99,36 +135,51 @@
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-size: 18px;
+  font-size: var(--button-font-size);
   font-weight: 500;
 }
 
 .header-greeting-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-1);
 }
 
 .header-greeting {
-  font-size: 14px;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-tight);
   color: #a1a1aa;
   font-weight: 400;
 }
 
+/* Logout lives next to the other header actions: same round target. */
 .header-logout {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  padding: 0;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
   color: #a1a1aa;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 9999px;
+  font-size: var(--text-body);
   cursor: pointer;
   transition:
     color 0.2s ease,
     border-color 0.2s ease,
     background-color 0.2s ease;
+}
+
+/* Party header keeps the text label: the round icon target is for the
+   dashboard only. */
+.app-header:not(.app-header--greeting) .header-logout {
+  width: auto;
+  min-width: var(--icon-button-size);
+  padding: 0 var(--space-3);
+  border-radius: 9999px;
 }
 
 .header-logout:hover {
@@ -138,6 +189,38 @@
 }
 
 .header-logout:focus-visible {
+  outline: 2px solid #b9a8ff;
+  outline-offset: 2px;
+}
+
+/* Guest action: the same pill as the other header chips, with a label. */
+.header-leave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 var(--space-3);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  color: #a1a1aa;
+  font-family: var(--font-ui);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.header-leave:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.header-leave:focus-visible {
   outline: 2px solid #b9a8ff;
   outline-offset: 2px;
 }
