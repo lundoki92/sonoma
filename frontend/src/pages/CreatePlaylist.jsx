@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import Header from "../components/common/Header";
 import ExplanationText from "../components/common/ExplanationText";
 import Button from "../components/common/Button";
 import { Champ } from "../components/Champ.jsx";
@@ -55,22 +56,8 @@ function CreatePlaylist() {
 
   return (
     <div className="creation-layout">
-      {/* Même header que le parcours de création, sans compteur d'étape. */}
-      <header className="creation-header">
-        <div className="creation-header-row">
-          <p className="creation-title">Création de soirée</p>
-
-          <button
-            type="button"
-            className="creation-home"
-            onClick={() => navigate("/")}
-            aria-label="Tableau de bord"
-            title="Tableau de bord"
-          >
-            <i className="fa-solid fa-house" aria-hidden="true"></i>
-          </button>
-        </div>
-      </header>
+      {/* Header partagé : même comportement que sur les autres écrans. */}
+      <Header variant="creation" sessionTitle="Création de soirée" />
 
       <main className="creation-content">
         <div className="creation-intro">

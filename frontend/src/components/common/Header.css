@@ -125,6 +125,19 @@
   background-color: var(--header-background, rgba(12, 11, 18, 0.92));
 }
 
+/* Creation header: a single centred title, shortcut pinned on the right. */
+.app-header--creation {
+  justify-content: center;
+}
+
+.app-header--creation .header-actions {
+  position: absolute;
+  top: 50%;
+  right: var(--header-padding-x, 20px);
+  transform: translateY(-50%);
+  margin-left: 0;
+}
+
 .header-avatar {
   width: 46px;
   height: 46px;

@@ -32,75 +32,6 @@
   --auth-danger-text: #ff9b93;
 }
 
-/* ---------- HEADER ---------- */
-
-.creation-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  height: var(--header-height, 80px);
-  box-sizing: border-box;
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: 0 var(--header-padding-x, 20px);
-  display: flex;
-  align-items: center;
-  background-color: var(--header-background, rgba(12, 11, 18, 0.92));
-  backdrop-filter: blur(10px);
-  border-bottom: var(--header-border, 1px solid rgba(255, 255, 255, 0.1));
-}
-
-.creation-header-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: var(--icon-button-size);
-}
-
-.creation-title {
-  font-family: var(--font-display);
-  font-size: var(--text-label);
-  font-weight: 700;
-  line-height: var(--leading-tight);
-  color: #ffffff;
-  text-align: center;
-}
-
-/* Retour au tableau de bord : même cible ronde que les autres headers. */
-.creation-home {
-  position: absolute;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--icon-button-size);
-  height: var(--icon-button-size);
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  background: transparent;
-  color: #f4f0fa;
-  font-size: var(--text-body);
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.creation-home:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  background-color: rgba(255, 255, 255, 0.06);
-}
-
-.creation-home:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: 2px;
-}
-
 /* ---------- CONTENU ---------- */
 
 .creation-content {
@@ -141,11 +72,5 @@
 @media (max-width: 480px) {
   .creation-content {
     padding-top: calc(var(--header-height) + var(--space-5));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .creation-home {
-    transition: none;
   }
 }

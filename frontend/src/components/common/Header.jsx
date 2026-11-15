@@ -54,6 +54,47 @@ export default function Header({
     );
   }
 
+  // Variant for the creation screen: one centred title and the dashboard
+  // shortcut, exactly like the other headers.
+  if (variant === "creation") {
+    return (
+      <header className="app-header app-header--creation">
+        <p className="header-title">{sessionTitle}</p>
+
+        <div className="header-actions">
+          <button
+            type="button"
+            className="header-action"
+            onClick={() => navigate("/")}
+            aria-label="Tableau de bord"
+            title="Tableau de bord"
+          >
+            <i className="fa-solid fa-house" aria-hidden="true"></i>
+          </button>
+        </div>
+      </header>
+    );
+  }
+
+  // Variant for guests: party title and pseudo, no logout nor dashboard.
+  if (variant === "guest") {
+    return (
+      <header className="app-header">
+        <div className="header-info">
+          <span className="header-subtitle">Soirée en cours</span>
+
+          <h1 className="header-title">{sessionTitle}</h1>
+        </div>
+
+        <div className="header-badge">
+          <div className="avatar">{initials}</div>
+
+          <span className="pseudo">{userPseudo || "Invité"}</span>
+        </div>
+      </header>
+    );
+  }
+
   // Variant for playlist
   return (
     <header className="app-header">
