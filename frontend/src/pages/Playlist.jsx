@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
 import Header from "../components/common/Header";
-import ExplanationText from "../components/common/ExplanationText";
 import Button from "../components/common/Button";
 import { useAuth } from "../context/AuthContext.jsx";
 import "./Playlist.css";
@@ -168,13 +167,13 @@ function PlaylistPage() {
       <Header sessionTitle={playlist.name} userPseudo={user?.username} />
 
       <main className="playlist-content">
-        {/* Nom de la soirée et date */}
-        <ExplanationText title={playlist.name} text={date} />
-
+        {/* Le nom est déjà dans le header : la page ne garde que l'essentiel. */}
         <div className="app-meta-row">
           <span className={`app-chip status-${status.className}`}>
             {status.label}
           </span>
+
+          <span className="app-chip">{date}</span>
 
           <span className="app-chip">
             <i className="fa-solid fa-music" aria-hidden="true"></i>

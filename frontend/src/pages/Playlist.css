@@ -24,12 +24,6 @@
   padding: var(--screen-top-offset) var(--screen-padding-x) var(--space-10);
 }
 
-/* Le bloc titre gère ses propres marges dans la page. */
-.playlist-content .explanation-text {
-  padding: 0;
-  margin-bottom: var(--space-4);
-}
-
 /* ---------- PASTILLES DE STATUT ---------- */
 
 .app-chip i {
