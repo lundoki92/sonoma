@@ -55,16 +55,18 @@
   font-size: 11px;
 }
 
-/* --- ÉLÉMENT ACTIF --- */
-.nav-item.active .nav-icon-wrapper {
+/* --- ACTIF SUR L'ÉCRAN PROPOSER ---
+   En attendant les routes dédiées (propose / vote / listen), l'écran
+   Proposer met l'onglet « Proposer » en avant, juste en CSS. */
+.playlist-page .bottom-nav .nav-item:first-child .nav-icon-wrapper {
   background-color: rgba(234, 255, 153, 0.3);
 }
 
-.nav-item.active .nav-icon {
-  color: #EAFF99;                           /* Icône en jaune pâle pour ressortir sur le fond sombre */
+.playlist-page .bottom-nav .nav-item:first-child .nav-icon {
+  color: #EAFF99;
 }
 
-.nav-item.active .nav-label {
-  color: #EAFF99;                           /* Label en jaune pâle */
+.playlist-page .bottom-nav .nav-item:first-child .nav-label {
+  color: #EAFF99;
   font-weight: bold;
 }
