@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
 import Header from "../components/common/Header";
 import BottomNav from "../components/common/BottomNav";
-import { PARTY_STATUS, TRACK_STATUS } from "../utils/statusLabels.js";
+import { PARTY_STATUS } from "../utils/statusLabels.js";
 import "./Playlist.css";
 
 function GuestPlaylistPage() {
@@ -173,13 +173,6 @@ function GuestPlaylistPage() {
                     <strong>{track.title}</strong>
                     <span>{track.artist}</span>
                   </div>
-
-                  {/* Track status */}
-                  <span
-                    className={`track-status track-status--${track.status}`}
-                  >
-                    {TRACK_STATUS[track.status] ?? track.status}
-                  </span>
                 </li>
               ))}
             </ul>
