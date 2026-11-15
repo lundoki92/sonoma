@@ -6,10 +6,10 @@ export default function Header({
   sessionTitle,
   sessionSubtitle = "Soirée en cours",
   userPseudo,
-  variant = "default",
+  variant = "host",
   greeting = "Hello,",
   onLeave,
-  leaveLabel = "Quitter",
+  onInvite,
 }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export default function Header({
     }
   }
 
-  // Variant for dashboard
+  // Variant for the host dashboard
   if (variant === "greeting") {
     return (
       <header className="app-header app-header--greeting">
@@ -57,7 +57,37 @@ export default function Header({
     );
   }
 
-  // Variant for playlist
+  // Variant for a guest inside a party: no account, so no logout
+  if (variant === "guest") {
+    return (
+      <header className="app-header">
+        <div className="header-info">
+          <span className="header-subtitle">Invité</span>
+
+          <h1 className="header-title">{sessionTitle}</h1>
+        </div>
+
+        <div className="header-badge">
+          <div className="avatar">{initials}</div>
+
+          <span className="pseudo">{userPseudo || "Invité"}</span>
+        </div>
+
+        <button
+          type="button"
+          className="header-leave"
+          onClick={onLeave}
+          aria-label="Quitter la soirée"
+        >
+          Quitter
+        </button>
+      </header>
+    );
+  }
+
+  // Variant for the host inside a party: the host is already connected, so
+  // the header only offers ways to move around. Going back to the dashboard
+  // is enough to log out later on, and the pseudo would only take space.
   return (
     <header className="app-header">
       <div className="header-info">
@@ -66,32 +96,30 @@ export default function Header({
         <h1 className="header-title">{sessionTitle}</h1>
       </div>
 
-      <div className="header-badge">
-        <div className="avatar">{initials}</div>
+      <div className="header-actions">
+        <button
+          type="button"
+          className="header-action"
+          onClick={() => navigate("/")}
+          title="Mes soirées"
+          aria-label="Mes soirées"
+        >
+          <i className="fa-solid fa-house" aria-hidden="true"></i>
+        </button>
 
-        <span className="pseudo">{userPseudo || "Invité"}</span>
+        {onInvite && (
+          <button
+            type="button"
+            className="header-action"
+            onClick={onInvite}
+            title="Inviter des amis"
+            aria-label="Inviter des amis"
+            aria-haspopup="dialog"
+          >
+            <i className="fa-solid fa-user-plus" aria-hidden="true"></i>
+          </button>
+        )}
       </div>
-
-      {onLeave ? (
-        // Dans une soirée, on ne se déconnecte pas : on retourne à ses soirées.
-        <button
-          type="button"
-          className="header-leave"
-          onClick={onLeave}
-          aria-label={leaveLabel}
-        >
-          {leaveLabel}
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="header-logout"
-          onClick={handleLogout}
-          aria-label="Se déconnecter"
-        >
-          Déconnexion
-        </button>
-      )}
     </header>
   );
 }

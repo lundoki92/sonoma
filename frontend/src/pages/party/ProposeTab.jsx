@@ -15,9 +15,6 @@ export default function ProposeTab() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [copied, setCopied] = useState(false);
-
-  const inviteLink = `${window.location.origin}/join/${playlist.invite_code}`;
 
   useEffect(() => {
     let cancelled = false;
@@ -73,22 +70,6 @@ export default function ProposeTab() {
     setTracks((previousTracks) => [saved, ...previousTracks]);
   }
 
-  async function handleCopyLink() {
-    setError("");
-
-    try {
-      await navigator.clipboard.writeText(inviteLink);
-      setCopied(true);
-    } catch {
-      // Le presse-papiers est refusé (navigation non sécurisée, permissions) :
-      // le lien complet reste affiché, il suffit de le sélectionner.
-      setError(
-        "Ton navigateur refuse de copier le lien. Sélectionne-le pour le recopier.",
-      );
-      setCopied(false);
-    }
-  }
-
   // Une soirée terminée n'accepte plus de morceau : le backend le refuse,
   // autant le dire avant que l'hôte essaie.
   const isClosed = playlist.status === "finished";
@@ -126,27 +107,6 @@ export default function ProposeTab() {
         tracks={tracks}
         emptyText="Aucun morceau pour le moment. Ajoute le premier pour lancer l'ambiance."
       />
-
-      {!isClosed && (
-        <section className="propose-invite">
-          <h2 className="propose-invite-title">Inviter des invités</h2>
-
-          <p className="propose-invite-text">
-            Partage ce lien : il ouvre la soirée directement, sans compte à
-            créer.
-          </p>
-
-          <p className="propose-invite-link">{inviteLink}</p>
-
-          <button
-            type="button"
-            className="propose-invite-button"
-            onClick={handleCopyLink}
-          >
-            {copied ? "Lien copié" : "Copier le lien"}
-          </button>
-        </section>
-      )}
     </div>
   );
 }

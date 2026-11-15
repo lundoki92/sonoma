@@ -5,6 +5,7 @@ import PartyLayout from './pages/PartyLayout.jsx'
 import ProposeTab from './pages/party/ProposeTab.jsx'
 import VoteTab from './pages/party/VoteTab.jsx'
 import ListenTab from './pages/party/ListenTab.jsx'
+import InviteRedirect from './pages/party/InviteRedirect.jsx'
 import { Login } from './pages/Login.jsx'
 import { Register } from './pages/Register.jsx'
 import { ProtectedRoutes } from './components/ProtectedRoutes.jsx'
@@ -63,6 +64,9 @@ export default function App() {
           <Route path="propose" element={<ProposeTab />} />
           <Route path="vote" element={<VoteTab />} />
           <Route path="listen" element={<ListenTab />} />
+          {/* L'invitation est devenue une modale : les anciens liens restent
+              valables. */}
+          <Route path="invite" element={<InviteRedirect />} />
         </Route>
       </Routes>
     

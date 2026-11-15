@@ -1,6 +1,6 @@
-/* Écran « Proposer » de l'hôte. Les morceaux et la recherche viennent des
-   composants partagés ; seuls l'introduction et le bloc d'invitation sont
-   locaux. */
+/* Écran « Proposer » de l'hôte. La recherche, la liste des morceaux et
+   l'invitation viennent de composants partagés : cette feuille ne pose que le
+   rythme vertical de l'écran. */
 
 .propose-tab {
   display: flex;
@@ -8,70 +8,10 @@
   gap: var(--section-gap);
 }
 
-/* Les composants partagés portent déjà leurs propres marges, ajoutées ici au
-   rythme de l'écran : on les retire pour qu'un seul espacement commande. */
+/* Les composants partagés portent déjà leurs propres marges, qui viendraient
+   s'ajouter au rythme de l'écran : on les retire pour qu'un seul espacement
+   commande. */
 .propose-tab .music-search-form,
 .propose-tab .track-list-section {
   margin: 0;
-}
-
-/* Le bloc d'invitation reprend la carte des autres écrans : même fond,
-   même contour, même rayon. */
-.propose-invite {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--card-padding) var(--space-5);
-  border: var(--card-border);
-  border-radius: 32px;
-  background-color: var(--card-background);
-}
-
-.propose-invite-title {
-  font-size: var(--text-title);
-  line-height: var(--leading-tight);
-  color: #f4f0fa;
-}
-
-.propose-invite-text {
-  font-size: var(--text-secondary);
-  line-height: var(--leading-snug);
-  color: #a1a1aa;
-}
-
-/* Le chemin du lien, pour que l'hôte comprenne ce qu'il envoie. */
-.propose-invite-link {
-  overflow-wrap: anywhere;
-  color: #eaff99;
-  font-size: var(--text-secondary);
-  font-weight: 600;
-  line-height: var(--leading-snug);
-}
-
-.propose-invite-button {
-  align-self: flex-start;
-  min-height: 40px;
-  margin-top: var(--space-2);
-  padding: 0 var(--space-4);
-  border: var(--card-border);
-  border-radius: 9999px;
-  background-color: #0c0b12;
-  color: #f4f0fa;
-  font-family: var(--font-ui);
-  font-size: var(--text-secondary);
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.propose-invite-button:hover {
-  border-color: var(--card-border-hover);
-  color: #eaff99;
-}
-
-.propose-invite-button:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: 2px;
 }
