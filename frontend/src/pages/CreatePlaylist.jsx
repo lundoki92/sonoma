@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import Header from "../components/common/Header";
+import ExplanationText from "../components/common/ExplanationText";
+import Button from "../components/common/Button";
+import { Champ } from "../components/Champ.jsx";
+import "./Auth.css";
+import "./CreatePlaylist.css";
 
 
 function CreatePlaylist() {
@@ -33,7 +39,7 @@ function CreatePlaylist() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create playlist");
+        throw new Error(data.error || "Impossible de créer la soirée");
       }
 
       setPlaylist(data);
@@ -49,49 +55,62 @@ function CreatePlaylist() {
   };
 
   return (
-    <div>
-      <h1>Create a playlist</h1>
+    <div className="creation-layout">
+      {/* Header partagé : même comportement que sur les autres écrans. */}
+      <Header variant="creation" sessionTitle="Création de soirée" />
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="playlist-name">Playlist name</label>
-          <input
+      <main className="creation-content">
+        <div className="creation-intro">
+          <ExplanationText
+            hasAppTitle={false}
+            title="Créer ma soirée"
+            text="Donne-lui un nom et choisis quand elle commence."
+          />
+        </div>
+
+        <form className="creation-form" onSubmit={handleSubmit}>
+          <Champ
             id="playlist-name"
+            label="Nom de ma soirée"
             type="text"
-            placeholder="My birthday party"
+            placeholder="After work du vendredi"
             value={name}
             onChange={(event) => setName(event.target.value)}
             maxLength={100}
             required
           />
-        </div>
 
-        <div>
-          <label htmlFor="playlist-date">Date and time</label>
-          <input
+          <Champ
             id="playlist-date"
+            label="Date de ma soirée"
             type="datetime-local"
             value={dateTime}
             onChange={(event) => setDateTime(event.target.value)}
             required
           />
-        </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating..." : "Create playlist"}
-        </button>
-      </form>
+          {error && (
+            <p className="app-error" role="alert">
+              {error}
+            </p>
+          )}
 
-      {error && <p role="alert">{error}</p>}
+          <Button
+            type="submit"
+            disabled={loading}
+            text={loading ? "Création..." : "Créer la soirée"}
+          />
+        </form>
 
-      {playlist && (
-        <div>
-          <h2>Playlist created successfully!</h2>
-          <p>Name: {playlist.name}</p>
-          <p>Playlist ID: {playlist.id}</p>
-          <p>Status: {playlist.status}</p>
-        </div>
-      )}
+        {playlist && (
+          <div className="succes">
+            <h2>Soirée créée !</h2>
+            <p>Nom : {playlist.name}</p>
+            <p>Identifiant : {playlist.id}</p>
+            <p>Statut : {playlist.status}</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

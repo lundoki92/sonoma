@@ -1,58 +1,134 @@
+/* ============================================================
+   MUSIC SEARCH
+   Thème sombre, aligné sur la home et l'écran d'identification :
+   - surface #17141f / fond de champ #15131d
+   - bordure #2e2a3d, survol #3f3f46
+   - focus violet #b9a8ff, accent #eaff99
+   ============================================================ */
+
 .music-search {
   width: 100%;
-  max-width: 700px;
 }
 
 .music-search-form {
   display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .music-search-form input {
   flex: 1;
   min-width: 0;
-  padding: 12px 16px;
-  border: 1px solid #d9d9d9;
-  border-radius: 10px;
-  font-size: 15px;
+  height: var(--control-height);
+  box-sizing: border-box;
+  padding: 0 var(--control-padding-x);
+  appearance: none;
+  background-color: #15131d;
+  border: 1px solid #2e2a3d;
+  border-radius: var(--control-radius);
+  color: #f4f0fa;
+  font-family: var(--font-ui);
+  font-size: var(--text-body);
+  caret-color: #eaff99;
+}
+
+.music-search-form input::placeholder {
+  color: #71717a;
+  opacity: 1;
+}
+
+.music-search-form input:hover:not(:focus) {
+  border-color: #3f3f46;
+}
+
+.music-search-form input:focus {
+  outline: none;
+  border-color: #b9a8ff;
+  background-color: #121118;
+  box-shadow: 0 0 0 3px rgba(185, 168, 255, 0.18);
+}
+
+/* Native clear button stays visible on the dark background. */
+.music-search-form input::-webkit-search-cancel-button {
+  filter: invert(1);
+  opacity: 0.55;
 }
 
 .music-search-form > button {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 10px;
-  background: #242424;
-  color: white;
+  flex-shrink: 0;
+  height: var(--control-height);
+  padding: 0 var(--space-5);
+  border: 1px solid #2e2a3d;
+  border-radius: var(--control-radius);
+  background-color: #17141f;
+  color: #f4f0fa;
+  font-family: var(--font-display);
+  font-size: var(--text-secondary);
+  font-weight: 600;
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.music-search-form > button:hover:not(:disabled) {
+  background-color: #252130;
+  border-color: #3f3f46;
+}
+
+.music-search-form > button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.music-search-form > button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- RESULTS ---------- */
+
+.music-results {
+  margin-bottom: var(--space-4);
 }
 
 .music-results h3 {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-label);
+  line-height: var(--leading-tight);
+  color: #f4f0fa;
 }
 
 .music-result {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 0;
-  border-bottom: 1px solid #e8e8e8;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  background-color: #17141f;
+  border: var(--card-border);
+  border-radius: 16px;
+}
+
+.music-result + .music-result {
+  margin-top: var(--space-2);
 }
 
 /* Display the album cover */
 .music-cover {
   display: block;
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
-  min-height: 56px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
 }
+
 .music-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 2px;
   flex: 1;
   min-width: 0;
 }
@@ -64,30 +140,48 @@
   white-space: nowrap;
 }
 
+.music-info strong {
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: #f4f0fa;
+}
+
 .music-info span {
-  color: #777;
-  font-size: 13px;
+  color: #a6a1b4;
+  font-size: var(--text-secondary);
 }
 
 .music-add-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 38px;
-  height: 38px;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
   flex-shrink: 0;
-  border: 1px solid #ddd;
+  padding: 0;
+  border: 1px solid #2e2a3d;
   border-radius: 50%;
-  background: white;
-  color: #222;
-  font-size: 25px;
+  background-color: #252130;
+  color: #f4f0fa;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .music-add-button:hover:not(:disabled) {
-  background: #e8f5e9;
-  border-color: #4caf50;
-  color: #2e7d32;
+  background-color: #252130;
+  border-color: #b9a8ff;
+  color: #b9a8ff;
+}
+
+.music-add-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .music-add-button:disabled {
@@ -95,10 +189,43 @@
   opacity: 0.5;
 }
 
+/* « Déjà ajouté » : vert, pas grisé — on distingue nettement de l'état
+   de chargement (« … »), qui garde l'opacité réduite ci-dessus. */
+.music-add-button.is-added {
+  background-color: #10483b;
+  border-color: #10483b;
+  color: #00e6a0;
+  opacity: 1;
+}
+
+.music-add-button.is-added:hover:not(:disabled) {
+  background-color: #10483b;
+  border-color: #10483b;
+  color: #00e6a0;
+}
+
 .music-error {
-  color: #c62828;
+  margin-bottom: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  border-radius: 12px;
+  background-color: rgba(255, 107, 107, 0.1);
+  color: #ffb3b3;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
 }
 
 .music-empty {
-  color: #777;
+  padding: var(--space-4) 0;
+  color: #8f88a3;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-body);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .music-search-form > button,
+  .music-add-button {
+    transition: none;
+  }
 }

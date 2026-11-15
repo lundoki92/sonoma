@@ -7,6 +7,7 @@ export default function Header({
   userPseudo,
   variant = "default",
   greeting = "Hello,",
+  backTo = "/login",
 }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -27,6 +28,13 @@ export default function Header({
     } finally {
       navigate("/login", { replace: true });
     }
+  }
+
+  // Un invité n'a pas de compte : on oublie son pseudo puis on sort.
+  async function handleQuit() {
+    localStorage.removeItem("guest_name");
+    await logout().catch(() => null);
+    navigate(backTo, { replace: true });
   }
 
   // Variant for dashboard
@@ -54,6 +62,57 @@ export default function Header({
     );
   }
 
+  // Variant for the creation screen: one centred title and the dashboard
+  // shortcut, exactly like the other headers.
+  if (variant === "creation") {
+    return (
+      <header className="app-header app-header--creation">
+        <p className="header-title">{sessionTitle}</p>
+
+        <div className="header-actions">
+          <button
+            type="button"
+            className="header-action"
+            onClick={() => navigate("/")}
+            aria-label="Tableau de bord"
+            title="Tableau de bord"
+          >
+            <i className="fa-solid fa-house" aria-hidden="true"></i>
+          </button>
+        </div>
+      </header>
+    );
+  }
+
+  // Variant for guests: party title and pseudo, plus a way to leave.
+  if (variant === "guest") {
+    return (
+      <header className="app-header">
+        <div className="header-info">
+          <span className="header-subtitle">Soirée en cours</span>
+
+          <h1 className="header-title">{sessionTitle}</h1>
+        </div>
+
+        <div className="header-badge">
+          <div className="avatar">{initials}</div>
+
+          <span className="pseudo">{userPseudo || "Invité"}</span>
+        </div>
+
+        <button
+          type="button"
+          className="header-logout"
+          onClick={handleQuit}
+          aria-label="Quitter la soirée"
+          title="Quitter la soirée"
+        >
+          <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </button>
+      </header>
+    );
+  }
+
   // Variant for playlist
   return (
     <header className="app-header">
@@ -69,14 +128,19 @@ export default function Header({
         <span className="pseudo">{userPseudo || "Invité"}</span>
       </div>
 
-      <button
-        type="button"
-        className="header-logout"
-        onClick={handleLogout}
-        aria-label="Se déconnecter"
-      >
-        Déconnexion
-      </button>
+      {/* La déconnexion reste sur la home : ici, seul le retour au
+          tableau de bord est proposé. */}
+      <div className="header-actions">
+        <button
+          type="button"
+          className="header-action"
+          onClick={() => navigate("/")}
+          aria-label="Tableau de bord"
+          title="Tableau de bord"
+        >
+          <i className="fa-solid fa-house" aria-hidden="true"></i>
+        </button>
+      </div>
     </header>
   );
 }

@@ -34,6 +34,8 @@
   padding: 32px 16px;
   background-color: var(--auth-bg);
   color: var(--auth-text);
+  /* Rend les contrôles natifs (calendrier, heure) lisibles sur fond sombre. */
+  color-scheme: dark;
 }
 
 /* ---------- LA CARTE ---------- */

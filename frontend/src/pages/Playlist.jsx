@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
+import Header from "../components/common/Header";
+import BottomNav from "../components/common/BottomNav";
+import Button from "../components/common/Button";
+import { useAuth } from "../context/AuthContext.jsx";
+import { PARTY_STATUS } from "../utils/statusLabels.js";
+import "./Playlist.css";
 
 
 function PlaylistPage() {
   // Get the playlist ID from the URL
   const { id } = useParams();
+  const { user } = useAuth();
 
   // Store the playlist information
   const [playlist, setPlaylist] = useState(null);
@@ -18,6 +25,9 @@ function PlaylistPage() {
 
   // Manage the loading state
   const [loading, setLoading] = useState(true);
+
+  // Feedback of the invite link copy: idle, done or error
+  const [copyState, setCopyState] = useState("idle");
 
 
   // Load the playlist and its tracks when the page opens
@@ -34,7 +44,7 @@ function PlaylistPage() {
 
         // Check whether both requests were successful
         if (!playlistResponse.ok || !tracksResponse.ok) {
-          throw new Error("Unable to load the playlist");
+          throw new Error("Impossible de charger la soirée");
         }
 
         // Convert the responses into JavaScript objects
@@ -100,7 +110,7 @@ function PlaylistPage() {
 
       // Display an error if the track could not be saved
       if (!response.ok) {
-        throw new Error(data.error || "Unable to add the track");
+        throw new Error(data.error || "Impossible d'ajouter le morceau");
       }
 
       // Add the saved track to the displayed list
@@ -113,88 +123,181 @@ function PlaylistPage() {
 
   // Display a loading message while fetching data
   if (loading) {
-    return <p>Chargement de la soirée...</p>;
+    return (
+      <main className="playlist-page">
+        <p className="app-status">Chargement de la soirée...</p>
+      </main>
+    );
   }
 
   // Display an error if the playlist cannot be found
   if (!playlist) {
-    return <p>{error || "Soirée introuvable"}</p>;
+    return (
+      <main className="playlist-page">
+        <p className="app-status">{error || "Soirée introuvable"}</p>
+      </main>
+    );
   }
+
+  const status = PARTY_STATUS[playlist.status] ?? {
+    label: "Inconnue",
+    className: "unknown",
+  };
+
+  const date = new Date(playlist.date_time).toLocaleString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const inviteLink = `http://127.0.0.1:5173/join/${playlist.invite_code}`;
 
+  // Copy the invite link, with a fallback when the clipboard is refused.
+  async function copyInviteLink() {
+    let ok = false;
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(inviteLink);
+        ok = true;
+      }
+    } catch {
+      ok = false;
+    }
+
+    if (!ok) {
+      try {
+        const field = document.createElement("textarea");
+        field.value = inviteLink;
+        field.setAttribute("readonly", "");
+        field.style.position = "absolute";
+        field.style.left = "-9999px";
+        document.body.appendChild(field);
+        field.select();
+        ok = document.execCommand("copy");
+        document.body.removeChild(field);
+      } catch {
+        ok = false;
+      }
+    }
+
+    setCopyState(ok ? "done" : "error");
+    window.setTimeout(() => setCopyState("idle"), 2000);
+  }
+
   return (
-    <main>
-      {/* Playlist information */}
-      <h1>{playlist.name}</h1>
+    <div className="playlist-page">
+      <Header sessionTitle={playlist.name} userPseudo={user?.username} />
 
-      <p>
-        Date : {new Date(playlist.date_time).toLocaleString("fr-FR")}
-      </p>
+      <main className="playlist-content playlist-content--with-nav">
+        {/* Le nom est déjà dans le header : la page ne garde que l'essentiel. */}
+        <div className="app-meta-row">
+          <span className={`app-chip status-${status.className}`}>
+            {status.label}
+          </span>
 
-      <p>Statut : {playlist.status}</p>
+          <span className="app-chip">{date}</span>
 
-      {/* Spotify music search */}
-      <h2>Rechercher un morceau</h2>
+          <span className="app-chip">
+            <i className="fa-solid fa-music" aria-hidden="true"></i>
+            {tracks.length} morceau{tracks.length > 1 ? "x" : ""}
+          </span>
+        </div>
 
-      <SearchMusic
-        onAddTrack={handleAddTrack}
-        tracks={tracks}
-      />
+        {/* Spotify music search */}
+        <section className="playlist-section">
+          <h2 className="section-title">Rechercher un morceau</h2>
 
-      {/* Display errors when adding tracks */}
-      {error && <p role="alert">{error}</p>}
+          <SearchMusic onAddTrack={handleAddTrack} tracks={tracks} />
+        </section>
 
-      {/* Display tracks already added to the playlist */}
-      <h2>Morceaux de la soirée ({tracks.length})</h2>
+        {/* Display errors when adding tracks */}
+        {error && (
+          <p className="app-error" role="alert">
+            {error}
+          </p>
+        )}
 
-      {tracks.length === 0 ? (
-        <p>Aucun morceau ajouté pour le moment.</p>
-      ) : (
-        <ul>
-          {tracks.map((track) => (
-            <li key={track.id}>
-              {/* Album cover */}
-              {track.image_url && (
-                <img
-                  src={track.image_url}
-                  alt=""
-                  width="50"
-                />
-              )}
+        {/* Display tracks already added to the playlist */}
+        <section className="playlist-section">
+          <h2 className="section-title">
+            Morceaux de la soirée
+            <span className="section-count">({tracks.length})</span>
+          </h2>
 
-              {/* Track information */}
-              <span>
-                {track.title} — {track.artist}
-              </span>
+          {tracks.length === 0 ? (
+            <p className="app-status">Aucun morceau ajouté pour le moment.</p>
+          ) : (
+            <ul className="track-list">
+              {tracks.map((track) => (
+                <li className="track-item" key={track.id}>
+                  {/* Album cover */}
+                  {track.image_url ? (
+                    <img className="track-cover" src={track.image_url} alt="" />
+                  ) : (
+                    <span
+                      className="track-cover track-cover--empty"
+                      aria-hidden="true"
+                    >
+                      <i className="fa-solid fa-music"></i>
+                    </span>
+                  )}
 
-              {/* Track status */}
-              <span> ({track.status})</span>
-            </li>
-          ))}
-        </ul>
-      )}
+                  {/* Track information */}
+                  <div className="track-info">
+                    <strong>{track.title}</strong>
+                    <span>{track.artist}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
-      {/* Voting button: functionality will be added later */}
-      <button
-        type="button"
-        disabled={playlist.status !== "active"}
-      >
-        Soumettre au vote
-      </button>
+        {/* Voting: the action unlocks once the party is live */}
+        <div className="playlist-actions">
+          <Button
+            text="Soumettre au vote"
+            disabled={playlist.status !== "active"}
+          />
 
-      {/* Explain why voting is not available yet */}
-      {playlist.status === "preparing" && (
-        <p>
-          Le vote sera disponible une fois la soirée démarrée.
-        </p>
-      )}
+          {playlist.status === "preparing" && (
+            <p className="playlist-note">
+              Le vote sera disponible une fois la soirée démarrée.
+            </p>
+          )}
+        </div>
 
-      <p>Lien à partager :</p>
-        <button type="button" onClick={() => navigator.clipboard.writeText(inviteLink)}>
-          Copier le lien
-        </button>
-    </main>
+        {/* Invite link */}
+        <section className="share-card">
+          <div className="share-text">
+            <span className="share-label">Lien à partager</span>
+            <code className="share-link">{inviteLink}</code>
+          </div>
+
+          <button
+            type="button"
+            className={
+              "share-copy" +
+              (copyState === "done" ? " is-copied" : "") +
+              (copyState === "error" ? " is-error" : "")
+            }
+            onClick={copyInviteLink}
+          >
+            {copyState === "done"
+              ? "Copié !"
+              : copyState === "error"
+                ? "Erreur"
+                : "Copier"}
+          </button>
+        </section>
+      </main>
+
+      {/* Mêmes onglets que dans l'app de soirée ; routes à venir. */}
+      <BottomNav playlistId={playlist.id} />
+    </div>
   );
 }
 

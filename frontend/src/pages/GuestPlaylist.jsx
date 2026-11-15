@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
+import Header from "../components/common/Header";
+import BottomNav from "../components/common/BottomNav";
+import { PARTY_STATUS } from "../utils/statusLabels.js";
+import "./Playlist.css";
 
 function GuestPlaylistPage() {
   const { code } = useParams();
@@ -9,6 +13,12 @@ function GuestPlaylistPage() {
   const [tracks, setTracks] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [pseudo, setPseudo] = useState("");
+
+  // Le pseudo choisi à l'arrivée est gardé en stockage local.
+  useEffect(() => {
+    setPseudo(localStorage.getItem("guest_name") ?? "");
+  }, [code]);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,39 +83,106 @@ function GuestPlaylistPage() {
     }
   }
 
-  if (loading) return <p>Chargement de la soirée...</p>;
-  if (!playlist) return <p>{error || "Soirée introuvable"}</p>;
+  if (loading) {
+    return (
+      <main className="playlist-page">
+        <p className="app-status">Chargement de la soirée...</p>
+      </main>
+    );
+  }
+
+  if (!playlist) {
+    return (
+      <main className="playlist-page">
+        <p className="app-status">{error || "Soirée introuvable"}</p>
+      </main>
+    );
+  }
+
+  const status = PARTY_STATUS[playlist.status] ?? {
+    label: "Inconnue",
+    className: "unknown",
+  };
+
+  const date = new Date(playlist.date_time).toLocaleString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
-    <main>
-      <h1>{playlist.name}</h1>
-      <p>Date : {new Date(playlist.date_time).toLocaleString("fr-FR")}</p>
+    <div className="playlist-page">
+      <Header variant="guest" sessionTitle={playlist.name} userPseudo={pseudo} backTo={`/join/${code}`} />
 
-      {playlist.status === "finished" ? (
-        <p>Cette soirée est terminée.</p>
-      ) : (
-        <>
-          <h2>Propose un morceau</h2>
-          <SearchMusic onAddTrack={handleAddTrack} tracks={tracks} />
-        </>
-      )}
+      <main className="playlist-content playlist-content--with-nav">
+        <div className="app-meta-row">
+          <span className={`app-chip status-${status.className}`}>
+            {status.label}
+          </span>
 
-      {error && <p role="alert">{error}</p>}
+          <span className="app-chip">{date}</span>
 
-      <h2>Morceaux de la soirée ({tracks.length})</h2>
-      {tracks.length === 0 ? (
-        <p>Aucun morceau pour le moment.</p>
-      ) : (
-        <ul>
-          {tracks.map((track) => (
-            <li key={track.id}>
-              {track.image_url && <img src={track.image_url} alt="" width="50" />}
-              <span>{track.title} — {track.artist}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </main>
+          <span className="app-chip">
+            <i className="fa-solid fa-music" aria-hidden="true"></i>
+            {tracks.length} morceau{tracks.length > 1 ? "x" : ""}
+          </span>
+        </div>
+
+        {playlist.status === "finished" ? (
+          <p className="app-status">Cette soirée est terminée.</p>
+        ) : (
+          <section className="playlist-section">
+            <h2 className="section-title">Propose un morceau</h2>
+
+            <SearchMusic onAddTrack={handleAddTrack} tracks={tracks} />
+          </section>
+        )}
+
+        {error && (
+          <p className="app-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <section className="playlist-section">
+          <h2 className="section-title">
+            Morceaux de la soirée
+            <span className="section-count">({tracks.length})</span>
+          </h2>
+
+          {tracks.length === 0 ? (
+            <p className="app-status">Aucun morceau pour le moment.</p>
+          ) : (
+            <ul className="track-list">
+              {tracks.map((track) => (
+                <li className="track-item" key={track.id}>
+                  {track.image_url ? (
+                    <img className="track-cover" src={track.image_url} alt="" />
+                  ) : (
+                    <span
+                      className="track-cover track-cover--empty"
+                      aria-hidden="true"
+                    >
+                      <i className="fa-solid fa-music"></i>
+                    </span>
+                  )}
+
+                  <div className="track-info">
+                    <strong>{track.title}</strong>
+                    <span>{track.artist}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </main>
+
+      {/* Mêmes onglets que chez l'hôte ; leurs routes arrivent plus tard. */}
+      <BottomNav playlistId={playlist.id} />
+    </div>
   );
 }
 

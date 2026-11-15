@@ -101,7 +101,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #9333ea;
+  background-color: var(--avatar-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -125,12 +125,25 @@
   background-color: var(--header-background, rgba(12, 11, 18, 0.92));
 }
 
+/* Creation header: a single centred title, shortcut pinned on the right. */
+.app-header--creation {
+  justify-content: center;
+}
+
+.app-header--creation .header-actions {
+  position: absolute;
+  top: 50%;
+  right: var(--header-padding-x, 20px);
+  transform: translateY(-50%);
+  margin-left: 0;
+}
+
 .header-avatar {
   width: 46px;
   height: 46px;
   min-width: 46px;
   border-radius: 50%;
-  background-color: #b9a5ff;
+  background-color: var(--avatar-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,15 +186,7 @@
     background-color 0.2s ease;
 }
 
-/* Party header keeps the text label: the round icon target is for the
-   dashboard only. */
-.app-header:not(.app-header--greeting) .header-logout {
-  width: auto;
-  min-width: var(--icon-button-size);
-  padding: 0 var(--space-3);
-  border-radius: 9999px;
-}
-
+/* All headers use the same round icon target for logout. */
 .header-logout:hover {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.25);

@@ -1,0 +1,292 @@
+/* ============================================================
+   PAGE PLAYLIST
+   Coquille sombre alignée sur le dashboard et l'écran
+   d'identification :
+   - fond #0c0b12, contenu 480px, gouttières 20px
+   - cartes #17141f + bordure #2e2a3d
+   - accent #eaff99, focus violet #b9a8ff
+   ============================================================ */
+
+.playlist-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  background-color: #0c0b12;
+  color: #f4f0fa;
+  overflow-x: hidden;
+}
+
+/* Le header est fixe : le contenu démarre sous lui, comme sur la home. */
+.playlist-content {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--screen-top-offset) var(--screen-padding-x) var(--space-10);
+}
+
+/* ---------- PASTILLES DE STATUT ---------- */
+
+.app-chip i {
+  font-size: var(--text-micro);
+}
+
+.status-live {
+  background-color: #10483b;
+  border-color: transparent;
+  color: #00e6a0;
+}
+
+.status-preparing,
+.status-archived {
+  background-color: #252130;
+  border-color: transparent;
+  color: #a49db5;
+}
+
+.status-archived {
+  color: #8f88a3;
+}
+
+/* ---------- SECTIONS ---------- */
+
+.playlist-section {
+  margin-bottom: var(--section-gap);
+}
+
+.section-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  font-size: var(--text-title);
+  line-height: var(--leading-tight);
+  font-weight: 700;
+  color: #f4f0fa;
+}
+
+.section-count {
+  font-size: var(--text-secondary);
+  font-weight: 400;
+  color: #8f88a3;
+}
+
+/* ---------- LISTE DES MORCEAUX ---------- */
+
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--list-gap);
+  list-style: none;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background-color: #17141f;
+  border: var(--card-border);
+  border-radius: 20px;
+}
+
+.track-cover {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.track-cover--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #252130;
+  color: #837c96;
+  font-size: var(--text-secondary);
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.track-info strong,
+.track-info span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track-info strong {
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: #f4f0fa;
+}
+
+.track-info span {
+  font-size: var(--text-secondary);
+  color: #a6a1b4;
+}
+
+.track-status {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: #252130;
+  color: #a49db5;
+  font-size: var(--text-micro);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.track-status--voting {
+  background-color: #2b2440;
+  color: #c9b8ff;
+}
+
+.track-status--played {
+  background-color: #10483b;
+  color: #00e6a0;
+}
+
+/* ---------- ACTIONS ---------- */
+
+.playlist-actions {
+  margin-bottom: var(--section-gap);
+}
+
+.playlist-actions .button {
+  margin-top: 0;
+}
+
+.playlist-note {
+  margin-top: var(--space-3);
+  color: #a6a1b4;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-body);
+  text-align: center;
+}
+
+/* ---------- LIEN D'INVITATION ---------- */
+
+.share-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: #17141f;
+  border: var(--card-border);
+  border-radius: 24px;
+}
+
+.share-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.share-label {
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a1a1aa;
+}
+
+.share-link {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-ui);
+  font-size: var(--text-caption);
+  color: #a6a1b4;
+}
+
+.share-copy {
+  flex-shrink: 0;
+  height: var(--icon-button-size);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--card-border-hover);
+  border-radius: 999px;
+  background-color: transparent;
+  color: #f4f0fa;
+  font-family: var(--font-display);
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.share-copy:hover {
+  background-color: #252130;
+  border-color: #3f3f46;
+}
+
+/* Le jaune reste réservé au bouton d'action principal. */
+.share-copy.is-copied {
+  background-color: #10483b;
+  border-color: #10483b;
+  color: #00e6a0;
+}
+
+.share-copy.is-error {
+  background-color: rgba(255, 107, 107, 0.12);
+  border-color: rgba(255, 107, 107, 0.45);
+  color: #ffb3b3;
+}
+
+.share-copy:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* ---------- ÉTATS PLEIN ÉCRAN ---------- */
+
+.playlist-page > .app-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--space-8) var(--screen-padding-x);
+}
+
+/* Le menu bas est fixe : on lui réserve la place en pied de page. */
+.playlist-content--with-nav {
+  padding-bottom: 112px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 480px) {
+  .playlist-content {
+    padding-top: calc(var(--header-height) + var(--space-5));
+  }
+
+  .track-item {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .track-cover {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-copy {
+    transition: none;
+  }
+}

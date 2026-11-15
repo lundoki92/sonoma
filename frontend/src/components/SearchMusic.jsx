@@ -38,7 +38,7 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
       // Check if the request was successful
       if (!response.ok) {
-        throw new Error("Unable to search for tracks");
+        throw new Error("Impossible de rechercher des morceaux");
       }
 
       const data = await response.json();
@@ -63,7 +63,7 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
   // Add a Spotify track to the current playlist
   async function handleAdd(track) {
     // Get the track ID
-    const trackId = track.id ?? track.external_track_id;
+    const trackId = track.spotifyId ?? track.id ?? track.external_track_id;
 
     setAddingId(trackId);
 
@@ -105,7 +105,7 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
           {results.map((track) => {
             // Get the track information from the API response
-            const trackId = track.id ?? track.external_track_id;
+            const trackId = track.spotifyId ?? track.id ?? track.external_track_id;
 
             const trackTitle = track.name ?? track.title;
 
@@ -140,7 +140,10 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
                 {/* Add track button */}
                 <button
-                  className="music-add-button"
+                  className={
+                    "music-add-button" +
+                    (alreadyAdded ? " is-added" : "")
+                  }
                   type="button"
                   onClick={() => handleAdd(track)}
                   disabled={alreadyAdded || addingId === trackId}
