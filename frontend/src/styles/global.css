@@ -123,6 +123,24 @@ button,
   margin-bottom: var(--section-gap);
 }
 
+/* Introduction d'écran : le ExplanationText est partagé, seul son placement
+   est décidé ici. Identique dans le wizard et dans l'app de soirée. */
+.screen-intro {
+  margin-bottom: var(--section-gap);
+}
+
+.screen-intro .explanation-text {
+  padding: 0;
+}
+
+/* Colonne d'un écran d'application : l'étape 2 du wizard et l'écran
+   « Proposer » de la soirée sont le même écran, ils partagent donc aussi
+   leur conteneur. */
+.screen-column {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Message d'état partagé : chargement, liste vide, soirée terminée… */
 .app-status {
   padding: var(--space-10) 0;

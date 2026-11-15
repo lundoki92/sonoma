@@ -1,7 +1,17 @@
 import "./TrackList.css";
 
-// Track list shared by the creation step and the party "Propose" screen.
-// The remove button only appears when `onRemove` is provided.
+// Libellés affichés sur les cartes, du point de vue de l'hôte.
+const STATUS_LABELS = {
+  proposed: "Proposé",
+  voting: "En vote",
+  selected: "Sélectionné",
+  played: "Joué",
+};
+
+// Liste de morceaux partagée par l'étape de création et l'écran « Proposer »
+// de la soirée. Deux choses s'activent selon ce que l'appelant fournit :
+// la croix de retrait (si `onRemove` est passé) et l'état du morceau (dès que
+// la base lui en a donné un, donc seulement dans une soirée ouverte).
 export default function TrackList({
   tracks = [],
   heading,
@@ -30,6 +40,16 @@ export default function TrackList({
                   <span className="track-item-title">{track.title}</span>
                   <span className="track-item-artist">{track.artist}</span>
                 </div>
+
+                {STATUS_LABELS[track.status] && (
+                  <span
+                    className={`track-item-status${
+                      track.status === "selected" ? " is-selected" : ""
+                    }`}
+                  >
+                    {STATUS_LABELS[track.status]}
+                  </span>
+                )}
 
                 {onRemove && (
                   <button

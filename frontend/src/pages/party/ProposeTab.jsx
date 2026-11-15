@@ -1,14 +1,18 @@
-import "./ProposeTab.css";
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import SearchMusic from "../../components/SearchMusic";
 import TrackList from "../../components/TrackList.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
 import { normalizeTrack } from "../../utils/tracks.js";
+import {
+  getServiceIcon,
+  getServiceLabel,
+} from "../../utils/streamingServices.js";
 
-// Écran « Proposer » de l'hôte : la recherche Spotify et la liste des
-// morceaux de la soirée. Contrairement au wizard, chaque ajout est écrit en
-// base tout de suite : la soirée existe déjà.
+// Écran « Proposer » de l'hôte. C'est le même écran que l'étape 2 du wizard
+// de création : mêmes blocs, même ordre, même rythme vertical. La seule
+// différence est le métier : ici la soirée existe déjà, donc chaque ajout est
+// écrit en base tout de suite au lieu de rester en mémoire.
 export default function ProposeTab() {
   const { playlist, playlistId } = useOutletContext();
 
@@ -75,12 +79,37 @@ export default function ProposeTab() {
   const isClosed = playlist.status === "finished";
 
   return (
-    <div className="propose-tab">
-      <ExplanationText
-        hasAppTitle={false}
-        title="Propose des morceaux"
-        text="Cherche dans le catalogue Spotify et ajoute les titres que tu veux voir passer. Tes invités peuvent faire la même chose depuis leur lien."
-      />
+    <div className="screen-column">
+      <div className="screen-intro">
+        <ExplanationText
+          hasAppTitle={false}
+          title="Propose des morceaux"
+          text="Cherche dans le catalogue Spotify et ajoute les titres que tu veux voir passer. Tes invités peuvent faire la même chose depuis leur lien."
+        />
+      </div>
+
+      <div className="app-meta-row">
+        <span className="app-chip">
+          <i className="fa-solid fa-compact-disc" aria-hidden="true"></i>
+          {playlist.name}
+        </span>
+
+        <span className="app-chip">
+          <i className="fa-solid fa-calendar" aria-hidden="true"></i>
+          {new Date(playlist.date_time).toLocaleString("fr-FR", {
+            dateStyle: "long",
+            timeStyle: "short",
+          })}
+        </span>
+
+        <span className="app-chip">
+          <i
+            className={getServiceIcon(playlist.streaming_service)}
+            aria-hidden="true"
+          ></i>
+          {getServiceLabel(playlist.streaming_service)}
+        </span>
+      </div>
 
       {isClosed ? (
         <p className="app-status" role="status">

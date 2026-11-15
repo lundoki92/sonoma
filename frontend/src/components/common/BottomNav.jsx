@@ -3,7 +3,7 @@ import "./BottomNav.css";
 
 export default function BottomNav({ playlistId }) {
   return (
-    <nav className="bottom-nav">
+    <nav className="bottom-nav" aria-label="Navigation de la soirée">
       <NavLink
         to={`/playlist/${playlistId}/propose`}
         className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}

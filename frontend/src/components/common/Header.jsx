@@ -116,7 +116,7 @@ export default function Header({
             aria-label="Inviter des amis"
             aria-haspopup="dialog"
           >
-            <i className="fa-solid fa-user-plus" aria-hidden="true"></i>
+            <i className="fa-solid fa-qrcode" aria-hidden="true"></i>
           </button>
         )}
       </div>

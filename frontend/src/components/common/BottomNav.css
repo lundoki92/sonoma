@@ -1,29 +1,58 @@
-/* --- BOTTOM NAV --- */
+/* --- MENU BAS DE LA SOIRÉE ---
+   Il reprend la hauteur du header : les deux barres fixent l'espace de
+   travail et doivent se répondre. Les couleurs viennent des tokens partagés. */
+
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 50;
-  background-color: #000000;
-  backdrop-filter: blur(8px);
-  border-top: 1px solid #2E2A3D;            /* Contours */
-  padding: 12px 32px;
+  box-sizing: border-box;
+  height: var(--header-height);
+  padding: var(--space-2) var(--space-6) var(--space-3);
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  max-width: 480px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
+  background-color: var(--header-background);
+  backdrop-filter: blur(8px);
+  border-top: var(--header-border);
 }
 
 .nav-item {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   text-decoration: none;
-  color: #A29DB5;                           /* Texte secondaire */
-  transition: all 0.2s ease;
+  color: #a29db5;
+}
+
+/* Conteneur de l'icône : la pastille qui signale l'écran actif. */
+.nav-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 30px;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+.nav-icon {
+  font-size: var(--text-body);
+  color: #a29db5;
+  transition: color 0.2s ease;
+}
+
+.nav-label {
+  font-size: var(--text-micro);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: var(--leading-tight);
 }
 
 .nav-item:hover {
@@ -34,37 +63,29 @@
   color: #ffffff;
 }
 
-/* Conteneur de l'icône (Pastille) */
-.nav-icon-wrapper {
-  width: 48px;
-  height: 28px;
-  border-radius: 9999px;                    /* Forme pilule */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.nav-icon {
-  font-size: 18px;
-  color: #A29DB5;
-  transition: color 0.2s ease;
-}
-
-.nav-label {
-  font-size: 11px;
+.nav-item:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 12px;
 }
 
 /* --- ÉLÉMENT ACTIF --- */
 .nav-item.active .nav-icon-wrapper {
-  background-color: rgba(234, 255, 153, 0.3);
+  background-color: rgba(234, 255, 153, 0.16);
 }
 
-.nav-item.active .nav-icon {
-  color: #EAFF99;                           /* Icône en jaune pâle pour ressortir sur le fond sombre */
+.nav-item.active .nav-icon,
+.nav-item.active .nav-label {
+  color: #eaff99;
 }
 
 .nav-item.active .nav-label {
-  color: #EAFF99;                           /* Label en jaune pâle */
-  font-weight: bold;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-icon-wrapper,
+  .nav-icon {
+    transition: none;
+  }
 }

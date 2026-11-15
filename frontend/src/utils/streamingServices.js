@@ -1,6 +1,8 @@
-// Streaming services exposed in the creation flow.
-// Only Spotify is available for now. The other ones are displayed so the
-// upcoming integrations are visible, but their radio stays disabled.
+// Catalogue des services de streaming.
+//
+// Seul Spotify est branché pour l'instant. Les autres sont affichés pour que
+// les intégrations à venir soient visibles, mais leur radio reste désactivée.
+// Partagé par le wizard de création et l'app de la soirée.
 export const STREAMING_SERVICES = [
   {
     value: "spotify",

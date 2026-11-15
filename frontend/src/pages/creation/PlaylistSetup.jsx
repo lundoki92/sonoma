@@ -4,10 +4,12 @@ import SearchMusic from "../../components/SearchMusic";
 import TrackList from "../../components/TrackList.jsx";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
-import { getServiceIcon, getServiceLabel } from "./services.js";
+import {
+  getServiceIcon,
+  getServiceLabel,
+} from "../../utils/streamingServices.js";
 import { normalizeTrack } from "../../utils/tracks.js";
 import { readWizardState, saveWizardState } from "./wizardState.js";
-import "./PlaylistSetup.css";
 
 // Étape 2 : les morceaux restent en mémoire, rien n'est encore écrit en base.
 // La soirée naîtra à l'étape 3, avec les morceaux choisis ici.
@@ -65,8 +67,8 @@ export default function PlaylistSetup() {
   }
 
   return (
-    <div className="setup-step">
-      <div className="creation-intro">
+    <div className="screen-column">
+      <div className="screen-intro">
         <ExplanationText
           hasAppTitle={false}
           title="Ajoute les premiers morceaux"

@@ -118,14 +118,5 @@
   box-sizing: border-box;
 }
 
-/* The intro is the shared ExplanationText component: only its placement in
-   the wizard is decided here. */
-.creation-intro {
-  margin-bottom: var(--section-gap);
-}
-
-.creation-intro .explanation-text {
-  padding: 0;
-}
-
-/* Shared metadata pill lives in global.css as .app-chip */
+/* L'introduction (screen-intro) et les pastilles (app-chip, app-meta-row)
+   sont des utilitaires partagés : styles/global.css. */

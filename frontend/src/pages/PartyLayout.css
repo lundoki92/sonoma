@@ -19,10 +19,3 @@
   /* header fixe + un cran d'air en haut, menu fixe + un cran d'air en bas */
   padding: var(--screen-top-offset) var(--screen-padding-x) 104px;
 }
-
-/* Écran à venir : même traitement visuel qu'une carte informative. */
-.party-placeholder {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}

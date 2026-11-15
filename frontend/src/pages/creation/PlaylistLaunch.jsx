@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
-import { getServiceIcon, getServiceLabel } from "./services.js";
+import { getServiceIcon, getServiceLabel } from "../../utils/streamingServices.js";
 import { normalizeTrack } from "../../utils/tracks.js";
 import { clearWizardState, readWizardState } from "./wizardState.js";
 import "./PlaylistLaunch.css";
@@ -101,7 +101,7 @@ export default function PlaylistLaunch() {
 
   return (
     <div className="launch-step">
-      <div className="creation-intro">
+      <div className="screen-intro">
         <ExplanationText
           hasAppTitle={false}
           title="Dernière vérification"

@@ -7,12 +7,14 @@ export default function VoteTab() {
   const { playlist } = useOutletContext();
 
   return (
-    <div className="party-placeholder">
-      <ExplanationText
-        hasAppTitle={false}
-        title="Le grand vote"
-        text="Les morceaux proposés par tout le monde s'afficheront ici, avec leurs votes en direct."
-      />
+    <div className="screen-column">
+      <div className="screen-intro">
+        <ExplanationText
+          hasAppTitle={false}
+          title="Le grand vote"
+          text="Les morceaux proposés par tout le monde s'afficheront ici, avec leurs votes en direct."
+        />
+      </div>
 
       <p className="app-status">
         {playlist.status === "preparing"

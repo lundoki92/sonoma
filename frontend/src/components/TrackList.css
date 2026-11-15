@@ -76,6 +76,30 @@
   white-space: nowrap;
 }
 
+/* État du morceau dans la soirée, tel que la base le renvoie. Les morceaux
+   encore en mémoire pendant la création n'ont pas d'état : la puce
+   n'apparaît donc que dans une soirée ouverte. */
+.track-item-status {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #a49db5;
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Morceau validé par le vote : c'est le seul état qu'on veut voir briller. */
+.track-item-status.is-selected {
+  border-color: rgba(0, 230, 160, 0.45);
+  background-color: rgba(0, 230, 160, 0.12);
+  color: #00e6a0;
+}
+
 /* Cross used to remove a track: the standard round icon button. */
 .track-item-remove {
   display: flex;

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { Champ } from "../../components/Champ.jsx";
 import Button from "../../components/common/Button.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
-import { STREAMING_SERVICES } from "./services.js";
+import { STREAMING_SERVICES } from "../../utils/streamingServices.js";
 import { readWizardState, saveWizardState } from "./wizardState.js";
 import "./CreatePlaylistStep1.css";
 
@@ -77,7 +77,7 @@ export default function CreatePlaylistStep1() {
 
   return (
     <form className="creation-form" onSubmit={handleSubmit}>
-      <div className="creation-intro">
+      <div className="screen-intro">
         <ExplanationText
           hasAppTitle={false}
           title="Créer ma soirée"
