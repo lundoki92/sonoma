@@ -63,7 +63,7 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
   // Add a Spotify track to the current playlist
   async function handleAdd(track) {
     // Get the track ID
-    const trackId = track.id ?? track.external_track_id;
+    const trackId = track.spotifyId ?? track.id ?? track.external_track_id;
 
     setAddingId(trackId);
 
@@ -105,7 +105,7 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
           {results.map((track) => {
             // Get the track information from the API response
-            const trackId = track.id ?? track.external_track_id;
+            const trackId = track.spotifyId ?? track.id ?? track.external_track_id;
 
             const trackTitle = track.name ?? track.title;
 
