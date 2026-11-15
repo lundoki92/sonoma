@@ -189,6 +189,21 @@
   opacity: 0.5;
 }
 
+/* « Déjà ajouté » : vert, pas grisé — on distingue nettement de l'état
+   de chargement (« … »), qui garde l'opacité réduite ci-dessus. */
+.music-add-button.is-added {
+  background-color: #10483b;
+  border-color: #10483b;
+  color: #00e6a0;
+  opacity: 1;
+}
+
+.music-add-button.is-added:hover:not(:disabled) {
+  background-color: #10483b;
+  border-color: #10483b;
+  color: #00e6a0;
+}
+
 .music-error {
   margin-bottom: var(--space-3);
   padding: var(--space-3) var(--space-4);

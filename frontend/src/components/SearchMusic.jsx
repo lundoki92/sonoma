@@ -140,7 +140,10 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
                 {/* Add track button */}
                 <button
-                  className="music-add-button"
+                  className={
+                    "music-add-button" +
+                    (alreadyAdded ? " is-added" : "")
+                  }
                   type="button"
                   onClick={() => handleAdd(track)}
                   disabled={alreadyAdded || addingId === trackId}
