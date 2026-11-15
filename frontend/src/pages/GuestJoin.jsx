@@ -26,6 +26,9 @@ function GuestJoinPage() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Impossible de rejoindre la soirée");
 
+      // Le pseudo sert d'identité visuelle pendant toute la soirée.
+      localStorage.setItem("guest_name", name.trim());
+
       navigate(`/join/${code}/playlist`);
     } catch (err) {
       setError(err.message);

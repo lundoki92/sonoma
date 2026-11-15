@@ -261,6 +261,11 @@
   padding: var(--space-8) var(--screen-padding-x);
 }
 
+/* Le menu bas est fixe : on lui réserve la place en pied de page. */
+.playlist-content--with-nav {
+  padding-bottom: 112px;
+}
+
 /* ---------- RESPONSIVE ---------- */
 
 @media (max-width: 480px) {
