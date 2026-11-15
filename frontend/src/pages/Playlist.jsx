@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import SearchMusic from "../components/SearchMusic";
 import Header from "../components/common/Header";
+import BottomNav from "../components/common/BottomNav";
 import Button from "../components/common/Button";
 import { useAuth } from "../context/AuthContext.jsx";
 import { PARTY_STATUS, TRACK_STATUS } from "../utils/statusLabels.js";
@@ -190,7 +191,7 @@ function PlaylistPage() {
     <div className="playlist-page">
       <Header sessionTitle={playlist.name} userPseudo={user?.username} />
 
-      <main className="playlist-content">
+      <main className="playlist-content playlist-content--with-nav">
         {/* Le nom est déjà dans le header : la page ne garde que l'essentiel. */}
         <div className="app-meta-row">
           <span className={`app-chip status-${status.className}`}>
@@ -300,6 +301,9 @@ function PlaylistPage() {
           </button>
         </section>
       </main>
+
+      {/* Mêmes onglets que dans l'app de soirée ; routes à venir. */}
+      <BottomNav playlistId={playlist.id} />
     </div>
   );
 }
