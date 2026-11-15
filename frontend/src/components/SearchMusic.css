@@ -174,10 +174,9 @@
 }
 
 .music-add-button:hover:not(:disabled) {
-  background-color: #eaff99;
-  border-color: #eaff99;
-  color: #17141f;
-  box-shadow: 0 0 12px rgba(234, 255, 153, 0.45);
+  background-color: #252130;
+  border-color: #b9a8ff;
+  color: #b9a8ff;
 }
 
 .music-add-button:focus-visible {

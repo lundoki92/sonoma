@@ -37,6 +37,9 @@ function PlaylistPage() {
   // Manage the loading state
   const [loading, setLoading] = useState(true);
 
+  // Feedback of the invite link copy: idle, done or error
+  const [copyState, setCopyState] = useState("idle");
+
 
   // Load the playlist and its tracks when the page opens
   useEffect(() => {
@@ -162,6 +165,39 @@ function PlaylistPage() {
 
   const inviteLink = `http://127.0.0.1:5173/join/${playlist.invite_code}`;
 
+  // Copy the invite link, with a fallback when the clipboard is refused.
+  async function copyInviteLink() {
+    let ok = false;
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(inviteLink);
+        ok = true;
+      }
+    } catch {
+      ok = false;
+    }
+
+    if (!ok) {
+      try {
+        const field = document.createElement("textarea");
+        field.value = inviteLink;
+        field.setAttribute("readonly", "");
+        field.style.position = "absolute";
+        field.style.left = "-9999px";
+        document.body.appendChild(field);
+        field.select();
+        ok = document.execCommand("copy");
+        document.body.removeChild(field);
+      } catch {
+        ok = false;
+      }
+    }
+
+    setCopyState(ok ? "done" : "error");
+    window.setTimeout(() => setCopyState("idle"), 2000);
+  }
+
   return (
     <div className="playlist-page">
       <Header sessionTitle={playlist.name} userPseudo={user?.username} />
@@ -261,10 +297,18 @@ function PlaylistPage() {
 
           <button
             type="button"
-            className="share-copy"
-            onClick={() => navigator.clipboard.writeText(inviteLink)}
+            className={
+              "share-copy" +
+              (copyState === "done" ? " is-copied" : "") +
+              (copyState === "error" ? " is-error" : "")
+            }
+            onClick={copyInviteLink}
           >
-            Copier
+            {copyState === "done"
+              ? "Copié !"
+              : copyState === "error"
+                ? "Erreur"
+                : "Copier"}
           </button>
         </section>
       </main>

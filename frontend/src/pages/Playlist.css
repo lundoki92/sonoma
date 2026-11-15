@@ -228,9 +228,21 @@
 }
 
 .share-copy:hover {
-  background-color: #eaff99;
-  border-color: #eaff99;
-  color: #17141f;
+  background-color: #252130;
+  border-color: #3f3f46;
+}
+
+/* Le jaune reste réservé au bouton d'action principal. */
+.share-copy.is-copied {
+  background-color: #10483b;
+  border-color: #10483b;
+  color: #00e6a0;
+}
+
+.share-copy.is-error {
+  background-color: rgba(255, 107, 107, 0.12);
+  border-color: rgba(255, 107, 107, 0.45);
+  color: #ffb3b3;
 }
 
 .share-copy:focus-visible {
