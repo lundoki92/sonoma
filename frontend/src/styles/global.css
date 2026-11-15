@@ -57,6 +57,9 @@
   --card-background: #15131d;
   --focus-ring: 2px solid #eaff99;
 
+  /* Pastille à initiale : une seule couleur pour tous les headers. */
+  --avatar-background: #b9a5ff;
+
   /* Shared header metrics so every screen aligns the same way. */
   --header-height: 80px;
   --header-padding-x: 20px;

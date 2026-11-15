@@ -101,7 +101,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #9333ea;
+  background-color: var(--avatar-background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,7 +130,7 @@
   height: 46px;
   min-width: 46px;
   border-radius: 50%;
-  background-color: #b9a5ff;
+  background-color: var(--avatar-background);
   display: flex;
   align-items: center;
   justify-content: center;
