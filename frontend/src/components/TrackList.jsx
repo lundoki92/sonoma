@@ -1,20 +1,32 @@
 import "./TrackList.css";
 
-// Libellés affichés sur les cartes, du point de vue de l'hôte.
+// Ce que le regard doit comprendre d'un morceau déjà en base. `proposed`
+// n'a pas de libellé ici : chez l'hôte, ces morceaux-là sont présentés dans
+// leur propre groupe. Conséquence à connaître pour l'écran invité : une
+// proposition d'invité faite avant l'ouverture sera classée dans « Tes
+// propositions », sans badge — c'est là qu'il faudra lui donner un libellé
+// (« la soirée n'est pas encore ouverte »), pas ici.
 const STATUS_LABELS = {
-  proposed: "Proposé",
   voting: "En vote",
   selected: "Sélectionné",
   played: "Joué",
 };
 
-// Liste de morceaux partagée par l'étape de création et l'écran « Proposer »
-// de la soirée. Deux choses s'activent selon ce que l'appelant fournit :
-// la croix de retrait (si `onRemove` est passé) et l'état du morceau (dès que
-// la base lui en a donné un, donc seulement dans une soirée ouverte).
+// Seule une chanson pas encore écrite en base est retirable : le retrait
+// existe pendant la création, le temps que le choix soit encore entirely le
+// sien. Dès que la soirée existe, le lancement est programmé et une
+// proposition appartient déjà au vote de tout le monde.
+function isRetirable(track) {
+  return !track.status;
+}
+
+// Liste de morceaux partagée par l'étape de création et l'écran « Proposer ».
+// Un groupe = un état. La note, le badge d'état et la croix de retrait
+// s'activent selon ce que l'appelant fournit.
 export default function TrackList({
   tracks = [],
   heading,
+  note,
   emptyText,
   onRemove,
   removingKey,
@@ -23,12 +35,15 @@ export default function TrackList({
     <section className="track-list-section">
       <h2>{heading}</h2>
 
+      {note && <p className="track-list-note">{note}</p>}
+
       {tracks.length === 0 ? (
-        <p className="track-list-empty">{emptyText}</p>
+        emptyText && <p className="track-list-empty">{emptyText}</p>
       ) : (
         <ul className="track-list">
           {tracks.map((track) => {
             const trackKey = track.id ?? track.external_track_id;
+            const isRemoving = removingKey === trackKey;
 
             return (
               <li className="track-item" key={trackKey}>
@@ -51,20 +66,18 @@ export default function TrackList({
                   </span>
                 )}
 
-                {onRemove && (
+                {onRemove && isRetirable(track) && (
                   <button
                     type="button"
                     className="track-item-remove"
                     onClick={() => onRemove(track)}
-                    disabled={removingKey === trackKey}
+                    disabled={isRemoving}
                     aria-label={`Retirer ${track.title} de la soirée`}
                     title="Retirer le morceau"
                   >
                     <i
                       className={`fa-solid ${
-                        removingKey === trackKey
-                          ? "fa-spinner fa-spin"
-                          : "fa-xmark"
+                        isRemoving ? "fa-spinner fa-spin" : "fa-xmark"
                       }`}
                       aria-hidden="true"
                     ></i>

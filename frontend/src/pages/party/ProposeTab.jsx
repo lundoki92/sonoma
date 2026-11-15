@@ -3,16 +3,17 @@ import { useOutletContext } from "react-router";
 import SearchMusic from "../../components/SearchMusic";
 import TrackList from "../../components/TrackList.jsx";
 import ExplanationText from "../../components/common/ExplanationText.jsx";
-import { normalizeTrack } from "../../utils/tracks.js";
+import { isOpeningTrack, normalizeTrack } from "../../utils/tracks.js";
 import {
   getServiceIcon,
   getServiceLabel,
 } from "../../utils/streamingServices.js";
 
 // Écran « Proposer » de l'hôte. C'est le même écran que l'étape 2 du wizard
-// de création : mêmes blocs, même ordre, même rythme vertical. La seule
-// différence est le métier : ici la soirée existe déjà, donc chaque ajout est
-// écrit en base tout de suite au lieu de rester en mémoire.
+// de création : mêmes blocs, même ordre, même rythme vertical. La différence
+// est le métier : la soirée existe déjà, donc les morceaux viennent de la
+// base, ceux des invités sont dans la même liste, et chaque ajout ou retrait
+// est écrit tout de suite.
 export default function ProposeTab() {
   const { playlist, playlistId } = useOutletContext();
 
@@ -78,13 +79,20 @@ export default function ProposeTab() {
   // autant le dire avant que l'hôte essaie.
   const isClosed = playlist.status === "finished";
 
+  // Deux groupes, parce que deux histoires : ce que l'hôte a choisi en créant
+  // la soirée est programmé, tout le reste est en train de voter. La règle est
+  // dans utils/tracks.js pour que l'écran invité, plus tard, ne la réinvente
+  // pas : chez lui, rien n'est jamais un morceau de lancement.
+  const openingTracks = tracks.filter(isOpeningTrack);
+  const proposalTracks = tracks.filter((track) => !isOpeningTrack(track));
+
   return (
     <div className="screen-column">
       <div className="screen-intro">
         <ExplanationText
           hasAppTitle={false}
           title="Propose des morceaux"
-          text="Cherche dans le catalogue Spotify et ajoute les titres que tu veux voir passer. Tes invités peuvent faire la même chose depuis leur lien."
+          text="Cherche dans le catalogue Spotify et ajoute tes titres. Tes invités ajoutent les leurs de leur côté : tout le monde vote ensuite sur la même liste."
         />
       </div>
 
@@ -131,11 +139,31 @@ export default function ProposeTab() {
         </p>
       )}
 
-      <TrackList
-        heading={`Morceaux de la soirée (${tracks.length})`}
-        tracks={tracks}
-        emptyText="Aucun morceau pour le moment. Ajoute le premier pour lancer l'ambiance."
-      />
+      {tracks.length === 0 && !loading ? (
+        <TrackList
+          heading="Tes morceaux"
+          tracks={tracks}
+          emptyText="Aucun morceau pour le moment. Ajoute le premier pour lancer l'ambiance."
+        />
+      ) : (
+        <>
+          {openingTracks.length > 0 && (
+            <TrackList
+              heading={`Le lancement de la soirée (${openingTracks.length})`}
+              note="Choisis en créant la soirée : ils sont programmés, ni votés, ni retirables."
+              tracks={openingTracks}
+            />
+          )}
+
+          {proposalTracks.length > 0 && (
+            <TrackList
+              heading={`Tes propositions (${proposalTracks.length})`}
+              note="Dès l'ajout, un morceau rejoint le vote de tout le monde : il ne se retire plus ici."
+              tracks={proposalTracks}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }

@@ -12,6 +12,17 @@
   color: #f4f0fa;
 }
 
+/* Une ligne pour expliquer un groupe : le même niveau de texte que la
+   légende du dashboard, puisqu'elle fait le même travail. Elle ne change
+   rien quand elle est absente (l'étape de création n'en a pas). */
+.track-list-note {
+  margin-top: calc(-1 * var(--space-2));
+  margin-bottom: var(--space-3);
+  color: #7b758c;
+  font-size: var(--text-secondary);
+  line-height: var(--leading-snug);
+}
+
 .track-list-empty {
   color: #a1a1aa;
   font-size: var(--text-secondary);
