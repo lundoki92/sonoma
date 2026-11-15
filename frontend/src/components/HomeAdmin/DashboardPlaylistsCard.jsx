@@ -1,15 +1,15 @@
 import "./DashboardPlaylistsCard.css";
 
 const STATUS = {
-  preparing: { label: "EN PRÉPARATION", className: "preparing" },
-  active: { label: "EN DIRECT", className: "live" },
-  finished: { label: "ARCHIVÉE", className: "archived" },
+  preparing: { label: "En préparation", className: "preparing" },
+  active: { label: "En direct", className: "live" },
+  finished: { label: "Terminée", className: "archived" },
 };
 
 export default function DashboardPlaylistsCard({ playlist }) {
   const { name, status, date_time } = playlist;
 
-  const config = STATUS[status] ?? { label: "INCONNU", className: "unknown" };
+  const config = STATUS[status] ?? { label: "Inconnue", className: "unknown" };
   const isLive = status === "active";
 
   const date = new Date(date_time).toLocaleDateString("fr-FR", {

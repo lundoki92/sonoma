@@ -46,8 +46,9 @@ export default function Header({
           className="header-logout"
           onClick={handleLogout}
           aria-label="Se déconnecter"
+          title="Se déconnecter"
         >
-          Déconnexion
+          <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
         </button>
       </header>
     );
