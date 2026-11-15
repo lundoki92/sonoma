@@ -7,6 +7,7 @@ export default function Header({
   userPseudo,
   variant = "default",
   greeting = "Hello,",
+  backTo = "/login",
 }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export default function Header({
   async function handleQuit() {
     localStorage.removeItem("guest_name");
     await logout().catch(() => null);
-    navigate("/login", { replace: true });
+    navigate(backTo, { replace: true });
   }
 
   // Variant for dashboard

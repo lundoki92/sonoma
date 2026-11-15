@@ -114,7 +114,7 @@ function GuestPlaylistPage() {
 
   return (
     <div className="playlist-page">
-      <Header variant="guest" sessionTitle={playlist.name} userPseudo={pseudo} />
+      <Header variant="guest" sessionTitle={playlist.name} userPseudo={pseudo} backTo={`/join/${code}`} />
 
       <main className="playlist-content playlist-content--with-nav">
         <div className="app-meta-row">
