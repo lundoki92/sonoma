@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import ExplanationText from "../components/common/ExplanationText";
 import Button from "../components/common/Button";
 import { Champ } from "../components/Champ.jsx";
 import "./Auth.css";
+import "./CreatePlaylist.css";
 
 
 function CreatePlaylist() {
@@ -53,14 +54,34 @@ function CreatePlaylist() {
   };
 
   return (
-    <main className="carte-form">
-      <div className="auth-card">
-        <ExplanationText
-          title="Create a playlist"
-          text="Name your party and choose when it starts."
-        />
+    <div className="creation-layout">
+      {/* Même header que le parcours de création, sans compteur d'étape. */}
+      <header className="creation-header">
+        <div className="creation-header-row">
+          <p className="creation-title">Création de soirée</p>
 
-        <form onSubmit={handleSubmit}>
+          <button
+            type="button"
+            className="creation-home"
+            onClick={() => navigate("/")}
+            aria-label="Tableau de bord"
+            title="Tableau de bord"
+          >
+            <i className="fa-solid fa-house" aria-hidden="true"></i>
+          </button>
+        </div>
+      </header>
+
+      <main className="creation-content">
+        <div className="creation-intro">
+          <ExplanationText
+            hasAppTitle={false}
+            title="Create a playlist"
+            text="Name your party and choose when it starts."
+          />
+        </div>
+
+        <form className="creation-form" onSubmit={handleSubmit}>
           <Champ
             id="playlist-name"
             label="Playlist name"
@@ -81,18 +102,18 @@ function CreatePlaylist() {
             required
           />
 
+          {error && (
+            <p className="app-error" role="alert">
+              {error}
+            </p>
+          )}
+
           <Button
             type="submit"
             disabled={loading}
             text={loading ? "Creating..." : "Create playlist"}
           />
         </form>
-
-        {error && (
-          <p className="alerte" role="alert">
-            {error}
-          </p>
-        )}
 
         {playlist && (
           <div className="succes">
@@ -102,12 +123,8 @@ function CreatePlaylist() {
             <p>Status: {playlist.status}</p>
           </div>
         )}
-
-        <p className="form-back">
-          <Link to="/">← Back to the dashboard</Link>
-        </p>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 

@@ -1,0 +1,151 @@
+/* ============================================================
+   CRÉATION DE SOIRÉE
+   Reprend la mise en page du parcours de création en plusieurs
+   étapes : header fixe de 80 px, contenu de 480 px, intro,
+   champs puis bouton.
+   Une seule étape ici : ni compteur, ni barre de progression.
+   ============================================================ */
+
+.creation-layout {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  background-color: #0c0b12;
+  color: #f4f0fa;
+  display: flex;
+  flex-direction: column;
+  /* Contrôles natifs (calendrier, heure) lisibles sur fond sombre. */
+  color-scheme: dark;
+
+  /* Auth.css colore .champ à partir de ces tokens locaux. La création
+     n'a plus la carte d'identification : on lui redonne la même palette. */
+  --auth-bg: #0c0b12;
+  --auth-card: #17141f;
+  --auth-border: #2e2a3d;
+  --auth-border-hover: #3f3f46;
+  --auth-text: #f4f0fa;
+  --auth-placeholder: #71717a;
+  --auth-accent: #eaff99;
+  --auth-focus: #b9a8ff;
+  --auth-focus-soft: rgba(185, 168, 255, 0.18);
+  --auth-danger: #c62828;
+  --auth-danger-text: #ff9b93;
+}
+
+/* ---------- HEADER ---------- */
+
+.creation-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: var(--header-height, 80px);
+  box-sizing: border-box;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0 var(--header-padding-x, 20px);
+  display: flex;
+  align-items: center;
+  background-color: var(--header-background, rgba(12, 11, 18, 0.92));
+  backdrop-filter: blur(10px);
+  border-bottom: var(--header-border, 1px solid rgba(255, 255, 255, 0.1));
+}
+
+.creation-header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--icon-button-size);
+}
+
+.creation-title {
+  font-family: var(--font-display);
+  font-size: var(--text-label);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  color: #ffffff;
+  text-align: center;
+}
+
+/* Retour au tableau de bord : même cible ronde que les autres headers. */
+.creation-home {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  background: transparent;
+  color: #f4f0fa;
+  font-size: var(--text-body);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.creation-home:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.creation-home:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---------- CONTENU ---------- */
+
+.creation-content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--screen-top-offset) var(--screen-padding-x) var(--space-12);
+  box-sizing: border-box;
+}
+
+.creation-intro {
+  margin-bottom: var(--section-gap);
+}
+
+.creation-intro .explanation-text {
+  padding: 0;
+}
+
+/* ---------- FORMULAIRE ---------- */
+
+.creation-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Un seul rythme vertical, comme dans les étapes du parcours. */
+.creation-form .champ {
+  margin-bottom: var(--field-gap);
+}
+
+.creation-form .app-error {
+  margin: 0 0 var(--field-gap);
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 480px) {
+  .creation-content {
+    padding-top: calc(var(--header-height) + var(--space-5));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .creation-home {
+    transition: none;
+  }
+}
