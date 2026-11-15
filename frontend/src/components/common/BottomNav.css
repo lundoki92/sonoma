@@ -9,6 +9,7 @@
   backdrop-filter: blur(8px);
   border-top: 1px solid #2E2A3D;            /* Contours */
   padding: 12px 32px;
+  min-height: var(--header-height, 80px);
   display: flex;
   justify-content: space-around;
   align-items: center;
