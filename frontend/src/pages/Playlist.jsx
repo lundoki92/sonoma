@@ -52,7 +52,7 @@ function PlaylistPage() {
 
         // Check whether both requests were successful
         if (!playlistResponse.ok || !tracksResponse.ok) {
-          throw new Error("Unable to load the playlist");
+          throw new Error("Impossible de charger la soirée");
         }
 
         // Convert the responses into JavaScript objects
@@ -118,7 +118,7 @@ function PlaylistPage() {
 
       // Display an error if the track could not be saved
       if (!response.ok) {
-        throw new Error(data.error || "Unable to add the track");
+        throw new Error(data.error || "Impossible d'ajouter le morceau");
       }
 
       // Add the saved track to the displayed list

@@ -38,7 +38,7 @@ function SearchMusic({ onAddTrack, tracks = [] }) {
 
       // Check if the request was successful
       if (!response.ok) {
-        throw new Error("Unable to search for tracks");
+        throw new Error("Impossible de rechercher des morceaux");
       }
 
       const data = await response.json();

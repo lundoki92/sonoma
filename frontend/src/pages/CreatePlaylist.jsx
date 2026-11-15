@@ -38,7 +38,7 @@ function CreatePlaylist() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create playlist");
+        throw new Error(data.error || "Impossible de créer la soirée");
       }
 
       setPlaylist(data);
@@ -76,17 +76,17 @@ function CreatePlaylist() {
         <div className="creation-intro">
           <ExplanationText
             hasAppTitle={false}
-            title="Create a playlist"
-            text="Name your party and choose when it starts."
+            title="Créer ma soirée"
+            text="Donne-lui un nom et choisis quand elle commence."
           />
         </div>
 
         <form className="creation-form" onSubmit={handleSubmit}>
           <Champ
             id="playlist-name"
-            label="Playlist name"
+            label="Nom de ma soirée"
             type="text"
-            placeholder="My birthday party"
+            placeholder="After work du vendredi"
             value={name}
             onChange={(event) => setName(event.target.value)}
             maxLength={100}
@@ -95,7 +95,7 @@ function CreatePlaylist() {
 
           <Champ
             id="playlist-date"
-            label="Date and time"
+            label="Date de ma soirée"
             type="datetime-local"
             value={dateTime}
             onChange={(event) => setDateTime(event.target.value)}
@@ -111,16 +111,16 @@ function CreatePlaylist() {
           <Button
             type="submit"
             disabled={loading}
-            text={loading ? "Creating..." : "Create playlist"}
+            text={loading ? "Création..." : "Créer la soirée"}
           />
         </form>
 
         {playlist && (
           <div className="succes">
-            <h2>Playlist created successfully!</h2>
-            <p>Name: {playlist.name}</p>
-            <p>Playlist ID: {playlist.id}</p>
-            <p>Status: {playlist.status}</p>
+            <h2>Soirée créée !</h2>
+            <p>Nom : {playlist.name}</p>
+            <p>Identifiant : {playlist.id}</p>
+            <p>Statut : {playlist.status}</p>
           </div>
         )}
       </main>

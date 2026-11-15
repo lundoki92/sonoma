@@ -25,7 +25,7 @@ export default function Home() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Failed to load playlists");
+          throw new Error(data.error || "Impossible de charger tes soirées");
         }
 
         setPlaylists(data);

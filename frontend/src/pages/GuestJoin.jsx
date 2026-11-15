@@ -24,7 +24,7 @@ function GuestJoinPage() {
         body: JSON.stringify({ guest_name: name.trim() }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to join");
+      if (!response.ok) throw new Error(data.error || "Impossible de rejoindre la soirée");
 
       navigate(`/join/${code}/playlist`);
     } catch (err) {
