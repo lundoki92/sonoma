@@ -174,6 +174,7 @@ function GuestPlaylistPage() {
                     <span>{track.artist}</span>
                   </div>
 
+                  {/* Track status */}
                   <span
                     className={`track-status track-status--${track.status}`}
                   >
