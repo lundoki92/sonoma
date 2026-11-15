@@ -18,9 +18,13 @@ export async function getInvitePlaylistService(code) {
   return findPlaylistOrThrow(code);
 }
 
-export async function getInviteTracksService(code) {
+// The songs a guest proposed themselves. The guest id comes from their
+// invitation cookie, never from the request: the controller already reads it
+// from req.guest, and forgetting to pass it here made the query compare
+// guest_id to NULL, which answers "no songs" for everybody, forever.
+export async function getInviteTracksService(code, guestId) {
   const playlist = await findPlaylistOrThrow(code);
-  return getGuestTracksByPlaylistModel(playlist.id);
+  return getGuestTracksByPlaylistModel(playlist.id, guestId);
 }
 
 export async function addInviteTrackService(code, guestId, data) {
