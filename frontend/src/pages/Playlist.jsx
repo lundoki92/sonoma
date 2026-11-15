@@ -4,20 +4,8 @@ import SearchMusic from "../components/SearchMusic";
 import Header from "../components/common/Header";
 import Button from "../components/common/Button";
 import { useAuth } from "../context/AuthContext.jsx";
+import { PARTY_STATUS, TRACK_STATUS } from "../utils/statusLabels.js";
 import "./Playlist.css";
-
-// Mêmes libellés que les badges de la home, pour une seule lecture du statut.
-const STATUS = {
-  preparing: { label: "En préparation", className: "preparing" },
-  active: { label: "En direct", className: "live" },
-  finished: { label: "Terminée", className: "archived" },
-};
-
-const TRACK_STATUS = {
-  proposed: "Proposé",
-  voting: "Au vote",
-  played: "Joué",
-};
 
 
 function PlaylistPage() {
@@ -150,7 +138,7 @@ function PlaylistPage() {
     );
   }
 
-  const status = STATUS[playlist.status] ?? {
+  const status = PARTY_STATUS[playlist.status] ?? {
     label: "Inconnue",
     className: "unknown",
   };
