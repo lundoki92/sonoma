@@ -29,6 +29,13 @@ export default function Header({
     }
   }
 
+  // Un invité n'a pas de compte : on oublie son pseudo puis on sort.
+  async function handleQuit() {
+    localStorage.removeItem("guest_name");
+    await logout().catch(() => null);
+    navigate("/login", { replace: true });
+  }
+
   // Variant for dashboard
   if (variant === "greeting") {
     return (
@@ -76,7 +83,7 @@ export default function Header({
     );
   }
 
-  // Variant for guests: party title and pseudo, no logout nor dashboard.
+  // Variant for guests: party title and pseudo, plus a way to leave.
   if (variant === "guest") {
     return (
       <header className="app-header">
@@ -91,6 +98,16 @@ export default function Header({
 
           <span className="pseudo">{userPseudo || "Invité"}</span>
         </div>
+
+        <button
+          type="button"
+          className="header-logout"
+          onClick={handleQuit}
+          aria-label="Quitter la soirée"
+          title="Quitter la soirée"
+        >
+          <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        </button>
       </header>
     );
   }
