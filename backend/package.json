@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "dev": "node --watch --env-file=.env server/server.js",
-  "start": "node --env-file=.env server/server.js"
-},
+    "start": "node --env-file=.env server/server.js",
+    "dev": "node --watch --env-file=.env server/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "db:down": "docker compose down",
+    "db:up": "docker compose up -d",
+    "db:reset": "docker compose down -v && docker compose up -d"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -22,6 +26,7 @@
     "pg": "^8.23.1"
   },
   "devDependencies": {
+    "jest": "^30.5.2",
     "nodemon": "^3.1.14"
   }
 }
