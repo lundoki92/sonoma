@@ -77,16 +77,16 @@ Docker Desktop doit être **lancé** (icône active) avant de démarrer la base 
 
 ### 1. Cloner le dépôt
 
-```bash
+```
 git clone https://github.com/lundoki92/sonoma.git
 cd sonoma
 ```
 
 ### 2. Configurer les variables d'environnement
 
-Créer le fichier `backend/.env` à partir des valeurs suivantes :
+Créer le fichier `backend/.env` avec les variables suivantes :
 
-```env
+```
 # PostgreSQL connection
 DB_HOST=localhost
 DB_PORT=5433
@@ -102,53 +102,62 @@ SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 
 # Authentification
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_generated_jwt_secret
 ```
 
-Choisir ses propres identifiants locaux et s'assurer qu'ils correspondent aux variables référencées dans `backend/docker-compose.yml`.
+Générer un secret JWT sécurisé avec la commande suivante :
+
+```
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
+
+Copier le résultat dans la variable `JWT_SECRET` du fichier `backend/.env`.
+
+Choisir ses propres identifiants locaux et s'assurer qu'ils correspondent aux variables référencées dans le `docker-compose.yml`.
 
 ⚠️ Le fichier `backend/.env` contient des secrets : il est ignoré par Git et ne doit **jamais** être commité.
 
 ### 3. Installer les dépendances
 
-Le projet contient **deux** `package.json` (backend et frontend). Il faut installer les dépendances dans chacun :
+Le projet contient deux `package.json` (backend et frontend). Installer les dépendances dans chacun des dossiers :
 
-```bash
+```
 cd backend && npm install && cd ..
 cd frontend && npm install && cd ..
 ```
 
-### 4. Démarrer la base de données
+### 4. Démarrer et initialiser la base de données
 
-Se placer dans le dossier `backend/`, où se trouvent `docker-compose.yml` et `.env` :
+Se placer dans le dossier `backend/` :
 
-```bash
+```
 cd backend
-docker compose up -d
-cd ..
+npm run db:up
 ```
 
-PostgreSQL est alors accessible sur le port `5433` de la machine locale.
+Au premier démarrage, PostgreSQL initialise automatiquement la base de données grâce aux scripts présents dans `/docker-entrypoint-initdb.d/` :
 
-### 5. Créer les tables et les données de test
+- `01-migration_up.sql` : création des tables et du schéma de la base de données.
+- `02-seed.sql` : insertion des données initiales.
 
-Le schéma de la base est défini dans `backend/db/migration_up.sql`.
+Ces scripts sont exécutés automatiquement uniquement lorsque PostgreSQL initialise un volume de données vide.
 
-Depuis le dossier `backend/` :
+PostgreSQL est ensuite accessible sur le port `5433` de la machine locale.
 
-```bash
-docker compose exec -T postgres psql -U sonoma_user -d sonoma < db/migration_up.sql
-```
+**Commandes utiles pour la gestion de la base de données** (à exécuter depuis `backend/`) :
 
-Remplacer `sonoma_user` par la valeur de `DB_USER` dans le `.env`.
+| Commande                  | Description                            |
+| ------------------------- | -------------------------------------- |
+| `npm run db:up`           | Démarrer PostgreSQL                    |
+| `npm run db:down`         | Arrêter PostgreSQL                     |
+| `npm run db:wipe`         | Supprimer le volume et recréer la base |
+| `npm run db:migrate:up`   | Appliquer les migrations               |
+| `npm run db:migrate:down` | Annuler les migrations                 |
+| `npm run db:seed`         | Insérer les données de test            |
+| `npm run db:reset`        | Réinitialiser le schéma et les données |
 
-Pour charger des données de test :
+Attention : `npm run db:wipe` supprime définitivement le volume PostgreSQL et toutes les données qu'il contient.
 
-```bash
-docker compose exec -T postgres psql -U sonoma_user -d sonoma < db/seed.sql
-```
-
----
 
 ## Lancer le projet
 
