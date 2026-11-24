@@ -2,12 +2,20 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/server.js",
   "scripts": {
-  "test": "echo \"Error: no test specified\" && exit 1",
-  "dev": "node --watch --env-file=.env server/server.js",
-  "start": "node --env-file=.env server/server.js"
-},
+    "start": "node --env-file=.env server/server.js",
+    "dev": "node --watch --env-file=.env server/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "db:up": "docker compose --env-file .env -f ../docker-compose.yml up -d",
+    "db:down": "docker compose --env-file .env -f ../docker-compose.yml down",
+    "db:wipe": "docker compose --env-file .env -f ../docker-compose.yml down -v && docker compose --env-file .env -f ../docker-compose.yml up -d",
+    "db:migrate:down": "docker exec -i sonoma_postgres sh -c 'psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"' < db/migration_down.sql",
+    "db:migrate:up": "docker exec -i sonoma_postgres sh -c 'psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"' < db/migration_up.sql",
+    "db:seed": "docker exec -i sonoma_postgres sh -c 'psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"' < db/seed.sql",
+    "db:reset": "npm run db:migrate:down && npm run db:migrate:up && npm run db:seed"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -22,6 +30,7 @@
     "pg": "^8.23.1"
   },
   "devDependencies": {
+    "jest": "^30.5.2",
     "nodemon": "^3.1.14"
   }
 }
