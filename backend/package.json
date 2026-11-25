@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --env-file=.env server/server.js",
     "dev": "node --watch --env-file=.env server/server.js",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "jest --watch",
     "db:up": "docker compose --env-file .env -f ../docker-compose.yml up -d",
     "db:down": "docker compose --env-file .env -f ../docker-compose.yml down",
