@@ -9,9 +9,9 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./backend/db/migration_up.sql:/docker-entrypoint-initdb.d/01-migration_up.sql
-      - ./backend/db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    - pgdata:/var/lib/postgresql/data
+    - ./db/migration_up.sql:/docker-entrypoint-initdb.d/01-migration_up.sql
+    - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
 
 volumes:
   pgdata:
